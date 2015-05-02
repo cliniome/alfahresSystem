@@ -1,5 +1,7 @@
 package com.degla.db.models;
 
+import org.hibernate.annotations.Index;
+
 import java.util.Date;
 
 /**
@@ -18,7 +20,8 @@ public class ArchiveCabinet extends EntityEO {
 	/**
 	 * this is the cabinet number identifier
 	 */
-    @Column(name="cabinetID")
+    @Index(name = "cabinetIDIndex")
+    @Column(name="cabinetID",nullable = false)
 	private String cabinetID;
 	/**
 	 * this is the location of the cabinet

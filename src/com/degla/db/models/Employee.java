@@ -1,6 +1,8 @@
 package com.degla.db.models;
 
 
+import org.hibernate.annotations.Index;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -13,7 +15,8 @@ public class Employee extends ActorEO {
 	/**
 	 * This is the employee ID within the enterprise
 	 */
-    @Column(name="EmpID")
+    @Index(name="EmpIDIndex")
+    @Column(name="EmpID",unique = true,nullable = false)
 	protected String empID;
 
 

@@ -1,5 +1,7 @@
 package com.degla.db.models;
 
+import org.hibernate.annotations.Index;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -17,11 +19,13 @@ import static javax.persistence.CascadeType.REFRESH;
 public class PatientFile extends EntityEO {
 
 
+    @Index(name="fileIdIndex")
     @Column(name="fileID")
 	private String fileID;
     @Column(name="description",nullable = true)
 	private String description;
 
+    @Index(name="creationTimeIndex")
     @Column(name="creationTime")
     @Temporal(TemporalType.TIMESTAMP)
 	private Date creationTime;

@@ -1,5 +1,7 @@
 package com.degla.db.models;
 
+import org.hibernate.annotations.Index;
+
 import java.util.Date;
 
 
@@ -20,6 +22,7 @@ public class FileHistory extends EntityEO {
 	/**
 	 * The primary key of the current file History
 	 */
+    @Index(name="createdAtIndex")
     @Column(name="createdAt")
     @Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
@@ -28,6 +31,7 @@ public class FileHistory extends EntityEO {
 	 * 
 	 * like temporary Cabinets , Distribution cabinets.....etc
 	 */
+    @Index(name="containerIdIndex")
     @Column(name="containerId")
 	private String containerId;
     //TODO : Don't forget to map PatientFile in this Class
@@ -37,6 +41,7 @@ public class FileHistory extends EntityEO {
     @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=Employee.class)
     @JoinColumn(name="empID")
 	private Employee owner;
+    @Index(name="StateIndex")
     @Column(name="state")
     @Enumerated(EnumType.STRING)
 	public FileStates state;

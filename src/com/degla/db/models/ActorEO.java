@@ -1,5 +1,7 @@
 package com.degla.db.models;
 
+import org.hibernate.annotations.Index;
+
 import javax.persistence.*;
 
 import static javax.persistence.CascadeType.*;
@@ -26,16 +28,19 @@ public abstract class ActorEO extends EntityEO {
 	/**
 	 * this is the username of the current actor
 	 */
-    @Column(name="userName")
+    @Index(name="userNameIndex")
+    @Column(name="userName",unique = true,nullable = false)
 	protected String userName;
 	/**
 	 * this is the password of the current employee.
 	 */
-    @Column(name="password")
+
+    @Column(name="password",nullable = false)
 	protected String password;
 
+
     @ManyToOne(cascade={REFRESH,MERGE,DETACH,PERSIST},fetch=FetchType.EAGER,targetEntity=RoleEO.class)
-    @JoinColumn(name="ROLEID")
+    @JoinColumn(name="ROLEID",nullable = false)
     protected RoleEO role;
 
 	public void setFirstName(String firstName) {

@@ -11,6 +11,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Index;
 import org.springframework.security.core.GrantedAuthority;
 
 
@@ -30,6 +31,7 @@ public class RoleEO extends EntityEO implements GrantedAuthority , Serializable 
     /**
      * The Role Name
      */
+    @Index(name="RoleNameIndex")
     @Column(name="NAME")
     protected String name;
     /**
