@@ -1,9 +1,9 @@
-package com.degla.db.controllers;
+package com.degla.mobile.controllers;
 
 import com.degla.db.models.ActorEO;
 import com.degla.db.models.FileStates;
 
-public class ActorController implements ReceptionistOps {
+public class KeeperController implements KeeperOps {
 
 	/**
 	 * @param username the username of the actor
@@ -21,9 +21,9 @@ public class ActorController implements ReceptionistOps {
 	}
 
 	/**
-	 * @param fileLocation it takes a file location and processes it after it has been uploaded by the UI and stored onto the server file system
+	 * retrieves all the assigned files by the receptionist
 	 */
-	public boolean distributeAppointments(String fileLocation) {
+	public Object[] retrieveFiles() {
 		throw new UnsupportedOperationException();
 	}
 }

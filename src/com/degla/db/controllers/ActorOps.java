@@ -1,6 +1,6 @@
 package com.degla.db.controllers;
 
-import com.degla.db.models.Actor;
+import com.degla.db.models.ActorEO;
 import com.degla.db.models.FileStates;
 
 /**
@@ -12,7 +12,7 @@ public interface ActorOps {
 	 * @param username the username of the actor
 	 * @param password the password of the employee
 	 */
-	public Actor login(String username, String password);
+	public ActorEO login(String username, String password);
 
 	/**
 	 * @param file the patient file to be marked as missing

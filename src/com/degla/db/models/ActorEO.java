@@ -1,27 +1,42 @@
 package com.degla.db.models;
 
+import javax.persistence.*;
+
+import static javax.persistence.CascadeType.*;
+
 /**
  * This is the basic abstract class that represents any actor in the system.
  * 
  * It contains generic shared properties among different employees.
  */
-public abstract class Actor {
+@Entity
+@Table(name="TBL_ACTOR")
+@DiscriminatorValue("ACTOR")
+public abstract class ActorEO extends EntityEO {
 	/**
 	 * This is the first name of the current actor
 	 */
+    @Column(name="firstName")
 	protected String firstName;
 	/**
 	 * This is the last name of the employee
 	 */
+    @Column(name="lastName")
 	protected String lastName;
 	/**
 	 * this is the username of the current actor
 	 */
+    @Column(name="userName")
 	protected String userName;
 	/**
 	 * this is the password of the current employee.
 	 */
+    @Column(name="password")
 	protected String password;
+
+    @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=RoleEO.class)
+    @JoinColumn(name="ROLEID")
+    protected RoleEO role;
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
@@ -54,4 +69,15 @@ public abstract class Actor {
 	public String getPassword() {
 		return this.password;
 	}
+
+    /**
+     * Each Actor in the system has a role
+     */
+    public RoleEO getRole() {
+        return role;
+    }
+
+    public void setRole(RoleEO role) {
+        this.role = role;
+    }
 }

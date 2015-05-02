@@ -1,29 +1,51 @@
 package com.degla.db.models;
 
+import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
+
+import static javax.persistence.CascadeType.DETACH;
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.REFRESH;
+
 /**
  * this class represents the patient file which will be stored and retrieved from the system.
  */
-public class PatientFile {
-	/**
-	 * this is the file id that identifies a given file
-	 */
+@Entity
+@Table(name="TBL_PATIENTFILE")
+@DiscriminatorValue("patientFile")
+public class PatientFile extends EntityEO {
+
+
+    @Column(name="fileID")
 	private String fileID;
-	/**
-	 * A simple description of the file
-	 */
+    @Column(name="description",nullable = true)
 	private String description;
-	/**
-	 * This property identifies when the file has been first created in the system and loaded into an archive cabinet
-	 */
-	private Timestamp creationTime;
+
+    @Column(name="creationTime")
+    @Temporal(TemporalType.TIMESTAMP)
+	private Date creationTime;
+
+    @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=ArchiveCabinet.class)
+    @JoinColumn(name="Ar_cabinetID")
 	private ArchiveCabinet archiveCabinet;
-	public FileHistory currentStatus;
+
+    @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=FileHistory.class)
+    @JoinColumn(name="currentStatus_ID")
+	private FileHistory currentStatus;
+
+    @OneToMany(cascade = {REFRESH,MERGE,DETACH},fetch = FetchType.LAZY,mappedBy = "patientFile")
+    private List<FileHistory> histories;
+
 
 	public void setFileID(String fileID) {
 		this.fileID = fileID;
 	}
 
-	public String getFileID() {
+	/**
+	 * this is the file id that identifies a given file
+	 */
+    public String getFileID() {
 		return this.fileID;
 	}
 
@@ -31,15 +53,46 @@ public class PatientFile {
 		this.description = description;
 	}
 
-	public String getDescription() {
+	/**
+	 * A simple description of the file
+	 */
+    public String getDescription() {
 		return this.description;
 	}
 
-	public void setCreationTime(Timestamp creationTime) {
-		this.creationTime = creationTime;
-	}
 
-	public Timestamp getCreationTime() {
-		return this.creationTime;
-	}
+    /**
+     * This property identifies when the file has been first created in the system and loaded into an archive cabinet
+     */
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(Date creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public ArchiveCabinet getArchiveCabinet() {
+        return archiveCabinet;
+    }
+
+    public void setArchiveCabinet(ArchiveCabinet archiveCabinet) {
+        this.archiveCabinet = archiveCabinet;
+    }
+
+    public FileHistory getCurrentStatus() {
+        return currentStatus;
+    }
+
+    public void setCurrentStatus(FileHistory currentStatus) {
+        this.currentStatus = currentStatus;
+    }
+
+    public List<FileHistory> getHistories() {
+        return histories;
+    }
+
+    public void setHistories(List<FileHistory> histories) {
+        this.histories = histories;
+    }
 }

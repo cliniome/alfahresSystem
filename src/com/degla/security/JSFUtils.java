@@ -9,9 +9,7 @@ public final class JSFUtils {
 	  @SuppressWarnings("unchecked")
 	public static Object getAnyBeanByName(String beanName,Class type) {
 		    try {
-		      
-		      
-		      
+
 		      FacesContext context = FacesContext.getCurrentInstance();
 		        Application currentApp = context.getApplication();
 		        

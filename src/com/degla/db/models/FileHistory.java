@@ -1,42 +1,45 @@
 package com.degla.db.models;
 
+import java.util.Date;
+
+
+import javax.persistence.*;
+
+import static javax.persistence.CascadeType.DETACH;
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.REFRESH;
+
+
 /**
  * This class represents a file History and also the current status of a patient file
  */
-public class FileHistory {
+@Entity
+@Table(name="TBL_FILEHISTORY")
+@DiscriminatorValue("fileHistory")
+public class FileHistory extends EntityEO {
 	/**
 	 * The primary key of the current file History
 	 */
-	private String id;
-	/**
-	 * The createdAt timestamp , showing when this step has been created for this file
-	 */
-	private Timestamp createdAt;
+    @Column(name="createdAt")
+    @Temporal(TemporalType.TIMESTAMP)
+	private Date createdAt;
 	/**
 	 * This attribute identifies the temporary cabinet IDs which will hold files during the entire workflow
 	 * 
 	 * like temporary Cabinets , Distribution cabinets.....etc
 	 */
+    @Column(name="containerId")
 	private String containerId;
+    //TODO : Don't forget to map PatientFile in this Class
+    @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=PatientFile.class)
+    @JoinColumn(name="patientFile")
 	private PatientFile patientFile;
+    @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=Employee.class)
+    @JoinColumn(name="empID")
 	private Employee owner;
+    @Column(name="state")
+    @Enumerated(EnumType.STRING)
 	public FileStates state;
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getId() {
-		return this.id;
-	}
-
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Timestamp getCreatedAt() {
-		return this.createdAt;
-	}
 
 	public void setContainerId(String containerId) {
 		this.containerId = containerId;
@@ -45,4 +48,23 @@ public class FileHistory {
 	public String getContainerId() {
 		return this.containerId;
 	}
+
+    /**
+     * The createdAt timestamp , showing when this step has been created for this file
+     */
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public PatientFile getPatientFile() {
+        return patientFile;
+    }
+
+    public void setPatientFile(PatientFile patientFile) {
+        this.patientFile = patientFile;
+    }
 }

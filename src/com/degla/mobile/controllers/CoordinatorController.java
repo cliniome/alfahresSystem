@@ -1,9 +1,9 @@
-package com.degla.db.controllers;
+package com.degla.mobile.controllers;
 
 import com.degla.db.models.ActorEO;
 import com.degla.db.models.FileStates;
 
-public class ActorController implements ReceptionistOps {
+public class CoordinatorController implements CoordinatorOps {
 
 	/**
 	 * @param username the username of the actor
@@ -20,10 +20,15 @@ public class ActorController implements ReceptionistOps {
 		throw new UnsupportedOperationException();
 	}
 
+	public Object[] scanCabinet(String cabinetId) {
+		throw new UnsupportedOperationException();
+	}
+
 	/**
-	 * @param fileLocation it takes a file location and processes it after it has been uploaded by the UI and stored onto the server file system
+	 * this method will create a new Cabinet
+	 * @param cabinetId the cabinet id which will be created
 	 */
-	public boolean distributeAppointments(String fileLocation) {
+	public Object[] createCabinet(String cabinetId) {
 		throw new UnsupportedOperationException();
 	}
 }

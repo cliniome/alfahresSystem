@@ -28,6 +28,10 @@
       <root url="jar://$PROJECT_DIR$/lib/spring-web-3.1.1.RELEASE.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/spring-web-3.2.0.RELEASE.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/spring-webmvc-3.2.0.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/el-ri-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../jsp-api-2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../el-impl-2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../javax.el-api-3.0.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
