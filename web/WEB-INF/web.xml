@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-         version="3.1">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5">
 
 
     <welcome-file-list>
@@ -64,13 +63,9 @@
         <param-value>resources.application</param-value>
     </context-param>
 
-    <servlet>
-        <servlet-name>RVUMainServlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
+
     <servlet-mapping>
-        <servlet-name>RVUMainServlet</servlet-name>
+        <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/web/*</url-pattern>
     </servlet-mapping>
     <context-param>
@@ -87,11 +82,15 @@
     <listener>
         <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
     </listener>
-    <persistence-unit-ref>
-        <persistence-unit-ref-name>alfahres</persistence-unit-ref-name>
-        <persistence-unit-name>alfahresPersistence</persistence-unit-name>
-    </persistence-unit-ref>
 
+
+    <persistence-unit-ref>
+        <description>
+            Persistence unit for the Alfahres application.
+        </description>
+        <persistence-unit-ref-name>alfahresjndi</persistence-unit-ref-name>
+        <persistence-unit-name>alfahres</persistence-unit-name>
+    </persistence-unit-ref>
     
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>

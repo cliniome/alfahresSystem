@@ -3,7 +3,10 @@
   <component name="FacetManager">
     <facet type="hibernate" name="Hibernate">
       <configuration>
-        <datasource-map />
+        <datasource-map>
+          <unit-entry name="hibernate.cfg.xml" value="a06c2205-a6ff-4493-9f32-f5e646d145bc" />
+          <unit-entry name="sessionFactory" value="datasource" />
+        </datasource-map>
         <naming-strategy-map />
       </configuration>
     </facet>
@@ -24,6 +27,18 @@
           <file>file://$MODULE_DIR$/web/WEB-INF/springBeans.xml</file>
           <file>file://$MODULE_DIR$/web/WEB-INF/springBeans.xml</file>
         </fileset>
+      </configuration>
+    </facet>
+    <facet type="jpa" name="JPA">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <setting name="provider-name" value="Hibernate" />
+        <datasource-mapping>
+          <factory-entry name="BankAppPU" value="c13d5e85-e7f3-487e-ba8a-d3f4386249f3" />
+          <factory-entry name="myEmf" value="c13d5e85-e7f3-487e-ba8a-d3f4386249f3" />
+          <factory-entry name="persistenceUnit" value="c13d5e85-e7f3-487e-ba8a-d3f4386249f3" />
+        </datasource-mapping>
+        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/web/WEB-INF/persistence.xml" />
       </configuration>
     </facet>
   </component>

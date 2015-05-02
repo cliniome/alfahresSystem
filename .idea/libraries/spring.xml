@@ -32,6 +32,8 @@
       <root url="jar://$PROJECT_DIR$/../../jsp-api-2.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../el-impl-2.2.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../javax.el-api-3.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../mysql-connector-java-5.1.35-bin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../cglib-nodep-3.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

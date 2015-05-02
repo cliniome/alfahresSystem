@@ -10,6 +10,7 @@
       <root url="jar://$PROJECT_DIR$/lib/antlr-2.7.7.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/javassist-3.15.0-GA.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/hibernate-core-4.2.2.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../hibernate-entitymanager-4.2.2.Final.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -41,15 +41,15 @@
             <div id="navbar" class="navbar-collapse collapse">
                 <h:form class="navbar-form navbar-right">
                     <div class="form-group">
-                        <!--<input type="text" placeholder="Email" value="#{loginBean.username}" class="form-control"/>-->
+
                         <p:inputText placeholder="UserName" styleClass="form-control"/>
                     </div>
                     <div class="form-group">
-                        <!--<input type="password" placeholder="Password" class="form-control" value="#{loginBean.password}"/>-->
+
                         <p:password placeholder="Password"  styleClass="form-control"/>
                     </div>
                     <!--<button type="submit" class="btn btn-success" value="">Login</button>-->
-                    <p:commandButton value="Login" styleClass="btn btn-success"  ajax="false"/>
+                    <p:commandButton value="Login" styleClass="btn btn-success"  ajax="false" action="#{loginBean.Login}"/>
                 </h:form>
             </div><!--/.navbar-collapse -->
         </div>

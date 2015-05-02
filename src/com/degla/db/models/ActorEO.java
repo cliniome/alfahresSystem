@@ -34,7 +34,7 @@ public abstract class ActorEO extends EntityEO {
     @Column(name="password")
 	protected String password;
 
-    @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=RoleEO.class)
+    @ManyToOne(cascade={REFRESH,MERGE,DETACH,PERSIST},fetch=FetchType.EAGER,targetEntity=RoleEO.class)
     @JoinColumn(name="ROLEID")
     protected RoleEO role;
 

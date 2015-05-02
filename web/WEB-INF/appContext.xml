@@ -72,9 +72,47 @@ http://www.springframework.org/schema/jee
 
     </bean>
 
-    <jee:jndi-lookup id="entityManagerFactory"  jndi-name="alfahres"/>
+    <bean id="datasource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="alfahresjndi"></property>
+        <property name="lookupOnStartup" value="true"/>
+        <property name="cache" value="true"/>
+        <property name="proxyInterface" value="javax.sql.DataSource"/>
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="datasource"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="myEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="datasource" />
+        <property name="packagesToScan" value="com.degla.db.models" />
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.ejb.HibernatePersistence" />
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="myEmf" />
+    </bean>
+    <tx:annotation-driven />
+
+    <!--<jee:jndi-lookup id="entityManagerFactory" jndi-name="alfahresjndi"/>-->
+
     <tx:annotation-driven/>
-    <tx:jta-transaction-manager  />
+   <!-- <tx:jta-transaction-manager   />-->
     <tx:advice id="txAdvice">
         <tx:attributes>
             <tx:method name="get*" read-only="true" propagation="REQUIRED" />
