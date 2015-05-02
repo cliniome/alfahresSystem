@@ -17,6 +17,15 @@
         </webroots>
       </configuration>
     </facet>
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="fileset" name="Spring Application Context" removed="false">
+          <file>file://$MODULE_DIR$/web/WEB-INF/appContext.xml</file>
+          <file>file://$MODULE_DIR$/web/WEB-INF/springBeans.xml</file>
+          <file>file://$MODULE_DIR$/web/WEB-INF/springBeans.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
@@ -30,6 +39,7 @@
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 4.1.0" level="application_server_libraries" />
     <orderEntry type="library" name="Mojarra-2.2.1" level="project" />
     <orderEntry type="library" name="PrimeFaces-5.2" level="project" />
+    <orderEntry type="library" name="spring" level="project" />
   </component>
 </module>
 
