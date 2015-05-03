@@ -40,7 +40,7 @@ http://www.springframework.org/schema/jee
         <!--<sec:intercept-url pattern="/web/index.xhtml" access="hasRole('ROLE_ADMIN')"/>-->
 
 
-        <sec:form-login   login-page="/web/login.xhtml"/>
+        <sec:form-login   login-page="/web/index.html"/>
         <sec:logout    invalidate-session="true" logout-url="/logout"/>
 
         <sec:session-management invalid-session-url="/web/login.xhtml"
