@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="integration">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/degla/integration-api/1.0/integration-api-1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

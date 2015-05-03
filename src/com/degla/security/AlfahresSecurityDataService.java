@@ -1,4 +1,8 @@
 package com.degla.security;
+import com.degla.api.Authenticator;
+import com.degla.beans.LoginBean;
+import com.degla.db.models.Employee;
+import com.degla.system.SystemService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -15,8 +19,8 @@ public class AlfahresSecurityDataService implements UserDetailsService, Applicat
 
     protected ApplicationContext context;
 
-   /* @Autowired
-    protected SystemService rvuService;*/
+    @Autowired
+    protected SystemService alfahresService;
 
 
     public void setApplicationContext(ApplicationContext con)
@@ -34,7 +38,7 @@ public class AlfahresSecurityDataService implements UserDetailsService, Applicat
 
         try
         {
-           /* //Check the current user from the active integration
+            //Check the current user from the active integration
             LoginBean loginBean = (LoginBean)JSFUtils.getAnyBeanByName("loginBean", LoginBean.class);
 
 
@@ -43,21 +47,18 @@ public class AlfahresSecurityDataService implements UserDetailsService, Applicat
             {
                 //if the current user is authenticated
                 //allow access to the system by grabbing the current user from the internal system
-                PhysicianEO currentPhysician = rvuService.getPhysicianManager().getPhysicianByUserName(username);
+                Employee currentEmployee = alfahresService.getEmployeeService().getEmployeeByUserName(username);
 
-                currentPhysician.setPassword(loginBean.getPassword());
+                currentEmployee.setPassword(loginBean.getPassword());
 
-                return currentPhysician;
-
-            }else return null;*/
-
-            return null;
+                return currentEmployee;
 
 
+            }else return null;
 
         }catch(Exception s)
         {
-           /* RVULogger.logMessage(s.getMessage());*/
+            s.printStackTrace();
             return null;
         }
     }
@@ -66,18 +67,16 @@ public class AlfahresSecurityDataService implements UserDetailsService, Applicat
     {
         try
         {
-           /* //Now check User Access
+            //Now check User Access
             //Get the active Connector
-            APIConnector connector = rvuService.getIntegrationManager().getConnector();
+            Authenticator authenticator = alfahresService.getAuthenticatorService();
 
+            return authenticator.authenticate(username,password);
 
-            return connector.checkAccess(username, password, new Object[]{null} );*/
-
-            return false;
 
         }catch(Exception s)
         {
-           /* RVULogger.logMessage(s.getMessage());*/
+           s.printStackTrace();
             return false;
         }
     }

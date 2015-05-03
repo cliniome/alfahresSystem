@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/alfahres.iml" filepath="$PROJECT_DIR$/alfahres.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../integration-api/integration-api.iml" filepath="$PROJECT_DIR$/../integration-api/integration-api.iml" />
     </modules>
   </component>
 </project>

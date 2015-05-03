@@ -82,7 +82,7 @@ a:hover {
 }
 .nav-pills > .active > a,
 .nav-pills > .active > a:hover {
-  background-color: ##51A351;
+  background-color:#51A351;
 }
 .dropdown-menu .nav-header {
   display: block;
