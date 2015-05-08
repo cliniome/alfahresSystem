@@ -8,6 +8,7 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html">
 
 <h:head>
@@ -31,25 +32,28 @@
                     <span class="icon-bar"></span>
                 </a>
                 <a class="brand" href="#">AlFahres System</a>
+
                 <div class="btn-group pull-right">
                     <a class="btn" href="my-profile.html"><i class="icon-user"></i> Admin</a>
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                         <span class="caret"></span>
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="my-profile.html">Profile</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Logout</a></li>
-                    </ul>
+                    <h:form prependId="false">
+                        <ul class="dropdown-menu">
+                            <li><a href="my-profile.html">Profile</a></li>
+                            <li class="divider"></li>
+                            <li><h:commandLink action="#{loginBean.logout}" value="Logout"></h:commandLink> </li>
+                        </ul>
+                    </h:form>
                 </div>
                 <div class="nav-collapse">
                     <ul class="nav">
-                        <li><a href="index-2.html">Home</a></li>
-                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Users <b class="caret"></b></a>
+                        <li><a href="index.xhtml">Home</a></li>
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Employees <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="new-user.html">New User</a></li>
+                                <li><a href="RegisterUser.xhtml">New Employee</a></li>
                                 <li class="divider"></li>
-                                <li><a href="users.html">Manage Users</a></li>
+                                <li><a href="ShowEmployees.xhtml">Manage Employees</a></li>
                             </ul>
                         </li>
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Roles <b class="caret"></b></a>
@@ -59,7 +63,15 @@
                                 <li><a href="roles.html">Manage Roles</a></li>
                             </ul>
                         </li>
-                        <li><a href="stats.html">Stats</a></li>
+
+                        <!-- The cabinets administration -->
+                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Cabinets <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="new-role.html">New Cabinet</a></li>
+                                <li class="divider"></li>
+                                <li><a href="roles.html">Manage Cabinets</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>

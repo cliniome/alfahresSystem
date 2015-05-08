@@ -1,6 +1,7 @@
 package com.degla.dao;
 
 import com.degla.db.models.Employee;
+import com.degla.utils.Paginator;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,11 @@ public class EmployeeDAO extends AbstractDAO<Employee> {
             return null;
         }
     }
+
+    @Override
+    public String getEntityName() {
+        return "Employee";
+    }
+
 
 }

@@ -39,9 +39,9 @@ public class ArchiveCabinet extends EntityEO {
     @Column(name="creationTime")
     @Temporal(TemporalType.TIMESTAMP)
 	private Date creationTime;
-    @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=Employee.class)
+   /* @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=Employee.class)
     @JoinColumn(name="EmpID")
-	private Employee assignedTo;
+	private Employee assignedTo;*/
 
 	public void setCabinetID(String cabinetID) {
 		this.cabinetID = cabinetID;
@@ -68,11 +68,11 @@ public class ArchiveCabinet extends EntityEO {
 	}
 
 
-    public Employee getAssignedTo() {
+  /*  public Employee getAssignedTo() {
         return assignedTo;
     }
 
     public void setAssignedTo(Employee assignedTo) {
         this.assignedTo = assignedTo;
-    }
+    }*/
 }

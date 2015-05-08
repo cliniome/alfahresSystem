@@ -1,6 +1,8 @@
 package com.degla.db.models;
 
 
+import com.degla.utils.AnnotatingModel;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -19,12 +21,12 @@ import java.io.Serializable;
 @MappedSuperclass
 @Inheritance(strategy=InheritanceType.JOINED)
 @DiscriminatorColumn(name="TYPE",columnDefinition="nvarchar(300)",discriminatorType=DiscriminatorType.STRING)
-public class EntityEO implements Serializable {
+public class EntityEO implements Serializable , AnnotatingModel {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="ID")
-    protected int id;
+    protected int id = -1;
 
 
 
@@ -51,5 +53,10 @@ public class EntityEO implements Serializable {
 
     public int getId() {
         return this.id;
+    }
+
+    @Override
+    public Object getRowKey() {
+        return this.getId();
     }
 }

@@ -1,11 +1,14 @@
 package com.degla.dao;
 
+import com.degla.utils.Paginator;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 /**
  * Created by snouto on 02/05/2015.
@@ -13,11 +16,23 @@ import java.lang.reflect.ParameterizedType;
 
 
 @Transactional(propagation= Propagation.REQUIRED)
-public abstract class AbstractDAO<T> {
+public abstract class AbstractDAO<T>{
 
 
     @PersistenceContext
     private EntityManager manager;
+
+
+
+   /* public List<T> getPaginatedEntities(int first,int pageSize)
+    {
+        String query = "select t from " + getEntityName() + " t";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setFirstResult(first);
+        currentQuery.setMaxResults(pageSize);
+
+        return currentQuery.getResultList();
+    }*/
 
 
     @Transactional
@@ -140,6 +155,24 @@ public abstract class AbstractDAO<T> {
         }
 
 
+    }
+
+    public abstract String getEntityName();
+
+    public  List<T> getPaginatedResults(int first , int pageSize)
+    {
+        String query = "select t from " + getEntityName() + " t";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setFirstResult(first);
+        currentQuery.setMaxResults(pageSize);
+        return currentQuery.getResultList();
+    }
+
+    public long getMaxResults()
+    {
+        String query = "select count(t) from " + getEntityName() + " t";
+        Query currentQuery = getManager().createQuery(query);
+        return Long.parseLong(currentQuery.getSingleResult().toString());
     }
 
 

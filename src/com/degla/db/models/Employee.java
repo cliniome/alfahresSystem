@@ -24,6 +24,9 @@ public class Employee extends ActorEO implements UserDetails {
     @Column(name="EmpID",unique = true,nullable = false)
 	protected String empID;
 
+    @Column(name="active")
+    private boolean active = false;
+
 
 	/**
 	 * This method will return a MD5 hash string of the current employeeID+UserName or UserName only to act as a primary key for that object and foreign key identifier in associated models.
@@ -71,5 +74,13 @@ public class Employee extends ActorEO implements UserDetails {
     public boolean isEnabled() {
         //TODO : Change this if you managed to add isactive property to the Employee
         return true;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

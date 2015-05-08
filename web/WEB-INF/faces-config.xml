@@ -4,8 +4,16 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
     http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
 
-<application>
 
+
+  <!--  <factory>
+        <exception-handler-factory>
+            com.degla.exceptions.AlfahresApplicationExceptionFactory
+        </exception-handler-factory>
+    </factory>-->
+
+
+<application>
     <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
 </application>
     <navigation-rule>
@@ -16,5 +24,21 @@
             <redirect/>
         </navigation-case>
     </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>LOGOUT</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>SHOWEMPLOYEE</from-outcome>
+            <to-view-id>/UpdateEmployee.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+
 
 </faces-config>

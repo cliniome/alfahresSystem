@@ -46,6 +46,24 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             return null;
         }
     }
+
+    public long getTotalNewFiles()
+    {
+        String query = "select count(f) from PatientFile f where f.currentStatus.state=:state";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state",FileStates.NEW);
+        return (Long)currentQuery.getSingleResult();
+    }
+
+    public long getTotalMissingFiles()
+    {
+
+            String query = "select count(f) from PatientFile f where f.currentStatus.state=:missing";
+            Query currentQuery = getManager().createQuery(query);
+            currentQuery.setParameter("missing",FileStates.MISSING);
+            return (Long)currentQuery.getSingleResult();
+
+    }
     public List<PatientFile> getMissingFiles()
     {
         try
@@ -61,6 +79,12 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             s.printStackTrace();
             return null;
         }
+    }
+
+
+    @Override
+    public String getEntityName() {
+        return "PatientFile";
     }
 
 
