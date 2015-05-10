@@ -28,15 +28,9 @@ public class ArchiveCabinet extends EntityEO {
 	 */
     @Column(name="location")
 	private String location;
-	/**
-	 * this is a simple description of the cabinet
-	 */
-    @Column(name="description")
+	@Column(name="description")
 	private String description;
-	/**
-	 * This is a timestamp showing when this cabinet has been created into the system.
-	 */
-    @Column(name="creationTime")
+	@Column(name="creationTime")
     @Temporal(TemporalType.TIMESTAMP)
 	private Date creationTime;
    /* @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=Employee.class)
@@ -63,9 +57,23 @@ public class ArchiveCabinet extends EntityEO {
 		this.description = description;
 	}
 
-	public String getDescription() {
+	/**
+	 * this is a simple description of the cabinet
+	 */
+    public String getDescription() {
 		return this.description;
 	}
+
+    /**
+     * This is a timestamp showing when this cabinet has been created into the system.
+     */
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(Date creationTime) {
+        this.creationTime = creationTime;
+    }
 
 
   /*  public Employee getAssignedTo() {

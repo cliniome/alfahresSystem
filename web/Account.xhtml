@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<ui:composition template="fragments/masterLayout.xhtml">
+
+    <ui:define name="mainContents">
+
+
+        <div class="span9">
+            <div class="row-fluid">
+                <div class="page-header">
+                    <h1>My profile <small>Update info</small></h1>
+                </div>
+                <h:form class="form-horizontal">
+                    <p:messages id="growl" showSummary="true" closable="true"/>
+                    <fieldset>
+                        <div class="control-group">
+                            <label class="control-label" for="fname">First Name</label>
+                            <div class="controls">
+                                <!--<input type="text" class="input-xlarge" id="name" value="Admin" />-->
+                                <h:inputText styleClass="input-xlarge" id="fname" value="#{dashboardBean.account.firstName}"/>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="lname">Last Name</label>
+                            <div class="controls">
+                                <!--<input type="text" class="input-xlarge" id="name" value="Admin" />-->
+                                <h:inputText styleClass="input-xlarge" id="lname" value="#{dashboardBean.account.lastName}"/>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="UserName">User Name</label>
+                            <div class="controls">
+                                <h:inputText styleClass="input-xlarge" id="UserName" value="#{dashboardBean.account.userName}"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="password">Password</label>
+                            <div class="controls">
+                                <h:inputSecret styleClass="input-xlarge" id="password" value="#{dashboardBean.account.password}"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="role">Role</label>
+                            <div class="controls">
+                                <h:selectOneMenu required="true" requiredMessage="Role is required"
+                                                 value="#{dashboardBean.account.role}" id="role">
+                                    <f:selectItems  value="#{registrationBean.roles}"
+                                                    var="role" itemLabel="#{role.displayName}"  itemValue="#{role}"/>
+                                    <f:converter converterId="com.degla.converters.RoleConverter"/>
+                                </h:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="active">Active?</label>
+                            <div class="controls">
+                                <h:selectBooleanCheckbox id="active" value="#{dashboardBean.account.active}"/>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <p:commandButton ajax="false"  actionListener="#{dashboardBean.onUpdateAccount}" update="growl"
+                                             styleClass="btn btn-success btn-large" value="Update Profile"/>
+                            <a class="btn" href="index.xhtml">Cancel</a>
+                        </div>
+                    </fieldset>
+                </h:form>
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>
+
+</html>

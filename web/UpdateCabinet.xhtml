@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+<ui:composition template="fragments/masterLayout.xhtml">
+
+
+
+   <ui:define name="mainContents">
+
+       <div class="span9">
+           <div class="row-fluid">
+               <div class="page-header">
+                   <h1>Update Cabinet <small>Update an Existing Cabinet</small></h1>
+               </div>
+               <h:form class="form-horizontal" prependId="false">
+                   <p:messages showSummary="true" id="status" closable="true"/>
+                   <fieldset>
+                       <div class="control-group">
+                           <label class="control-label" for="role">Cabinet ID</label>
+                           <div class="controls">
+                               <!--
+                                                               <input type="text" class="input-xlarge" id="role" />
+                               -->
+                               <h:inputText styleClass="input-xlarge" id="role" value="#{cabinetBean.updateableCabinet.cabinetID}"
+                                            required="true" requiredMessage="Cabinet ID is a required Field"
+                                       />
+                           </div>
+                       </div>
+                       <div class="control-group">
+                           <label class="control-label" for="description">Description</label>
+                           <div class="controls">
+                               <!-- <textarea class="input-xlarge" id="description" rows="3"></textarea>-->
+                               <h:inputTextarea styleClass="input-xlarge" id="description" rows="3"
+                                                value="#{cabinetBean.updateableCabinet.description}"/>
+
+                           </div>
+                       </div>
+                       <div class="control-group">
+                           <label class="control-label" for="slug">Location</label>
+                           <div class="controls">
+                               <!--<input type="text" class="input-xlarge" id="slug" />-->
+                               <h:inputText styleClass="input-xlarge" id="slug" value="#{cabinetBean.updateableCabinet.location}"/>
+                           </div>
+                       </div>
+                       <div class="form-actions">
+                           <!-- <input type="submit" class="btn btn-success btn-large" value="Save Role" /> -->
+                           <h:commandButton value="Save Cabinet" styleClass="btn btn-success btn-large"
+                                            actionListener="#{cabinetBean.onUpdateCabinet}"/>
+                           <a class="btn" href="ManageCabinets.xhtml">Cancel</a>
+                       </div>
+                   </fieldset>
+               </h:form>
+           </div>
+       </div>
+
+   </ui:define>
+
+
+</ui:composition>
+
+
+</html>

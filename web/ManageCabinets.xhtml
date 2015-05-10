@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+<ui:composition template="fragments/masterLayout.xhtml">
+
+    <ui:define name="mainContents">
+
+        <p:panelGrid columns="1" id="cabinetsTable">
+
+            <p:dataTable var="cabinet" value="#{cabinetBean.cabinets}"
+                         lazy="true"
+                         selectionMode="single"
+                         selection="#{cabinet}"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
+                         {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         paginator="true" rows="2" rowKey="#{cabinet}">
+
+                <p:ajax event="rowSelect" update=":cabinetsTable"/>
+
+                <f:facet name="header">
+                    <b>Available Cabinets(<font color="red">#{cabinetBean.cabinets.rowCount}</font>)</b>
+                </f:facet>
+
+                <p:column headerText="Cabinet ID">
+                    <p:outputLabel value="#{cabinet.cabinetID}"/>
+                </p:column>
+
+                <p:column headerText="Creation Date">
+                    <p:outputLabel value="#{cabinet.creationTime}"/>
+                </p:column>
+                <p:column headerText="Location">
+                    <p:outputLabel value="#{cabinet.location}"/>
+                </p:column>
+
+                <p:column headerText="Options...">
+                    <p:commandButton value="Edit.." actionListener="#{cabinetBean.onEditCabinet}"
+                                     action="EDITCABINET" styleClass="btn btn-primary">
+                        <f:param name="cabinetID" value="#{cabinet.cabinetID}"/>
+                    </p:commandButton>
+                </p:column>
+
+
+             </p:dataTable>
+
+        </p:panelGrid>
+
+    </ui:define>
+
+</ui:composition>
+
+
+</html>

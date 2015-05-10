@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+<ui:composition template="fragments/masterLayout.xhtml">
+
+
+
+    <ui:define name="mainContents">
+
+        <div class="span9">
+            <div class="row-fluid">
+                <div class="page-header">
+                    <h1>New Role <small>Add a new role</small></h1>
+                </div>
+                <h:form class="form-horizontal" prependId="false">
+                   <p:messages showSummary="true" id="status" closable="true"/>
+                    <fieldset>
+                        <div class="control-group">
+                            <label class="control-label" for="role">Role Name</label>
+                            <div class="controls">
+<!--
+                                <input type="text" class="input-xlarge" id="role" />
+-->
+                                <h:inputText styleClass="input-xlarge" id="role" value="#{roleBean.name}"/>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="description">Description</label>
+                            <div class="controls">
+                               <!-- <textarea class="input-xlarge" id="description" rows="3"></textarea>-->
+                                <h:inputTextarea styleClass="input-xlarge" id="description" rows="3" value="#{roleBean.description}"/>
+
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="slug">Slug</label>
+                            <div class="controls">
+                                <!--<input type="text" class="input-xlarge" id="slug" />-->
+                                <h:inputText styleClass="input-xlarge" id="slug" value="#{roleBean.displayName}"/>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                           <!-- <input type="submit" class="btn btn-success btn-large" value="Save Role" /> -->
+                            <h:commandButton value="Save Role" styleClass="btn btn-success btn-large"
+                                             actionListener="#{roleBean.onAddRole}"/>
+                            <a class="btn" href="ManageRoles.xhtml">Cancel</a>
+                        </div>
+                    </fieldset>
+                </h:form>
+            </div>
+        </div>
+
+    </ui:define>
+
+
+</ui:composition>
+
+
+</html>
