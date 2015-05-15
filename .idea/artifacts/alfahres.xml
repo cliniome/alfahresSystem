@@ -7,14 +7,6 @@
         <element id="directory" name="classes">
           <element id="module-output" name="alfahres" />
         </element>
-        <element id="directory" name="lib">
-          <element id="library" level="project" name="PrimeFaces-5.2" />
-          <element id="library" level="project" name="Mojarra-2.2.1" />
-          <element id="library" level="project" name="Hibernate 4.2.2-4.2.2" />
-          <element id="library" level="project" name="Jersey-2.2" />
-          <element id="library" level="project" name="spring" />
-          <element id="library" level="project" name="integration" />
-        </element>
       </element>
     </root>
   </artifact>

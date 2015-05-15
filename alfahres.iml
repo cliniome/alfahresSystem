@@ -50,13 +50,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Jersey-2.2" level="project" />
-    <orderEntry type="library" name="Hibernate 4.2.2-4.2.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="GlassFish 4.1.0" level="application_server_libraries" />
-    <orderEntry type="library" name="Mojarra-2.2.1" level="project" />
-    <orderEntry type="library" name="PrimeFaces-5.2" level="project" />
-    <orderEntry type="library" name="spring" level="project" />
-    <orderEntry type="library" name="integration" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>
-
