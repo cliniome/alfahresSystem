@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class SystemSettings implements Serializable {
 
     private String systemUploadPath;
+    private String uploadableFileExtension;
 
     public String getSystemUploadPath() {
         return systemUploadPath;
@@ -15,5 +16,13 @@ public class SystemSettings implements Serializable {
 
     public void setSystemUploadPath(String systemUploadPath) {
         this.systemUploadPath = systemUploadPath;
+    }
+
+    public String getUploadableFileExtension() {
+        return uploadableFileExtension;
+    }
+
+    public void setUploadableFileExtension(String uploadableFileExtension) {
+        this.uploadableFileExtension = uploadableFileExtension;
     }
 }

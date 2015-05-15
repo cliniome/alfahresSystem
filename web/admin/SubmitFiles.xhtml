@@ -19,17 +19,22 @@
 
              <h:form prependId="false">
 
-             <p:panel header="Patient Files Upload Wizard">
+             <p:panel id="main" header="Patient Files Upload Wizard" style="width:600px;">
 
-                 <p:wizard showNavBar="true"  flowListener="#{filesuploader.onFlowListener}">
+                 <p:messages closable="true" id="growl" showDetail="true" showSummary="false"/>
 
-                     <p:tab id="upload">
+                 <p:wizard showNavBar="true" id="wizard" binding="#{fileWizard.wizard}"
+                           flowListener="#{fileWizard.onFlowListener}">
+
+                     <!--This is the upload file step -->
+
+                     <p:tab id="upload" title="Choose Patient File">
 
                          <p:panel header="Choose Patient File">
 
                              <p>Specify the location of the Xml Document you have saved locally.</p>
 
-                             <p:fileUpload fileLimit="3" auto="true" fileUploadListener="#{filesuploader.onFileUploadListener}"
+                             <p:fileUpload update="wizard" fileLimit="3" auto="true" fileUploadListener="#{fileWizard.onFileUploadListener}"
                                            mode="advanced" sizeLimit="100000" allowTypes="/(\.|\/)(xml)$/">
 
 
@@ -39,6 +44,78 @@
                          </p:panel>
 
                      </p:tab>
+
+                     <!-- This is The Mapping step -->
+
+                     <p:tab id="mapping" title="Mapping Fields">
+
+                         <p:panelGrid columns="2" styleClass="borderlessGrid">
+
+
+                             <h:outputLabel value="Patient Name"/>
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.patientName}">
+                                 <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
+                             </p:selectOneMenu>
+
+
+                             <h:outputLabel value="File Number"/>
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.fileNumber}">
+                                 <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
+                             </p:selectOneMenu>
+
+
+                             <h:outputLabel value="Patient Number"/>
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.patientNumber}">
+                                 <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
+                             </p:selectOneMenu>
+
+                             <h:outputLabel value="Appointment Type"/>
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.appointment_Type}">
+                                 <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
+                             </p:selectOneMenu>
+
+
+                             <h:outputLabel value="Appointment Date"/>
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.appointment_Date}">
+                                 <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
+                             </p:selectOneMenu>
+
+
+                             <h:outputLabel value="User Name"/>
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.userName}">
+                                 <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
+                             </p:selectOneMenu>
+
+                             <h:outputLabel value="File Location"/>
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.fileCurrentLocation}">
+                                 <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
+                             </p:selectOneMenu>
+
+
+                             <h:outputLabel value="Clinic Code"/>
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.clinicCode}">
+                                 <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
+                             </p:selectOneMenu>
+
+
+                             <h:outputLabel value="Clinic Doc. Name"/>
+                             <p:selectOneMenu  filter="true" filterMatchMode="contains" value="#{fileWizard.clinic_Doc_Code}">
+                                 <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
+                             </p:selectOneMenu>
+
+                             <!-- -->
+
+                             <p:commandButton value="Submit Requests" update="growl" styleClass="btn btn-large"
+                                              actionListener="#{fileWizard.onConfirmAndSubmit}"/>
+
+                         </p:panelGrid>
+
+
+
+
+                     </p:tab>
+
+
 
                  </p:wizard>
 

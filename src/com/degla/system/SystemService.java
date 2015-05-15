@@ -6,6 +6,7 @@ import com.degla.dao.EmployeeDAO;
 import com.degla.dao.FilesDAO;
 import com.degla.dao.RoleDAO;
 import com.degla.security.LoginService;
+import com.degla.utils.SystemSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,8 @@ public class SystemService {
     private LoginService loginService;
     @Autowired
     private RoleDAO roleService;
+    @Autowired
+    private SystemSettings systemSettings;
 
 
 
@@ -95,5 +98,13 @@ public class SystemService {
 
     public void setRoleService(RoleDAO roleService) {
         this.roleService = roleService;
+    }
+
+    public SystemSettings getSystemSettings() {
+        return systemSettings;
+    }
+
+    public void setSystemSettings(SystemSettings systemSettings) {
+        this.systemSettings = systemSettings;
     }
 }
