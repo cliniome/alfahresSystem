@@ -4,6 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 
@@ -11,9 +12,42 @@
 <ui:composition template="../fragments/masterLayout.xhtml">
 
       <ui:define name="mainContents">
-
             <c:set target="#{cssBean}" property="currentPageName" value="RequestNewFiles"/>
 
+
+         <p:panelGrid  columns="1" styleClass="borderlessGrid">
+
+             <h:form prependId="false">
+
+             <p:panel header="Patient Files Upload Wizard">
+
+                 <p:wizard showNavBar="true"  flowListener="#{filesuploader.onFlowListener}">
+
+                     <p:tab id="upload">
+
+                         <p:panel header="Choose Patient File">
+
+                             <p>Specify the location of the Xml Document you have saved locally.</p>
+
+                             <p:fileUpload fileLimit="3" auto="true" fileUploadListener="#{filesuploader.onFileUploadListener}"
+                                           mode="advanced" sizeLimit="100000" allowTypes="/(\.|\/)(xml)$/">
+
+
+                             </p:fileUpload>
+
+
+                         </p:panel>
+
+                     </p:tab>
+
+                 </p:wizard>
+
+             </p:panel>
+
+
+             </h:form>
+
+         </p:panelGrid>
 
       </ui:define>
 

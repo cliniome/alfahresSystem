@@ -8,9 +8,8 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html">
-
-
 
 <h:body>
     <div class="span3">
@@ -21,9 +20,11 @@
 
                    <li class="#{cssBean.setActive('Employees')}"><a href="ShowEmployees.xhtml">Employees</a></li>
 
-                   <li class="#{cssBean.setActive('RequestNewFiles')}"><a href="SubmitFiles.xhtml">Submit New Files</a></li>
+                   <li class="nav-header"><i class="icon-file"></i>Patient Files</li>
 
-                   <li class="#{cssBean.setActive('SearchFiles')}"><a href="SearchFiles.xhtml">Files</a></li>
+                   <li class="#{cssBean.setActive('RequestNewFiles')}"><a href="SubmitFiles.xhtml">Request New Files</a></li>
+
+                   <li class="#{cssBean.setActive('SearchFiles')}"><a href="SearchFiles.xhtml">File Management</a></li>
 
                    <li class="nav-header"><i class="icon-barcode"></i> Cabinets</li>
 
@@ -38,12 +39,15 @@
 
                    <li class="#{cssBean.setActive('Account')}"><a href="Account.xhtml">My profile</a></li>
 
-                   <li><a href="#">Settings</a></li>
+                   <!--<li><a href="#">Settings</a></li>-->
 
                    <li><h:commandLink action="#{loginBean.logout}" value="Logout"></h:commandLink> </li>
                </ul>
+
            </h:form>
         </div>
+
+        <p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server"/>
     </div>
 
 

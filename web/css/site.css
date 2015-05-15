@@ -151,3 +151,7 @@ tr.pending-user:hover span.user-actions, tr.list-users:hover td div.btn-group, t
 	.list-roles td:nth-of-type(4):before { content: "Slug"; }
 	.list-roles td:nth-of-type(5):before { content: "Actions"; }
 }
+
+.borderlessGrid tr,.borderlessGrid td {
+    border-style: none !important
+}
