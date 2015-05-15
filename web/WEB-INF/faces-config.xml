@@ -20,7 +20,7 @@
         <from-view-id>/login.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>success</from-outcome>
-            <to-view-id>/index.xhtml</to-view-id>
+            <to-view-id>/admin/index.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
@@ -29,26 +29,26 @@
         <from-view-id>*</from-view-id>
         <navigation-case>
             <from-outcome>LOGOUT</from-outcome>
-            <to-view-id>/index.xhtml</to-view-id>
+            <to-view-id>/admin/index.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
             <from-outcome>SHOWEMPLOYEE</from-outcome>
-            <to-view-id>/UpdateEmployee.xhtml</to-view-id>
+            <to-view-id>/admin/UpdateEmployee.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
             <from-outcome>EDITCABINET</from-outcome>
-            <to-view-id>/UpdateCabinet.xhtml</to-view-id>
+            <to-view-id>/admin/UpdateCabinet.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
-        <from-view-id>/ManageCabinets.xhtml</from-view-id>
+        <from-view-id>/admin/ManageCabinets.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>EDITCABINET</from-outcome>
-            <to-view-id>/UpdateCabinet.xhtml</to-view-id>
+            <to-view-id>/admin/UpdateCabinet.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
 

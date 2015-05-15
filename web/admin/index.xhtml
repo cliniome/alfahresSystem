@@ -9,7 +9,7 @@
 <f:view>
     <h:head>
         <ui:insert name="header">
-            <ui:include src="fragments/header.xhtml"/>
+            <ui:include src="../fragments/header.xhtml"/>
         </ui:insert>
     </h:head>
 
@@ -20,7 +20,7 @@
             <div class="row-fluid">
 
                 <ui:insert name="sideMenu">
-                    <ui:include src="fragments/sideMenu.xhtml"/>
+                    <ui:include src="../fragments/sideMenu.xhtml"/>
                 </ui:insert>
 
                 <!-- Beginning of the main page central Container section -->
@@ -33,11 +33,11 @@
 
                     <!-- Beginning of Admin Statistics Caption -->
                     <ui:insert name="adminCaptions">
-                        <ui:include src="fragments/admin-Captions.xhtml"/>
+                        <ui:include src="../fragments/admin-Captions.xhtml"/>
                     </ui:insert>
 
                     <ui:insert name="missingFiles">
-                        <ui:include src="fragments/missingFiles.xhtml"/>
+                        <ui:include src="../fragments/missingFiles.xhtml"/>
                     </ui:insert>
 
                 </div>
@@ -52,7 +52,7 @@
 
         <!-- Finally include the footer in here  -->
         <ui:insert name="footer">
-            <ui:include src="fragments/footer.xhtml"/>
+            <ui:include src="../fragments/footer.xhtml"/>
         </ui:insert>
 
 
