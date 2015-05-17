@@ -1,11 +1,9 @@
 package com.degla.system;
 
 import com.degla.api.Authenticator;
-import com.degla.dao.ArchiveCabinetDAO;
-import com.degla.dao.EmployeeDAO;
-import com.degla.dao.FilesDAO;
-import com.degla.dao.RoleDAO;
+import com.degla.dao.*;
 import com.degla.security.LoginService;
+import com.degla.utils.FileRouter;
 import com.degla.utils.SystemSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +31,10 @@ public class SystemService {
     private RoleDAO roleService;
     @Autowired
     private SystemSettings systemSettings;
+    @Autowired
+    private RequestsDAO requestsManager;
+    @Autowired
+    private FileRouter fileRouter;
 
 
 
@@ -106,5 +108,21 @@ public class SystemService {
 
     public void setSystemSettings(SystemSettings systemSettings) {
         this.systemSettings = systemSettings;
+    }
+
+    public RequestsDAO getRequestsManager() {
+        return requestsManager;
+    }
+
+    public void setRequestsManager(RequestsDAO requestsManager) {
+        this.requestsManager = requestsManager;
+    }
+
+    public FileRouter getFileRouter() {
+        return fileRouter;
+    }
+
+    public void setFileRouter(FileRouter fileRouter) {
+        this.fileRouter = fileRouter;
     }
 }

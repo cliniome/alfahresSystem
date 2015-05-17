@@ -53,53 +53,62 @@
 
 
                              <h:outputLabel value="Patient Name"/>
-                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.patientName}">
+                             <p:selectOneMenu filter="true" required="true" requiredMessage="Patient Name is required"
+                                              filterMatchMode="contains" value="#{fileWizard.patientName}">
                                  <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
                              </p:selectOneMenu>
 
 
                              <h:outputLabel value="File Number"/>
-                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.fileNumber}">
+                             <p:selectOneMenu filter="true" required="true" requiredMessage="File Number is Required"
+                                              filterMatchMode="contains" value="#{fileWizard.fileNumber}">
                                  <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
                              </p:selectOneMenu>
 
 
                              <h:outputLabel value="Patient Number"/>
-                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.patientNumber}">
+                             <p:selectOneMenu filter="true" required="true" requiredMessage="Patient Number is required"
+                                              filterMatchMode="contains" value="#{fileWizard.patientNumber}">
                                  <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
                              </p:selectOneMenu>
 
                              <h:outputLabel value="Appointment Type"/>
-                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.appointment_Type}">
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" required="true" requiredMessage="Appointment Type is required"
+                                              value="#{fileWizard.appointment_Type}">
                                  <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
                              </p:selectOneMenu>
 
 
                              <h:outputLabel value="Appointment Date"/>
-                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.appointment_Date}">
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" required="true" requiredMessage="Appointment Date is required"
+                                              value="#{fileWizard.appointment_Date}">
                                  <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
                              </p:selectOneMenu>
 
 
                              <h:outputLabel value="User Name"/>
-                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.userName}">
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" required="true" requiredMessage="User Name is required"
+                                              value="#{fileWizard.userName}">
                                  <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
                              </p:selectOneMenu>
 
                              <h:outputLabel value="File Location"/>
-                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.fileCurrentLocation}">
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" required="true" requiredMessage="File Location is required"
+                                              value="#{fileWizard.fileCurrentLocation}">
                                  <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
                              </p:selectOneMenu>
 
 
                              <h:outputLabel value="Clinic Code"/>
-                             <p:selectOneMenu filter="true" filterMatchMode="contains" value="#{fileWizard.clinicCode}">
+                             <p:selectOneMenu filter="true" filterMatchMode="contains" required="true" requiredMessage="Clinic Code is required"
+                                              value="#{fileWizard.clinicCode}">
                                  <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
                              </p:selectOneMenu>
 
 
                              <h:outputLabel value="Clinic Doc. Name"/>
-                             <p:selectOneMenu  filter="true" filterMatchMode="contains" value="#{fileWizard.clinic_Doc_Code}">
+                             <p:selectOneMenu  filter="true" filterMatchMode="contains" required="true" requiredMessage="Clinic Doc. Name is required"
+                                               value="#{fileWizard.clinic_Doc_Code}">
                                  <f:selectItems value="#{fileWizard.generatedFields}" itemValue=""/>
                              </p:selectOneMenu>
 

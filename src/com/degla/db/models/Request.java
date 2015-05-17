@@ -43,8 +43,28 @@ public class Request implements Serializable {
 
     @Column(name="clinic_Doc_Code")
     private String clinic_Doc_Code;
+    @ManyToOne
+    @JoinColumn(name="assigned_To",nullable = true)
+    private Employee assignedTo;
 
 
+
+    public Request clone() {
+
+        Request newRequest = new Request();
+        newRequest.setAppointment_Date(this.getAppointment_Date());
+        newRequest.setAppointment_Type(this.getAppointment_Type());
+        newRequest.setClinic_Doc_Code(this.getClinic_Doc_Code());
+        newRequest.setClinicCode(this.getClinicCode());
+        newRequest.setFileCurrentLocation(this.getFileCurrentLocation());
+        newRequest.setFileNumber(this.getFileNumber());
+        newRequest.setId(this.getId());
+        newRequest.setPatientName(this.getPatientName());
+        newRequest.setPatientNumber(this.getPatientNumber());
+        newRequest.setUserName(this.getUserName());
+
+        return newRequest;
+    }
 
     public String getPatientName() {
         return patientName;
@@ -124,5 +144,20 @@ public class Request implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Employee getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(Employee assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+
+    @Override
+    public String toString() {
+
+        return this.getFileNumber();
     }
 }

@@ -1,5 +1,7 @@
 package com.degla.beans.files;
 
+import com.degla.db.models.Request;
+import com.degla.exceptions.RequestException;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.WebUtils;
@@ -59,14 +61,36 @@ public class FileUploadWizardBean implements Serializable {
     {
         try
         {
-            WebUtils.addMessage("Requests have been submitted successfully");
-            System.out.println("Adding Requests Done.");
+            List<Request> requests = PatientFileReader.buildRequests(this);
+
+
+            //now route them to different employees
+            systemService.getFileRouter().routeFiles(requests);
+
+            if(requests != null && requests.size() > 0)
+            {
+                boolean result = true;
+                //insert all requests one by one
+                for(Request currentRequest : requests)
+                {
+                    boolean stepResult = systemService.getRequestsManager().addEntity(currentRequest);
+                    result = result && stepResult;
+                }
+
+                if(result)
+                    WebUtils.addMessage("Requests have been submitted successfully");
+            }else
+            {
+                WebUtils.addMessage("There was a problem inserting new requests, Contact System Administrator");
+            }
 
         }catch(Exception s)
         {
             s.printStackTrace();
+            WebUtils.addMessage("There was a problem inserting new requests, Contact System Administrator");
         }
     }
+
 
 
     public String onFlowListener(FlowEvent event)
@@ -109,18 +133,18 @@ public class FileUploadWizardBean implements Serializable {
         }
     }
 
-    private boolean containsField(String fieldName)
+    public String containsField(String fieldName)
     {
-        if(fieldName.equals(this.getAppointment_Date())) return true;
-        else if(fieldName.equals(this.getAppointment_Type())) return true;
-        else if (fieldName.equals(this.getClinic_Doc_Code())) return true;
-        else if(fieldName.equals(this.getClinicCode())) return true;
-        else if(fieldName.equals(this.getFileCurrentLocation())) return true;
-        else if(fieldName.equals(this.getFileNumber())) return true;
-        else if(fieldName.equals(this.getPatientName())) return true;
-        else if(fieldName.equals(this.getPatientNumber())) return true;
-        else if(fieldName.equals(this.getUserName())) return true;
-        else return false;
+        if(fieldName.equals(this.getAppointment_Date())) return "appointment_Date";
+        else if(fieldName.equals(this.getAppointment_Type())) return "appointment_Type";
+        /*else if (fieldName.equals(this.getClinic_Doc_Code())) return "clinic_Doc_Code";
+        else if(fieldName.equals(this.getClinicCode())) return "clinicCode";*/
+        else if(fieldName.equals(this.getFileCurrentLocation())) return "fileCurrentLocation";
+        else if(fieldName.equals(this.getFileNumber())) return "fileNumber";
+        else if(fieldName.equals(this.getPatientName())) return "patientName";
+        else if(fieldName.equals(this.getPatientNumber())) return "patientNumber";
+        else if(fieldName.equals(this.getUserName())) return "userName";
+        else return null;
     }
 
     private String uploadFile(String fileName, InputStream inputstream) {

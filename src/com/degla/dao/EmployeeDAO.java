@@ -1,6 +1,7 @@
 package com.degla.dao;
 
 import com.degla.db.models.Employee;
+import com.degla.db.models.RoleEO;
 import com.degla.utils.Paginator;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,16 @@ public class EmployeeDAO extends AbstractDAO<Employee> {
 
         Query query = getManager().createQuery(queryString);
         return query.getResultList();
+    }
+
+    public List<Employee> getEmployeesByRole(String roleName)
+    {
+        String queryString = "select e from Employee e where e.role.name=:rolename";
+        Query query = getManager().createQuery(queryString);
+        query.setParameter("rolename", roleName);
+
+        return query.getResultList();
+
     }
 
     public Employee getEmployeeByUserName(String username)
