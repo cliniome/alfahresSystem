@@ -52,6 +52,8 @@ http://www.springframework.org/schema/jee
 
     </sec:http>
 
+
+
     <bean id="myCustomDetailsService" class="com.degla.security.AlfahresSecurityDataService">
 
     </bean>
