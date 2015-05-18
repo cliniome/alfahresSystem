@@ -18,21 +18,6 @@ public class MobileRestful {
 
     private SystemService systemService;
 
-    public static void main(String... args)
-    {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("snouto").append(":").append("ibrahim");
-
-        try
-        {
-            System.out.println(new BASE64Encoder().encode(buffer.toString().getBytes("UTF-8")));
-
-        }catch(Exception s)
-        {
-
-        }
-
-    }
 
 
 
