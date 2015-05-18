@@ -20,16 +20,20 @@ public class RestfulSecurityDataService implements UserDetailsService , Applicat
     @Autowired
     protected SystemService alfahresService;
 
-    @Override
+
+
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
 
         Employee emp = alfahresService.getEmployeeService().getEmployeeByUserName(s);
+
+
+
 
         return emp;
 
     }
 
-    @Override
+
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 
         this.context = applicationContext;

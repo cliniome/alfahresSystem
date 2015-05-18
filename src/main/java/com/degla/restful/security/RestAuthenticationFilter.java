@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -67,6 +68,7 @@ public class RestAuthenticationFilter extends UsernamePasswordAuthenticationFilt
                     return (retVal = false);
                 }
                 try {
+                    SecurityContextHolder.getContext().setAuthentication(authResult);
                     successfulAuthentication(request, response, authResult);
                 } catch (IOException e) {
                     retVal = false;

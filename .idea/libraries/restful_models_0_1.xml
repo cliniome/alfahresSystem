@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="restful-models-0.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../RestfulModels/target/restful-models-0.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,5 +1,7 @@
 package com.degla.db.models;
 
+import com.degla.restful.models.RestfulRequest;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -65,6 +67,8 @@ public class Request implements Serializable {
 
         return newRequest;
     }
+
+
 
     public String getPatientName() {
         return patientName;

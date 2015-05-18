@@ -6,9 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-import static javax.persistence.CascadeType.DETACH;
-import static javax.persistence.CascadeType.MERGE;
-import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.CascadeType.*;
 
 /**
  * this class represents the patient file which will be stored and retrieved from the system.
@@ -30,15 +28,15 @@ public class PatientFile extends EntityEO {
     @Temporal(TemporalType.TIMESTAMP)
 	private Date creationTime;
 
-    @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=ArchiveCabinet.class)
+    @ManyToOne(cascade={REFRESH,MERGE,DETACH,PERSIST},fetch=FetchType.EAGER,targetEntity=ArchiveCabinet.class)
     @JoinColumn(name="Ar_cabinetID")
 	private ArchiveCabinet archiveCabinet;
 
-    @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=FileHistory.class)
+    @ManyToOne(cascade={REFRESH,MERGE,DETACH,PERSIST},fetch=FetchType.EAGER,targetEntity=FileHistory.class)
     @JoinColumn(name="currentStatus_ID")
 	private FileHistory currentStatus;
 
-    @OneToMany(cascade = {REFRESH,MERGE,DETACH},fetch = FetchType.LAZY,mappedBy = "patientFile")
+    @OneToMany(cascade = {REFRESH,MERGE,DETACH,PERSIST},orphanRemoval = true,fetch = FetchType.LAZY,mappedBy = "patientFile")
     private List<FileHistory> histories;
 
     @Column(name="ShelfId",nullable = true)

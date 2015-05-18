@@ -14,6 +14,23 @@ import java.util.List;
 public class FilesDAO extends AbstractDAO<PatientFile> {
 
 
+
+    public PatientFile getFileWithNumber(String fileNumber)
+    {
+        try
+        {
+            String queryString = "select f from PatientFile f where f.fileID=:file";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("file",fileNumber);
+            return (PatientFile) currentQuery.getSingleResult();
+
+        }catch (Exception s)
+        {
+            return null;
+        }
+
+    }
+
     public List<PatientFile> getFilesWithState(FileStates state)
     {
         try

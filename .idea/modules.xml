@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../RestfulModels/RestfulModels.iml" filepath="$PROJECT_DIR$/../RestfulModels/RestfulModels.iml" />
       <module fileurl="file://$PROJECT_DIR$/alfahres.iml" filepath="$PROJECT_DIR$/alfahres.iml" />
     </modules>
   </component>
 </project>
-

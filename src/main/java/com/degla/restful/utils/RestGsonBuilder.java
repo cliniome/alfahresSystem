@@ -1,6 +1,7 @@
 package com.degla.restful.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * Created by snouto on 18/05/15.
@@ -12,11 +13,11 @@ public class RestGsonBuilder {
 
     public static Gson createGson()
     {
-        RestGsonBuilder builder = new RestGsonBuilder();
+        GsonBuilder builder = new GsonBuilder();
 
-        //define any additional properties or add any additional json Deserializers
 
-        return builder.createGson();
+
+        return builder.create();
 
     }
 

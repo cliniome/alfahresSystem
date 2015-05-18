@@ -44,7 +44,7 @@ public class FileHistory extends EntityEO {
     @Index(name="StateIndex")
     @Column(name="state")
     @Enumerated(EnumType.STRING)
-	public FileStates state;
+    private FileStates state;
 
 	public void setContainerId(String containerId) {
 		this.containerId = containerId;
@@ -71,5 +71,21 @@ public class FileHistory extends EntityEO {
 
     public void setPatientFile(PatientFile patientFile) {
         this.patientFile = patientFile;
+    }
+
+    public Employee getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Employee owner) {
+        this.owner = owner;
+    }
+
+    public FileStates getState() {
+        return state;
+    }
+
+    public void setState(FileStates state) {
+        this.state = state;
     }
 }
