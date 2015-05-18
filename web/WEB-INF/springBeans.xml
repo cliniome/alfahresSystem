@@ -36,4 +36,23 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd">
     </bean>
 
 
+
+    <bean id="restServicesEntryPoint"
+          class="com.degla.restful.security.RestAuthenticationEntryPoint" />
+
+    <bean id="restServicesFilter"
+          class="com.degla.restful.security.RestAuthenticationFilter">
+        <property name="postOnly" value="false" />
+        <property name="authenticationManager" ref="authenticationManager" />
+        <property name="authenticationSuccessHandler" ref="restServicesSuccessHandler" />
+    </bean>
+
+
+    <bean id="restServicesSuccessHandler"
+          class="com.degla.restful.security.RestAuthenticationSuccessHandler" />
+
+
+    <bean id="restfulDataService" class="com.degla.restful.security.RestfulSecurityDataService"/>
+
+
     </beans>

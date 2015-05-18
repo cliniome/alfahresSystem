@@ -34,6 +34,17 @@ http://www.springframework.org/schema/jee
     <context:component-scan base-package="com.degla"></context:component-scan>
 
     <context:annotation-config></context:annotation-config>
+
+
+    <sec:http pattern="/rest/**"
+              authentication-manager-ref="restfulAuthenticationManager" entry-point-ref="restServicesEntryPoint"
+              create-session="stateless">
+        <sec:custom-filter ref="restServicesFilter"
+                           before="PRE_AUTH_FILTER" />
+
+    </sec:http>
+
+
     <sec:http  auto-config="true" use-expressions="true"
                create-session="always" access-denied-page="/web/NotAuthorized.xhtml">
          <!--<sec:intercept-url pattern="/web/dashboard/**" access="hasRole('ROLE_DOCTOR')"/>-->
@@ -67,6 +78,13 @@ http://www.springframework.org/schema/jee
         </sec:authentication-provider>
 
 
+
+    </sec:authentication-manager>
+
+
+    <sec:authentication-manager alias="restfulAuthenticationManager">
+
+        <sec:authentication-provider user-service-ref="restfulDataService"/>
 
     </sec:authentication-manager>
 
