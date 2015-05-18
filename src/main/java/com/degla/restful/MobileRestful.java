@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
@@ -45,10 +46,12 @@ public class MobileRestful {
     @Path("files/single")
     @POST
     @Produces("application/json")
-    public Response updateFile(@QueryParam("file")RestfulFile file)
+    @Consumes("*/*")
+    public Response updateFile(RestfulFile file)
     {
         BasicController controller = new BasicController();
         Employee emp = getAccount();
+        Gson gson = RestGsonBuilder.createGson();
 
         if(emp == null)
             return Response.status(UNAUTHORIZED).build();
@@ -58,7 +61,9 @@ public class MobileRestful {
 
             if(result)
             {
-                return Response.ok(new BooleanResult(result,"Patient File has been Updated Successfully")).build();
+                return Response.ok(gson.toJson(new BooleanResult(result,"Patient File has been Updated Successfully")))
+                        .build();
+
             }else
                 return Response.status(NOT_ACCEPTABLE).build();
 
@@ -69,24 +74,24 @@ public class MobileRestful {
     @Path("files/multiple")
     @POST
     @Produces("application/json")
-    public Response updateFiles(@QueryParam("files") List<RestfulFile> files)
+    @Consumes("application/json")
+    public Response updateFiles(List<RestfulFile> files)
     {
         BasicController controller = new BasicController();
         Employee emp = getAccount();
+        Gson gson = RestGsonBuilder.createGson();
 
         if(emp == null) return Response.status(UNAUTHORIZED).build();
         else
         {
             boolean result = controller.updateFiles(files,emp);
 
-            if(result) return Response.ok(new BooleanResult(result,"Patient Files Have Been Updated Successfully"))
+            if(result) return Response.ok(gson.toJson(new BooleanResult(result,"Patient Files Have Been Updated Successfully")))
             .build();
             else
                 return Response.status(NOT_ACCEPTABLE).build();
         }
     }
-
-
 
 
     private Employee getAccount()
@@ -95,7 +100,7 @@ public class MobileRestful {
 
         if(authentication.isAuthenticated() && authentication.getPrincipal() != null)
         {
-            Employee emp = (Employee)authentication.getDetails();
+            Employee emp = (Employee)authentication.getPrincipal();
 
             return emp;
 

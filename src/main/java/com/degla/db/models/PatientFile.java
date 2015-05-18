@@ -3,6 +3,7 @@ package com.degla.db.models;
 import org.hibernate.annotations.Index;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -94,6 +95,7 @@ public class PatientFile extends EntityEO {
     }
 
     public List<FileHistory> getHistories() {
+        if(histories == null) return new ArrayList<FileHistory>();
         return histories;
     }
 

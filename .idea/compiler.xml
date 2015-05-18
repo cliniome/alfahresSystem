@@ -25,11 +25,13 @@
         <processorPath useClasspath="true" />
         <module name="alfahres" />
         <module name="RestfulModels" />
+        <module name="TestingRestful" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="alfahres" target="1.5" />
+      <module name="alfahres" target="1.7" />
       <module name="RestfulModels" target="1.5" />
+      <module name="TestingRestful" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

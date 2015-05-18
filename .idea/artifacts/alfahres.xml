@@ -8,8 +8,8 @@
           <element id="module-output" name="alfahres" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="lib" />
           <element id="library" level="project" name="restful-models-0.1" />
+          <element id="library" level="project" name="lib" />
         </element>
       </element>
     </root>

@@ -70,7 +70,6 @@ public class BasicController implements BasicRestfulOperations {
       }
 
 
-
     }
 
     @Override
@@ -89,7 +88,11 @@ public class BasicController implements BasicRestfulOperations {
             {
                 this.addNewFileHistory(patientFile,file,emp);
 
-                return systemService.getFilesService().updateEntity(patientFile);
+                boolean result = systemService.getFilesService().updateEntity(patientFile);
+
+                if(result)
+                    return systemService.getRequestsManager().removeEntity(currentRequest);
+                else return false;
 
             }else
             {
@@ -106,7 +109,14 @@ public class BasicController implements BasicRestfulOperations {
                 newPatientFile.setShelfId(file.getShelfId());
                 this.addNewFileHistory(newPatientFile,file,emp);
 
-                return systemService.getFilesService().addEntity(newPatientFile);
+                boolean result= systemService.getFilesService().addEntity(newPatientFile);
+
+                if(result)
+                {
+                    //now remove the current request
+                    return systemService.getRequestsManager().removeEntity(currentRequest);
+
+                }else return false;
 
             }
 
@@ -139,7 +149,18 @@ public class BasicController implements BasicRestfulOperations {
 
         try
         {
-            //TODO : Implement That Method
+            boolean finalResult = true;
+
+            if(files != null && files.size() > 0)
+            {
+                for(RestfulFile file : files) {
+
+                    finalResult &= this.updateFile(file,emp);
+                }
+
+                return true;
+
+            }
             return false;
 
         }catch(Exception s)
