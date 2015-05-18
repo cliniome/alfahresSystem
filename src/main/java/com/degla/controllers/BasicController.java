@@ -141,7 +141,6 @@ public class BasicController implements BasicRestfulOperations {
         history.setCreatedAt(file.getOperationDate());
         history.setPatientFile(patientFile);
         patientFile.setCurrentStatus(history);
-        patientFile.getHistories().add(history);
     }
 
     @Override

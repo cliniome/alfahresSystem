@@ -63,7 +63,8 @@ public abstract class AbstractDAO<T>{
         {
 
 
-            getManager().remove(t);
+            EntityManager em = getManager();
+            getManager().remove(em.contains(t) ? t:em.merge(t));
 
 
 

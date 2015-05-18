@@ -1,5 +1,6 @@
 package com.degla.db.models;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Index;
 
 import javax.persistence.*;
@@ -37,8 +38,9 @@ public class PatientFile extends EntityEO {
     @JoinColumn(name="currentStatus_ID")
 	private FileHistory currentStatus;
 
-    @OneToMany(cascade = {REFRESH,MERGE,DETACH,PERSIST},orphanRemoval = true,fetch = FetchType.LAZY,mappedBy = "patientFile")
-    private List<FileHistory> histories;
+   /* @OneToMany(cascade = {REFRESH,MERGE,DETACH,PERSIST},orphanRemoval = true,fetch = FetchType.EAGER,mappedBy = "patientFile")
+    @OrderBy("createdAt desc")
+    private List<FileHistory> histories;*/
 
     @Column(name="ShelfId",nullable = true)
     private String shelfId;
@@ -94,14 +96,6 @@ public class PatientFile extends EntityEO {
         this.currentStatus = currentStatus;
     }
 
-    public List<FileHistory> getHistories() {
-        if(histories == null) return new ArrayList<FileHistory>();
-        return histories;
-    }
-
-    public void setHistories(List<FileHistory> histories) {
-        this.histories = histories;
-    }
 
     public String getShelfId() {
         return shelfId;
