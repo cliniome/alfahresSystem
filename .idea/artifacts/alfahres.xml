@@ -2,16 +2,16 @@
   <artifact type="exploded-war" name="alfahres">
     <output-path>$PROJECT_DIR$/out/artifacts/alfahres</output-path>
     <root id="root">
-      <element id="javaee-facet-resources" facet="alfahres/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="alfahres" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="restful-models-0.1" />
           <element id="library" level="project" name="lib" />
+          <element id="library" level="project" name="restful-models-0.1" />
         </element>
       </element>
+      <element id="javaee-facet-resources" facet="alfahres/web/Web" />
     </root>
   </artifact>
 </component>

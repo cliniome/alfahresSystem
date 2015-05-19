@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <option name="DEFAULT_COMPILER" value="Javac" />
     <resourceExtensions />
     <wildcardResourcePatterns>
       <entry name="!?*.java" />
@@ -23,15 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="alfahres" />
         <module name="RestfulModels" />
-        <module name="TestingRestful" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="alfahres" target="1.7" />
       <module name="RestfulModels" target="1.5" />
-      <module name="TestingRestful" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>
