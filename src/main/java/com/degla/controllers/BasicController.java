@@ -1,11 +1,9 @@
 package com.degla.controllers;
 
 import com.degla.db.models.*;
-import com.degla.restful.models.RestfulFile;
-import com.degla.restful.models.RestfulRequest;
+import com.degla.restful.models.*;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -76,48 +74,66 @@ public class BasicController implements BasicRestfulOperations {
     public boolean updateFile(RestfulFile file,Employee emp) {
         try
         {
-            //Step one : to select the request that contains that file number
-            Request currentRequest = systemService.getRequestsManager()
-                    .getSingleRequest(file.getFileNumber());
-
-            //Step Two : Check to see if the file Exists
-            PatientFile patientFile = systemService.getFilesService()
-                    .getFileWithNumber(file.getFileNumber());
-
-            if(patientFile != null)
+            if(file.getState() != null && file.getState() == FileModelStates.CHECKED_OUT)
             {
-                this.addNewFileHistory(patientFile,file,emp);
+                //Step one : to select the request that contains that file number
+                Request currentRequest = systemService.getRequestsManager()
+                        .getSingleRequest(file.getFileNumber());
 
-                boolean result = systemService.getFilesService().updateEntity(patientFile);
+                //Step Two : Check to see if the file Exists
+                PatientFile patientFile = systemService.getFilesService()
+                        .getFileWithNumber(file.getFileNumber());
 
-                if(result)
-                    return systemService.getRequestsManager().removeEntity(currentRequest);
-                else return false;
+                if(patientFile != null)
+                {
+                    this.addNewFileHistory(patientFile,file,emp);
 
+                    boolean result = systemService.getFilesService().updateEntity(patientFile);
+
+                    if(result)
+                        return systemService.getRequestsManager().removeEntity(currentRequest);
+                    else return false;
+
+                }else
+                {
+                    //Create a new Patient File
+                    PatientFile newPatientFile = new PatientFile();
+
+                    //create a new file cabinet
+                    ArchiveCabinet cabinet = new ArchiveCabinet();
+                    cabinet.setCabinetID(file.getCabinetId());
+                    cabinet.setCreationTime(new Date());
+                    newPatientFile.setArchiveCabinet(cabinet);
+                    newPatientFile.setCreationTime(new Date());
+                    newPatientFile.setFileID(file.getFileNumber());
+                    newPatientFile.setShelfId(file.getShelfId());
+                    this.addNewFileHistory(newPatientFile,file,emp);
+
+                    boolean result= systemService.getFilesService().addEntity(newPatientFile);
+
+                    if(result)
+                    {
+                        //now remove the current request
+                        return systemService.getRequestsManager().removeEntity(currentRequest);
+
+                    }else return false;
+
+                }
             }else
             {
-                //Create a new Patient File
-                PatientFile newPatientFile = new PatientFile();
+                //Step Two : Check to see if the file Exists
+                PatientFile patientFile = systemService.getFilesService()
+                        .getFileWithNumber(file.getFileNumber());
 
-                //create a new file cabinet
-                ArchiveCabinet cabinet = new ArchiveCabinet();
-                cabinet.setCabinetID(file.getCabinetId());
-                cabinet.setCreationTime(new Date());
-                newPatientFile.setArchiveCabinet(cabinet);
-                newPatientFile.setCreationTime(new Date());
-                newPatientFile.setFileID(file.getFileNumber());
-                newPatientFile.setShelfId(file.getShelfId());
-                this.addNewFileHistory(newPatientFile,file,emp);
-
-                boolean result= systemService.getFilesService().addEntity(newPatientFile);
-
-                if(result)
+                if(patientFile != null)
                 {
-                    //now remove the current request
-                    return systemService.getRequestsManager().removeEntity(currentRequest);
+                    this.addNewFileHistory(patientFile,file,emp);
+
+                    boolean result = systemService.getFilesService().updateEntity(patientFile);
+
+                    return result;
 
                 }else return false;
-
             }
 
 
@@ -138,7 +154,7 @@ public class BasicController implements BasicRestfulOperations {
         history.setOwner(emp);
         FileStates state = FileStates.valueOf(file.getState().toString());
         history.setState(state);
-        history.setCreatedAt(file.getOperationDate());
+        history.setCreatedAt(new Date());
         history.setPatientFile(patientFile);
         patientFile.setCurrentStatus(history);
     }
