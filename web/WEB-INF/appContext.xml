@@ -35,12 +35,17 @@ http://www.springframework.org/schema/jee
 
     <context:annotation-config></context:annotation-config>
 
+    <!-- pattern="/rest/**"-->
 
-    <sec:http pattern="/rest/**"
+    <sec:http pattern="/rest/employee/**"
               authentication-manager-ref="restfulAuthenticationManager" entry-point-ref="restServicesEntryPoint"
               create-session="stateless">
         <sec:custom-filter ref="restServicesFilter"
                            before="PRE_AUTH_FILTER" />
+
+    </sec:http>
+
+    <sec:http pattern="/rest/files/**" security="none">
 
     </sec:http>
 

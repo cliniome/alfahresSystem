@@ -1,6 +1,7 @@
 package com.degla.restful;
 import com.degla.controllers.BasicController;
 import com.degla.db.models.Employee;
+import com.degla.exceptions.RecordNotFoundException;
 import com.degla.restful.models.BooleanResult;
 import com.degla.restful.models.RestfulFile;
 import com.degla.restful.models.RestfulRequest;
@@ -25,12 +26,12 @@ import javax.ws.rs.core.SecurityContext;
  * Created by snouto on 17/05/15.
  */
 // The Java class will be hosted at the URI path "/helloworld"
-@Path("/")
-public class MobileRestful {
+@Path("/files")
+public class FilesService {
 
     private SystemService systemService;
 
-    public MobileRestful()
+    public FilesService()
     {
         try
         {
@@ -43,7 +44,23 @@ public class MobileRestful {
     }
 
 
-    @Path("files/single")
+    @Path("/search/{query}")
+    @GET
+    @Produces("application/json")
+    public Response searchForFiles(@PathParam("query") String query)
+    {
+        BasicController controller = new BasicController();
+
+        List<RestfulFile> foundFiles = controller.searchFiles(query);
+
+        if(foundFiles == null || foundFiles.size() <=0)
+            return Response.ok(new BooleanResult(false,"No Available Files")).build();
+        else return Response.ok(foundFiles).build();
+
+    }
+
+
+    @Path("/single")
     @POST
     @Produces("application/json")
     @Consumes("*/*")
@@ -57,21 +74,30 @@ public class MobileRestful {
             return Response.status(UNAUTHORIZED).build();
         else
         {
-            boolean result = controller.updateFile(file,emp);
-
-            if(result)
+            try
             {
-                return Response.ok(gson.toJson(new BooleanResult(result,"Patient File has been Updated Successfully")))
-                        .build();
+                boolean result = controller.updateFile(file,emp);
 
-            }else
-                return Response.status(NOT_ACCEPTABLE).build();
+                if(result)
+                {
+                    return Response.ok(gson.toJson(new BooleanResult(result,"Patient File has been Updated Successfully")))
+                            .build();
+
+                }else
+                    return Response.ok(new BooleanResult(false,"There was a problem processing the current file")).build();
+
+
+
+            }catch (RecordNotFoundException e)
+            {
+                return Response.ok(new BooleanResult(false,e.getMessage())).build();
+            }
 
         }
     }
 
 
-    @Path("files/multiple")
+    @Path("/multiple")
     @POST
     @Produces("application/json")
     @Consumes("application/json")
@@ -84,12 +110,19 @@ public class MobileRestful {
         if(emp == null) return Response.status(UNAUTHORIZED).build();
         else
         {
-            boolean result = controller.updateFiles(files,emp);
+            try
+            {
+                boolean result = controller.updateFiles(files,emp);
 
-            if(result) return Response.ok(gson.toJson(new BooleanResult(result,"Patient Files Have Been Updated Successfully")))
-            .build();
-            else
-                return Response.status(NOT_ACCEPTABLE).build();
+                if(result) return Response.ok(gson.toJson(new BooleanResult(result,"Patient Files Have Been Updated Successfully")))
+                        .build();
+                else
+                    return Response.ok(new BooleanResult(false,"There was a problem processing the current Request")).build();
+
+            }catch (RecordNotFoundException e)
+            {
+                return Response.ok(new BooleanResult(false,e.getMessage())).build();
+            }
         }
     }
 
@@ -98,7 +131,8 @@ public class MobileRestful {
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication.isAuthenticated() && authentication.getPrincipal() != null)
+        if(authentication.isAuthenticated() && authentication.getPrincipal() != null
+                && authentication.getPrincipal() instanceof Employee)
         {
             Employee emp = (Employee)authentication.getPrincipal();
 
@@ -107,7 +141,7 @@ public class MobileRestful {
         }else return null;
     }
 
-    @Path("requests")
+    @Path("/new")
     @GET
     @Produces("application/json")
    public Response newRequests()
@@ -125,10 +159,13 @@ public class MobileRestful {
             List<RestfulRequest> availableRequests = controller.getNewRequests(currentUserName);
 
             if(availableRequests == null)
-                return Response.noContent().build();
+
+                return Response.ok(new BooleanResult(true,"There are no Available Requests")).build();
+
             else return Response.ok(gson.toJson(availableRequests)).build();
 
-        }else return Response.status(UNAUTHORIZED).build();
+        }else
+            return Response.ok(new BooleanResult(false,"There was a problem , Try to login again")).build();
    }
 
 

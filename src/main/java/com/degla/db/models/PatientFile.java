@@ -1,5 +1,7 @@
 package com.degla.db.models;
 
+import com.degla.restful.models.FileModelStates;
+import com.degla.restful.models.RestfulFile;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Index;
 
@@ -44,6 +46,12 @@ public class PatientFile extends EntityEO {
 
     @Column(name="ShelfId",nullable = true)
     private String shelfId;
+
+    @Column(name="patientNumber",nullable = true)
+    private String patientNumber;
+
+    @Column(name="Patient_Name",nullable = true)
+    private String patientName;
 
 
 	public void setFileID(String fileID) {
@@ -103,5 +111,35 @@ public class PatientFile extends EntityEO {
 
     public void setShelfId(String shelfId) {
         this.shelfId = shelfId;
+    }
+
+    public String getPatientNumber() {
+        return patientNumber;
+    }
+
+    public void setPatientNumber(String patientNumber) {
+        this.patientNumber = patientNumber;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
+
+
+    public RestfulFile toRestfulFile()
+    {
+        RestfulFile file = new RestfulFile();
+        file.setCabinetId(this.getArchiveCabinet().getCabinetID());
+        file.setDescription(this.getDescription());
+        file.setFileNumber(this.getFileID());
+        file.setShelfId(this.getShelfId());
+        file.setState(FileModelStates.valueOf(this.getCurrentStatus().getState().toString()));
+        file.setTemporaryCabinetId(this.getCurrentStatus().getContainerId());
+
+        return file;
     }
 }

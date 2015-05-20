@@ -5,6 +5,7 @@ import com.degla.db.models.PatientFile;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Query;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -62,6 +63,16 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             s.printStackTrace();;
             return null;
         }
+    }
+
+
+    public List<PatientFile> searchFiles(String query) throws Exception
+    {
+        String queryString = "select f from PatientFile f where f.fileID=:query or f.patientNumber=:query";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("query",query);
+
+        return currentQuery.getResultList();
     }
 
     public long getTotalNewFiles()

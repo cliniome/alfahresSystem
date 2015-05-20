@@ -1,6 +1,7 @@
 package com.degla.controllers;
 
 import com.degla.db.models.Employee;
+import com.degla.exceptions.RecordNotFoundException;
 import com.degla.restful.models.RestfulFile;
 import com.degla.restful.models.RestfulRequest;
 
@@ -13,7 +14,8 @@ public interface BasicRestfulOperations {
 
 
     public List<RestfulRequest> getNewRequests(String userName);
-    public boolean updateFile(RestfulFile file,Employee emp);
-    public boolean updateFiles(List<RestfulFile> files,Employee emp);
+    public boolean updateFile(RestfulFile file,Employee emp) throws RecordNotFoundException;
+    public boolean updateFiles(List<RestfulFile> files,Employee emp) throws RecordNotFoundException;
+    public List<RestfulFile> searchFiles(String query);
 
 }
