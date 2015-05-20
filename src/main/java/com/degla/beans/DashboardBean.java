@@ -45,7 +45,7 @@ public class DashboardBean {
         try
         {
 
-            return systemService.getFilesService().getTotalNewFiles();
+            return systemService.getRequestsManager().getTotalNewRequests();
 
         }catch(Exception s)
         {

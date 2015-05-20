@@ -1,6 +1,7 @@
 package com.degla.db.models;
 
 import com.degla.restful.models.RestfulRequest;
+import com.degla.utils.AnnotatingModel;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,7 +12,7 @@ import java.io.Serializable;
 @Entity
 @Table(name="TBL_REQUESTS")
 @DiscriminatorValue("Request")
-public class Request implements Serializable {
+public class Request implements Serializable, AnnotatingModel {
 
 
     @Id
@@ -162,6 +163,11 @@ public class Request implements Serializable {
     @Override
     public String toString() {
 
+        return this.getFileNumber();
+    }
+
+    @Override
+    public Object getRowKey() {
         return this.getFileNumber();
     }
 }

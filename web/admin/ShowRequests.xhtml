@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+<ui:composition template="../fragments/masterLayout.xhtml">
+
+    <ui:define name="mainContents">
+
+        <c:set target="#{cssBean}" property="currentPageName" value="ShowRequests"/>
+
+        <h:panelGrid columns="1" id="requestsTablePanel">
+
+            <p:dataTable lazy="true" paginator="true" rows="10" id="requestsTable"
+                         rowKey="#{filerequest}"
+                         selectionMode="single" selection="#{filerequest}"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
+                         {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         var="filerequest" value="#{requestsBean.availableRequests}"
+                         stickyHeader="true" emptyMessage="There are no Available Requests"
+                         widgetVar="requestsTable">
+
+                <p:ajax event="rowSelect" update=":requestsTable"/>
+
+                <f:facet name="header">
+                    <b>Available Requests(<font color="red">#{requestsBean.totalCount}</font>)</b>
+                </f:facet>
+
+                <p:column headerText="Request Number" sortable="true" sortBy="#{filerequest.fileNumber}">
+                    <p:outputLabel value="#{filerequest.fileNumber}"/>
+                </p:column>
+
+                <p:column headerText="Patient Number" sortable="true"
+                          sortBy="#{filerequest.patientNumber}">
+
+                    <p:outputLabel value="#{filerequest.patientNumber}"/>
+
+                </p:column>
+
+                <p:column headerText="Patient Name"
+                          sortable="true" sortBy="#{filerequest.patientName}"
+                          >
+
+                    <p:outputLabel value="#{filerequest.patientName}"/>
+
+                </p:column>
+
+                <p:column headerText="App. Date">
+                    <p:outputLabel value="#{filerequest.appointment_Date}"/>
+                </p:column>
+
+                <p:column headerText="Location">
+                    <p:outputLabel value="#{filerequest.fileCurrentLocation}"/>
+                </p:column>
+                <p:column headerText="Requested By"
+                          sortable="true" sortBy="#{filerequest.userName}">
+                    <p:outputLabel value="#{filerequest.userName}"/>
+                </p:column>
+
+                <p:column headerText="Assigned To">
+
+                    <p:outputLabel value="#{filerequest.assignedTo.firstName} #{filerequest.assignedTo.lastName}
+                     (#{filerequest.assignedTo.userName})"/>
+                </p:column>
+
+            </p:dataTable>
+
+
+        </h:panelGrid>
+
+    </ui:define>
+
+</ui:composition>
+
+</html>

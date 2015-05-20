@@ -33,6 +33,30 @@ public class RequestsDAO extends  AbstractDAO<Request> {
         return requests.get(0);
     }
 
+
+    public List<Request> getAllRequests()
+    {
+        try
+        {
+            String queryString ="select r from Request r";
+            Query currentQuery = getManager().createQuery(queryString);
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return null;
+        }
+    }
+
+    public long getTotalNewRequests()
+    {
+        String queryString = "select count(r) from Request r";
+        Query currentQuery = getManager().createQuery(queryString);
+        return (Long)currentQuery.getSingleResult();
+
+    }
+
     public List<Request> getNewRequestsFor(String username)
     {
         try
