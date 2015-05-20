@@ -10,13 +10,13 @@ import javax.ws.rs.core.Response;
 /**
  * Created by snouto on 20/05/15.
  */
-@Path("/system")
+@Path("/health")
 public class HealthService {
 
 
 
     @GET
-    @Path("/health")
+    @Path("/")
     @Produces("application/json")
     public Response health()
     {

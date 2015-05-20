@@ -2,6 +2,7 @@ package com.degla.controllers;
 
 import com.degla.db.models.Employee;
 import com.degla.exceptions.RecordNotFoundException;
+import com.degla.exceptions.WorkflowOutOfBoundException;
 import com.degla.restful.models.RestfulFile;
 import com.degla.restful.models.RestfulRequest;
 
@@ -14,8 +15,8 @@ public interface BasicRestfulOperations {
 
 
     public List<RestfulRequest> getNewRequests(String userName);
-    public boolean updateFile(RestfulFile file,Employee emp) throws RecordNotFoundException;
-    public boolean updateFiles(List<RestfulFile> files,Employee emp) throws RecordNotFoundException;
+    public boolean updateFile(RestfulFile file,Employee emp) throws RecordNotFoundException, WorkflowOutOfBoundException;
+    public boolean updateFiles(List<RestfulFile> files,Employee emp) throws RecordNotFoundException, WorkflowOutOfBoundException;
     public List<RestfulFile> searchFiles(String query);
 
 }

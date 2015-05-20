@@ -3,6 +3,7 @@ package com.degla.dao;
 import com.degla.db.models.Request;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -24,7 +25,12 @@ public class RequestsDAO extends  AbstractDAO<Request> {
         Query currentQuery = getManager().createQuery(queryString);
         currentQuery.setParameter("file",fileNumber);
 
-        return (Request) currentQuery.getSingleResult();
+        List<Request> requests = currentQuery.getResultList();
+
+        if(requests == null || requests.size() <=0)
+            throw new EntityNotFoundException("Current File does not exist");
+
+        return requests.get(0);
     }
 
     public List<Request> getNewRequestsFor(String username)

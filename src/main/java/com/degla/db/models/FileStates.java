@@ -1,5 +1,28 @@
 package com.degla.db.models;
 
 public enum FileStates {
-	CHECKED_IN, CHECKED_OUT, MISSING, RECEPTIONIST_IN, RECEPTIONIST_OUT, KEEPER_IN, COORDINATOR_IN, COORDINATOR_OUT, NEW;
+
+	CHECKED_IN(14),
+	CHECKED_OUT(8)
+	, MISSING(-1)
+	, RECEPTIONIST_IN(12)
+	, RECEPTIONIST_OUT(9)
+	, KEEPER_IN(13)
+	, COORDINATOR_IN(10)
+	, COORDINATOR_OUT(11);
+
+	private int step;
+
+	private FileStates(int step)
+	{
+		this.setStep(step);
+	}
+
+	public int getStep() {
+		return step;
+	}
+
+	public void setStep(int step) {
+		this.step = step;
+	}
 }

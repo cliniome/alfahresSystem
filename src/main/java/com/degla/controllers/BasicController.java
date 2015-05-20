@@ -2,9 +2,12 @@ package com.degla.controllers;
 
 import com.degla.db.models.*;
 import com.degla.exceptions.RecordNotFoundException;
+import com.degla.exceptions.WorkflowOutOfBoundException;
 import com.degla.restful.models.*;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
+import com.degla.utils.WorkflowValidator;
+import com.sun.xml.internal.ws.api.pipe.FiberContextSwitchInterceptor;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -66,11 +69,12 @@ public class BasicController implements BasicRestfulOperations {
     }
 
     @Override
-    public boolean updateFile(RestfulFile file, Employee emp) throws RecordNotFoundException {
+    public boolean updateFile(RestfulFile file, Employee emp) throws RecordNotFoundException,WorkflowOutOfBoundException{
 
 
         try {
-            if (file.getState() != null && file.getState() == FileModelStates.CHECKED_OUT) {
+            if (file.getState() != null && FileStates.valueOf(file.getState()) == FileStates.CHECKED_OUT)
+            {
                 //Step one : to select the request that contains that file number
                 Request currentRequest = systemService.getRequestsManager()
                         .getSingleRequest(file.getFileNumber());
@@ -80,6 +84,17 @@ public class BasicController implements BasicRestfulOperations {
                         .getFileWithNumber(file.getFileNumber());
 
                 if (patientFile != null) {
+
+                    if(!WorkflowValidator.canProceed(patientFile.getCurrentStatus().getState(),
+                            FileStates.valueOf(file.getState())))
+                    {
+                        String message =String.format("File: %s needs to be submitted by %s",
+                                patientFile.getFileID(),String.format("%s %s", patientFile.getCurrentStatus().getOwner()
+                                        .getFirstName(), patientFile.getCurrentStatus().getOwner().getLastName()));
+
+                        throw new WorkflowOutOfBoundException(message);
+                    }
+
                     this.addNewFileHistory(patientFile, file, emp);
 
                     boolean result = systemService.getFilesService().updateEntity(patientFile);
@@ -118,6 +133,17 @@ public class BasicController implements BasicRestfulOperations {
                         .getFileWithNumber(file.getFileNumber());
 
                 if (patientFile != null) {
+
+                    if(!(WorkflowValidator.canProceed(patientFile.getCurrentStatus().getState(),
+                            FileStates.valueOf(file.getState()))))
+                    {
+                        String message =String.format("File: %s needs to be submitted by %s",
+                                patientFile.getFileID(),String.format("%s %s", patientFile.getCurrentStatus().getOwner()
+                                        .getFirstName(), patientFile.getCurrentStatus().getOwner().getLastName()));
+
+                        throw new WorkflowOutOfBoundException(message);
+                    }
+
                     this.addNewFileHistory(patientFile, file, emp);
 
                     boolean result = systemService.getFilesService().updateEntity(patientFile);
@@ -148,9 +174,10 @@ public class BasicController implements BasicRestfulOperations {
     }
 
     @Override
-    public boolean updateFiles(List<RestfulFile> files, Employee emp) throws RecordNotFoundException {
+    public boolean updateFiles(List<RestfulFile> files, Employee emp) throws RecordNotFoundException,
+            WorkflowOutOfBoundException {
 
-        try {
+
             boolean finalResult = true;
 
             if (files != null && files.size() > 0) {
@@ -164,10 +191,6 @@ public class BasicController implements BasicRestfulOperations {
             }
             return false;
 
-        } catch (Exception s) {
-            s.printStackTrace();
-            return false;
-        }
     }
 
     /**

@@ -2,6 +2,7 @@ package com.degla.restful;
 import com.degla.controllers.BasicController;
 import com.degla.db.models.Employee;
 import com.degla.exceptions.RecordNotFoundException;
+import com.degla.exceptions.WorkflowOutOfBoundException;
 import com.degla.restful.models.BooleanResult;
 import com.degla.restful.models.RestfulFile;
 import com.degla.restful.models.RestfulRequest;
@@ -17,6 +18,7 @@ import static javax.ws.rs.core.Response.Status.*;
 import java.io.IOException;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.EntityNotFoundException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -54,7 +56,7 @@ public class FilesService {
         List<RestfulFile> foundFiles = controller.searchFiles(query);
 
         if(foundFiles == null || foundFiles.size() <=0)
-            return Response.ok(new BooleanResult(false,"No Available Files")).build();
+            return Response.noContent().build();
         else return Response.ok(foundFiles).build();
 
     }
@@ -76,7 +78,7 @@ public class FilesService {
         {
             try
             {
-                boolean result = controller.updateFile(file,emp);
+                boolean result = controller.updateFile(file, emp);
 
                 if(result)
                 {
@@ -89,6 +91,13 @@ public class FilesService {
 
 
             }catch (RecordNotFoundException e)
+            {
+                return Response.ok(new BooleanResult(false,e.getMessage())).build();
+
+            }catch(WorkflowOutOfBoundException e)
+            {
+                return Response.ok(new BooleanResult(false,e.getMessage())).build();
+            }catch(EntityNotFoundException e)
             {
                 return Response.ok(new BooleanResult(false,e.getMessage())).build();
             }
@@ -112,7 +121,7 @@ public class FilesService {
         {
             try
             {
-                boolean result = controller.updateFiles(files,emp);
+                boolean result = controller.updateFiles(files, emp);
 
                 if(result) return Response.ok(gson.toJson(new BooleanResult(result,"Patient Files Have Been Updated Successfully")))
                         .build();
@@ -120,6 +129,9 @@ public class FilesService {
                     return Response.ok(new BooleanResult(false,"There was a problem processing the current Request")).build();
 
             }catch (RecordNotFoundException e)
+            {
+                return Response.ok(new BooleanResult(false,e.getMessage())).build();
+            }catch(WorkflowOutOfBoundException e)
             {
                 return Response.ok(new BooleanResult(false,e.getMessage())).build();
             }
@@ -160,12 +172,12 @@ public class FilesService {
 
             if(availableRequests == null)
 
-                return Response.ok(new BooleanResult(true,"There are no Available Requests")).build();
+                return Response.noContent().build();
 
             else return Response.ok(gson.toJson(availableRequests)).build();
 
         }else
-            return Response.ok(new BooleanResult(false,"There was a problem , Try to login again")).build();
+            return Response.status(UNAUTHORIZED).build();
    }
 
 

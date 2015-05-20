@@ -77,10 +77,11 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
     public long getTotalNewFiles()
     {
-        String query = "select count(f) from PatientFile f where f.currentStatus.state=:state";
+       /* String query = "select count(f) from PatientFile f where f.currentStatus.state=:state";
         Query currentQuery = getManager().createQuery(query);
         currentQuery.setParameter("state",FileStates.NEW);
-        return (Long)currentQuery.getSingleResult();
+        return (Long)currentQuery.getSingleResult();*/
+        return -1;
     }
 
     public long getTotalMissingFiles()
