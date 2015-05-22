@@ -33,6 +33,15 @@ public class RequestsDAO extends  AbstractDAO<Request> {
         return requests.get(0);
     }
 
+    public List<Request> searchRequests(String query)
+    {
+        String queryString = "select r from Request r where r.fileNumber=:query or r.patientNumber =:query";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("query",query);
+
+        return currentQuery.getResultList();
+    }
+
 
     public List<Request> getAllRequests()
     {

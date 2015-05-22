@@ -48,7 +48,7 @@ public class RegistrationBean {
         {
             systemService = SpringSystemBridge.services();
 
-            this.addSomeRoles();
+           // this.addSomeRoles();
            this.setRoles(systemService.getRoleService().getRoles());
 
 

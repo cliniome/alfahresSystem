@@ -12,24 +12,109 @@
 
     <c:set target="#{cssBean}" property="currentPageName" value="SearchRequests"/>
 
-    <h:panelGrid columns="1" id="searchRequestsPanel">
 
-        <p:panel header="Search Requests" style="margin-bottom:10px;">
+    <ui:define name="mainContents">
 
-            <p:messages id="messages" showSummary="true"/>
+        <h:form id="searchRequestsForm" prependId="false">
 
-            <h:panelGrid columns="2" cellpadding="4">
-                <p:outputPanel deferred="true">
-                    <h3>Search Terms</h3>
-                    <p>You can search requests either by Request Number , Patient Number or Patient Name</p>
-                </p:outputPanel>
-                <p:outputLabel value="Search Term:"/>
 
-            </h:panelGrid>
 
-        </p:panel>
+        <h:panelGrid columns="1" id="searchRequestsPanel">
 
-    </h:panelGrid>
+            <p:panel header="Search Requests" style="margin-bottom:10px;">
+
+                <p:messages id="messages" showSummary="true"/>
+
+                        <h:panelGrid columns="2">
+
+                            <p:outputPanel deferred="true">
+                                <h3>Search Terms</h3>
+                                <p>You can search requests either by Request Number , Patient Number or Patient Name</p>
+                            </p:outputPanel>
+                            <br/>
+                            <p:outputLabel value="Search Term:"/>
+                            <br/>
+                            <h:panelGrid columns="2">
+                                <p:inputText value="#{searchRequestsBean.searchQuery}" style="width:200px;"
+                                             placeholder="Request Number or Patient Number or patient Name"/>
+                                <p:commandButton ajax="false" update="messages" value="Search" actionListener="#{searchRequestsBean.doSearch}"/>
+                            </h:panelGrid>
+
+                        </h:panelGrid>
+
+
+            </p:panel>
+
+            <p:separator id="separator" rendered="#{searchRequestsBean.foundResults()}" />
+
+            <p:panel id="results" header="Search Results" rendered="#{searchRequestsBean.foundResults()}">
+
+                <h:panelGrid columns="1">
+
+                    <p:dataTable paginator="true" rows="10" id="requestsTable"
+                                 rowKey="#{filerequest}"
+                                 selectionMode="single" selection="#{filerequest}"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
+                         {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 var="filerequest" value="#{searchRequestsBean.searchedRequests}"
+                                 stickyHeader="true" emptyMessage="There are no Available Requests"
+                                 widgetVar="requestsTable">
+
+                        <p:ajax event="rowSelect" update=":requestsTable"/>
+
+                        <f:facet name="header">
+                            <b>Available Requests(<font color="red">#{searchRequestsBean.totalCount()}</font>)</b>
+                        </f:facet>
+
+                        <p:column headerText="Request Number" sortable="true" sortBy="#{filerequest.fileNumber}">
+                            <p:outputLabel value="#{filerequest.fileNumber}"/>
+                        </p:column>
+
+                        <p:column headerText="Patient Number" sortable="true"
+                                  sortBy="#{filerequest.patientNumber}">
+
+                            <p:outputLabel value="#{filerequest.patientNumber}"/>
+
+                        </p:column>
+
+                        <p:column headerText="Patient Name"
+                                  sortable="true" sortBy="#{filerequest.patientName}"
+                                >
+
+                            <p:outputLabel value="#{filerequest.patientName}"/>
+
+                        </p:column>
+
+                        <p:column headerText="App. Date">
+                            <p:outputLabel value="#{filerequest.appointment_Date}"/>
+                        </p:column>
+
+                        <p:column headerText="Location">
+                            <p:outputLabel value="#{filerequest.fileCurrentLocation}"/>
+                        </p:column>
+                        <p:column headerText="Requested By"
+                                  sortable="true" sortBy="#{filerequest.userName}">
+                            <p:outputLabel value="#{filerequest.userName}"/>
+                        </p:column>
+
+                        <p:column headerText="Assigned To">
+
+                            <p:outputLabel value="#{filerequest.assignedTo.firstName} #{filerequest.assignedTo.lastName}
+                     (#{filerequest.assignedTo.userName})"/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </h:panelGrid>
+
+            </p:panel>
+
+        </h:panelGrid>
+
+
+        </h:form>
+
+    </ui:define>
 
 </ui:composition>
 

@@ -2,6 +2,7 @@ package com.degla.db.models;
 
 import com.degla.restful.models.RestfulRequest;
 import com.degla.utils.AnnotatingModel;
+import org.hibernate.annotations.Index;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,12 +22,15 @@ public class Request implements Serializable, AnnotatingModel {
     private int id;
 
     @Column(name="PatientNumber")
+    @Index(name="req_patientNumber")
     private String patientNumber;
 
     @Column(name="FileNumber")
+    @Index(name="req_fileNumber")
     private String fileNumber;
 
     @Column(name="PatientName")
+    @Index(name="req_patientName")
     private String patientName;
 
     @Column(name="appointment_Type")
@@ -36,6 +40,7 @@ public class Request implements Serializable, AnnotatingModel {
     private String appointment_Date;
 
     @Column(name="userName")
+    @Index(name="req_userName")
     private String userName;
 
     @Column(name="fileCurrentLocation")

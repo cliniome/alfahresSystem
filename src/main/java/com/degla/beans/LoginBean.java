@@ -37,6 +37,7 @@ public class LoginBean {
     protected SystemService systemService;
 
 
+    //TODO : Important , Remove this later.
     @PostConstruct
     public void onInit()
     {
@@ -44,7 +45,7 @@ public class LoginBean {
        {
            systemService = SpringSystemBridge.services();
            RoleEO role = new RoleEO(RoleTypes.ADMIN.toString(),RoleTypes.ADMIN.toString(),"Admin Role");
-           systemService.getRoleService().addEntity(role);
+           //systemService.getRoleService().addEntity(role);
            Employee emp = new Employee();
            emp.setEmpID("123456");
            emp.setPassword("snouto");
@@ -52,7 +53,7 @@ public class LoginBean {
            emp.setRole(role);
            emp.setFirstName("Mohamed");
            emp.setLastName("Ibrahim");
-           systemService.getEmployeeService().addEntity(emp);
+           //systemService.getEmployeeService().addEntity(emp);
 
        }catch (Exception s)
        {
