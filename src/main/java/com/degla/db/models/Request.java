@@ -56,6 +56,9 @@ public class Request implements Serializable, AnnotatingModel {
     private Employee assignedTo;
 
 
+    private transient boolean selected;
+
+
 
     public Request clone() {
 
@@ -174,5 +177,13 @@ public class Request implements Serializable, AnnotatingModel {
     @Override
     public Object getRowKey() {
         return this.getFileNumber();
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }
