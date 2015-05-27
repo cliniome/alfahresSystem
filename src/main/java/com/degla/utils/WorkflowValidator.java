@@ -12,6 +12,7 @@ public class WorkflowValidator  {
     {
         if(nextState == FileStates.CHECKED_OUT && currentState == FileStates.CHECKED_IN) return true;
         else if(nextState.getStep() == (currentState.getStep()+1)) return true;
+        else if (nextState == FileStates.MISSING) return true;
         else return false;
     }
 }

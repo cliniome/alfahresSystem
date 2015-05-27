@@ -69,7 +69,8 @@ public class BasicController implements BasicRestfulOperations {
     }
 
     @Override
-    public boolean updateFile(RestfulFile file, Employee emp) throws RecordNotFoundException,WorkflowOutOfBoundException{
+    public boolean updateFile(RestfulFile file, Employee emp) throws
+            RecordNotFoundException,WorkflowOutOfBoundException{
 
 
         try {
@@ -127,6 +128,60 @@ public class BasicController implements BasicRestfulOperations {
                     } else return false;
 
                 }
+            }else if (file.getState() != null &&
+                    file.getState().equals(FileModelStates.MISSING.toString())){
+
+                //Step one : to select the request that contains that file number
+                Request currentRequest = systemService.getRequestsManager()
+                        .getSingleRequest(file.getFileNumber());
+
+               if(currentRequest != null)
+               {
+                   PatientFile missingFile = new PatientFile();
+                   ArchiveCabinet cabinet = new ArchiveCabinet();
+                   cabinet.setCreationTime(new Date());
+                   cabinet.setCabinetID(file.getCabinetId());
+                   missingFile.setArchiveCabinet(cabinet);
+                   missingFile.setCreationTime(new Date());
+                   missingFile.setPatientName(currentRequest.getPatientName());
+                   missingFile.setPatientNumber(currentRequest.getPatientNumber());
+                   missingFile.setFileID(file.getFileNumber());
+                   this.addNewFileHistory(missingFile,file,emp);
+
+                   boolean result = systemService.getFilesService().addEntity(missingFile);
+
+                   if(result)
+                       return systemService.getRequestsManager().removeEntity(currentRequest);
+                   else return false;
+
+               }else
+               {
+                   //Get the file by knowing its file number
+                   PatientFile patientFile = systemService.getFilesService()
+                           .getFileWithNumber(file.getFileNumber());
+
+                   if(patientFile != null)
+                   {
+                       if(!(WorkflowValidator.canProceed(patientFile.getCurrentStatus().getState(),
+                               FileStates.valueOf(file.getState()))))
+                       {
+                           String message =String.format("File: %s needs to be submitted by %s",
+                                   patientFile.getFileID(),String.format("%s %s", patientFile.getCurrentStatus().getOwner()
+                                           .getFirstName(), patientFile.getCurrentStatus().getOwner().getLastName()));
+
+                           throw new WorkflowOutOfBoundException(message);
+                       }
+
+                       this.addNewFileHistory(patientFile, file, emp);
+
+                       boolean result = systemService.getFilesService().updateEntity(patientFile);
+
+                       return result;
+
+                   }else return false;
+               }
+
+
             } else {
                 //Step Two : Check to see if the file Exists
                 PatientFile patientFile = systemService.getFilesService()
@@ -168,6 +223,9 @@ public class BasicController implements BasicRestfulOperations {
         history.setOwner(emp);
         FileStates state = FileStates.valueOf(file.getState().toString());
         history.setState(state);
+        if(file.getOperationDate() == null)
+            file.setOperationDate(new Date());
+
         history.setCreatedAt(file.getOperationDate());
         history.setPatientFile(patientFile);
         patientFile.setCurrentStatus(history);

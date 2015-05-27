@@ -21,16 +21,23 @@ public class RequestsDAO extends  AbstractDAO<Request> {
 
     public Request getSingleRequest(String fileNumber)
     {
-        String queryString = "select r from Request r where r.fileNumber =:file";
-        Query currentQuery = getManager().createQuery(queryString);
-        currentQuery.setParameter("file",fileNumber);
+       try
+       {
+           String queryString = "select r from Request r where r.fileNumber =:file";
+           Query currentQuery = getManager().createQuery(queryString);
+           currentQuery.setParameter("file",fileNumber);
 
-        List<Request> requests = currentQuery.getResultList();
+           List<Request> requests = currentQuery.getResultList();
 
-        if(requests == null || requests.size() <=0)
-            throw new EntityNotFoundException("Current File does not exist");
+           if(requests == null || requests.size() <=0)
+               throw new EntityNotFoundException("Current File does not exist");
 
-        return requests.get(0);
+           return requests.get(0);
+
+       }catch (Exception s)
+       {
+           return null;
+       }
     }
 
     public List<Request> searchRequests(String query)

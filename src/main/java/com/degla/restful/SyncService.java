@@ -2,6 +2,8 @@ package com.degla.restful;
 
 import com.degla.controllers.BasicController;
 import com.degla.db.models.Employee;
+import com.degla.exceptions.RecordNotFoundException;
+import com.degla.exceptions.WorkflowOutOfBoundException;
 import com.degla.restful.models.BooleanResult;
 import com.degla.restful.models.RestfulFile;
 import com.degla.restful.models.SyncBatch;
@@ -47,10 +49,20 @@ public class SyncService implements Serializable {
 
                 for(RestfulFile file : batch.getFiles())
                 {
-                    boolean result = controller.updateFile(file,currentEmployee);
+                    try
+                    {
+                        boolean result = controller.updateFile(file,currentEmployee);
 
-                    if(!result)
+                        if(!result)
+                            failedBatches.getFiles().add(file);
+
+                    }catch (RecordNotFoundException e)
+                    {
                         failedBatches.getFiles().add(file);
+                    }catch (WorkflowOutOfBoundException e)
+                    {
+                        failedBatches.getFiles().add(file);
+                    }
                 }
 
                 if(failedBatches.loaded())
