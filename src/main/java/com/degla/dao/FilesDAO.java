@@ -2,10 +2,12 @@ package com.degla.dao;
 
 import com.degla.db.models.FileStates;
 import com.degla.db.models.PatientFile;
+import com.degla.restful.models.FileModelStates;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Query;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +32,30 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             return null;
         }
 
+    }
+
+    /**
+     * This method will return all patient files contained within the current container id
+     * and their state is not missing
+     * @param query
+     * @return
+     */
+    public List<PatientFile> scanForFiles(String query)
+    {
+        try
+        {
+            String queryString = "select f from PatientFile f where f.currentStatus.containerId=:query and " +
+                    "f.currentStatus.state != :state";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("query",query);
+            currentQuery.setParameter("state", FileStates.MISSING);
+
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            return new ArrayList<PatientFile>();
+        }
     }
 
     public List<PatientFile> getFilesWithState(FileStates state)

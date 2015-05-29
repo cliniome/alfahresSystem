@@ -34,6 +34,42 @@ public class BasicController implements BasicRestfulOperations {
 
     }
 
+    public List<RestfulFile> scanFiles(String query)
+    {
+        try
+        {
+            List<PatientFile> existingFiles = systemService.getFilesService().scanForFiles(query);
+
+            if(existingFiles != null && existingFiles.size() > 0)
+            {
+                List<RestfulFile> availableFiles = new ArrayList<RestfulFile>();
+
+                for(PatientFile file : existingFiles)
+                {
+                    RestfulFile restFile = new RestfulFile();
+                    restFile.setCabinetId(file.getArchiveCabinet().getCabinetID());
+                    restFile.setDescription(file.getDescription());
+                    restFile.setFileNumber(file.getFileID());
+                    restFile.setOperationDate(file.getCurrentStatus().getCreatedAt().getTime());
+                    restFile.setShelfId(file.getShelfId());
+                    restFile.setState(file.getCurrentStatus().getState().toString());
+                    restFile.setTemporaryCabinetId(file.getCurrentStatus().getContainerId());
+
+                    availableFiles.add(restFile);
+                }
+
+
+                return availableFiles;
+
+            }else throw new Exception("Empty files");
+
+        }catch (Exception s)
+        {
+
+            return new ArrayList<RestfulFile>();
+        }
+    }
+
 
     @Override
     public List<RestfulRequest> getNewRequests(String userName) {
@@ -224,9 +260,9 @@ public class BasicController implements BasicRestfulOperations {
         FileStates state = FileStates.valueOf(file.getState().toString());
         history.setState(state);
         if(file.getOperationDate() == null)
-            file.setOperationDate(new Date());
+            file.setOperationDate(new Date().getTime());
 
-        history.setCreatedAt(file.getOperationDate());
+        history.setCreatedAt(new Date(file.getOperationDate()));
         history.setPatientFile(patientFile);
         patientFile.setCurrentStatus(history);
     }

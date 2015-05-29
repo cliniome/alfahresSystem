@@ -6,6 +6,7 @@ import com.degla.exceptions.WorkflowOutOfBoundException;
 import com.degla.restful.models.BooleanResult;
 import com.degla.restful.models.RestfulFile;
 import com.degla.restful.models.RestfulRequest;
+import com.degla.restful.models.SyncBatch;
 import com.degla.restful.utils.RestGsonBuilder;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
@@ -16,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import sun.misc.BASE64Encoder;
 import static javax.ws.rs.core.Response.Status.*;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.EntityNotFoundException;
@@ -42,6 +44,32 @@ public class FilesService {
         }catch(Exception s)
         {
             s.printStackTrace();
+        }
+    }
+
+    @Path("/scan/{query}")
+    @GET
+    @Produces("application/json")
+    public Response scanFiles(@PathParam("query") String query)
+    {
+        try
+        {
+            BasicController controller = new BasicController();
+
+            List<RestfulFile> files = controller.scanFiles(query);
+
+            if(files == null) throw new Exception();
+
+            SyncBatch batch = new SyncBatch(files);
+            batch.setCreatedAt(new Date().getTime());
+            batch.setState(true);
+            batch.setMessage("Batch is loaded with files");
+
+            return Response.ok(batch).build();
+
+        }catch (Exception s)
+        {
+            return Response.ok(new BooleanResult(false,"There was an error, please try again")).build();
         }
     }
 
