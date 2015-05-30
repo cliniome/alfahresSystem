@@ -5,6 +5,7 @@ import com.degla.exceptions.RequestException;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.WebUtils;
+import com.degla.utils.xml.BatchRequestDetails;
 import com.degla.utils.xml.PatientFileReader;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.event.FileUploadEvent;
@@ -18,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -62,17 +64,41 @@ public class FileUploadWizardBean implements Serializable {
         try
         {
             PatientFileReader fileReader = new PatientFileReader();
-            List<Request> requests = fileReader.buildRequests(this);
+            Map<BatchRequestDetails,List<Request>> requests = fileReader.buildRequests(this);
 
+            List<Request> availableRequests = new ArrayList<Request>();
+
+            if(requests == null || requests.size() <= 0 ) return;
+
+            for(BatchRequestDetails key : requests.keySet())
+            {
+                //get all requests
+                List<Request> values = requests.get(key);
+
+                if(values != null && values.size() > 0)
+                {
+                    for(Request req : values)
+                    {
+                        req.setClinic_Doc_Code(key.getT_clinic_doc_code());
+                        req.setClinicCode(key.getT_clinic_code());
+                        req.setClinicName(key.getClinic_name());
+                        req.setCsGroupCount(key.getCs_group_count());
+                        req.setRequestingDocName(key.getDoc_name());
+
+                        availableRequests.add(req);
+                    }
+                }
+
+            }
 
             //now route them to different employees
-            systemService.getFileRouter().routeFiles(requests);
+            systemService.getFileRouter().routeFiles(availableRequests);
 
             if(requests != null && requests.size() > 0)
             {
                 boolean result = true;
                 //insert all requests one by one
-                for(Request currentRequest : requests)
+                for(Request currentRequest : availableRequests)
                 {
                     boolean stepResult = systemService.getRequestsManager().addEntity(currentRequest);
                     result = result && stepResult;

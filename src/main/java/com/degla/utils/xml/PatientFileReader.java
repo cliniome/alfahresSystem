@@ -2,18 +2,13 @@ package com.degla.utils.xml;
 
 import com.degla.beans.files.FileUploadWizardBean;
 import com.degla.db.models.Request;
-import com.degla.exceptions.RequestException;
-import com.degla.system.SystemService;
-import org.apache.commons.beanutils.BeanUtils;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -37,11 +32,29 @@ public class PatientFileReader {
 
     private  Request request = new Request();
 
+    private Map<BatchRequestDetails,List<Request>> batchedDetails;
+
+    private AtomicInteger outerControlNum = new AtomicInteger(0);
+
+    private BatchRequestDetails details;
+
+    private List<Request> requests;
+
+
+    public PatientFileReader()
+    {
+        setBatchedDetails(new HashMap<BatchRequestDetails, List<Request>>());
+        details = new BatchRequestDetails();
+        requests = new ArrayList<Request>();
+    }
+
 
 
     private static final int NumberOfFields = REQUEST_FIELDS.length;
 
-    private static final String[] BATCH_REQUEST_FIELDS = {"CLINIC_NAME","DOC_NAME","CS_GROUP_COUNT"};
+    private static final String[] BATCH_REQUEST_FIELDS = {"CLINIC_NAME","DOC_NAME","CS_GROUP_COUNT","T_CLINIC_CODE","T_CLINIC_DOC_CODE"};
+
+    private static final int OuterNumberOfFields = BATCH_REQUEST_FIELDS.length;
 
 
     private  String getBatchRequestField(String fieldName)
@@ -50,7 +63,7 @@ public class PatientFileReader {
 
         for(String field : BATCH_REQUEST_FIELDS)
         {
-            if(field.toLowerCase().equals(fieldName.toLowerCase()))
+            if(field.equalsIgnoreCase(fieldName.toLowerCase()))
             {
                 foundField = field;
                 break;
@@ -89,8 +102,7 @@ public class PatientFileReader {
     }
 
 
-    private   void autoRecursivelyBuildRequests(Node documentElement ,AtomicInteger controlNum,
-                                                     List<Request> requests)
+    private   void autoRecursivelyBuildRequests(Node documentElement ,AtomicInteger controlNum)
             throws NoSuchFieldException , IllegalAccessException , InvocationTargetException , NoSuchMethodException
     {
         if(controlNum.intValue() == NumberOfFields)
@@ -98,6 +110,23 @@ public class PatientFileReader {
             requests.add(request.clone());
             request = new Request();
             controlNum.set(0);
+        }
+
+        if(outerControlNum.intValue() == OuterNumberOfFields)
+        {
+            List<Request> clonedRequests = new ArrayList<Request>();
+
+            for(Request req : requests)
+            {
+                clonedRequests.add(req.clone());
+            }
+
+            getBatchedDetails().put(details,clonedRequests);
+
+            details = new BatchRequestDetails();
+            requests.clear();
+            outerControlNum.set(0);
+
         }
 
         String elementName = documentElement.getNodeName();
@@ -113,10 +142,19 @@ public class PatientFileReader {
             boolean reflectingResult = setValueThroughReflection(request,mappedField,attrValue);
 
            if(reflectingResult) controlNum.incrementAndGet();
-            else
-           {
-               System.out.println("Welcome mohamed");
-           }
+
+
+        }else
+        {
+            foundAttr = getBatchRequestField(elementName);
+
+            if(foundAttr != null)
+            {
+                String attrValue = documentElement.getTextContent();
+                boolean reflectingResult = setBatchValueThroughReflection(details,foundAttr,attrValue);
+
+                if(reflectingResult) outerControlNum.incrementAndGet();
+            }
 
         }
 
@@ -126,7 +164,7 @@ public class PatientFileReader {
         {
             Node currentNode = nodes.item(i);
             if(currentNode.getNodeType() == Node.ELEMENT_NODE)
-                autoRecursivelyBuildRequests(currentNode, controlNum, requests);
+                autoRecursivelyBuildRequests(currentNode, controlNum);
 
         }
 
@@ -170,9 +208,9 @@ public class PatientFileReader {
         return doc;
     }
 
-    public  List<Request> buildRequests(FileUploadWizardBean bean) throws  Exception
+    public  Map<BatchRequestDetails,List<Request>> buildRequests(FileUploadWizardBean bean) throws  Exception
     {
-        List<Request> requests = new ArrayList<Request>();
+
 
         AtomicInteger controlNum = new AtomicInteger(0);
         Document currentDoc = buildDocument(bean.getUploadedFile());
@@ -180,18 +218,30 @@ public class PatientFileReader {
         //recursivelyBuildRequests(currentDoc.getDocumentElement(),new Request(),bean,controlNum,requests);
        try
        {
-           autoRecursivelyBuildRequests(currentDoc.getDocumentElement(),controlNum,requests);
+           autoRecursivelyBuildRequests(currentDoc.getDocumentElement(),controlNum);
 
        }catch (Exception s)
        {
            s.printStackTrace();
        }
 
-        for(Request currentRequest : requests)
+        if(getBatchedDetails() != null && getBatchedDetails().size() > 0)
         {
-            currentRequest.setBatchRequestNumber(batchNumber);
+            for(BatchRequestDetails details : getBatchedDetails().keySet())
+            {
+                List<Request> availableRequests = getBatchedDetails().get(details);
+
+                if(availableRequests != null)
+                {
+                    for(Request current : availableRequests)
+                    {
+                        current.setBatchRequestNumber(batchNumber);
+                    }
+                }
+            }
         }
-        return requests;
+
+        return this.getBatchedDetails();
 
 
     }
@@ -235,6 +285,22 @@ public class PatientFileReader {
         }
 
     }
+
+
+    private boolean setBatchValueThroughReflection(BatchRequestDetails details , String foundAttr , String attrValue)
+        throws NoSuchFieldException , IllegalAccessException , InvocationTargetException , NoSuchMethodException{
+
+        Class<?> type = details.getClass();
+
+        Method currentMethod = type.getDeclaredMethod("set" + capitalize(foundAttr.toLowerCase()), new Class[]{String.class});
+
+        if(currentMethod != null)
+            currentMethod.invoke(details,attrValue);
+
+        return true;
+
+    }
+
 
     private  boolean setValueThroughReflection(Request request, String foundAttr, String attrValue)
             throws NoSuchFieldException,IllegalAccessException,InvocationTargetException,NoSuchMethodException {
@@ -280,5 +346,12 @@ public class PatientFileReader {
     }
 
 
+    public Map<BatchRequestDetails, List<Request>> getBatchedDetails() {
+        return batchedDetails;
+    }
+
+    public void setBatchedDetails(Map<BatchRequestDetails, List<Request>> batchedDetails) {
+        this.batchedDetails = batchedDetails;
+    }
 }
 

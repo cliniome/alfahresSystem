@@ -62,6 +62,11 @@ public class BasicController implements BasicRestfulOperations {
                     restFile.setAppointmentTime(file.getCurrentStatus().getAppointment_Hijri_Date());
                     restFile.setBatchRequestNumber(file.getCurrentStatus().getBatchRequestNumber());
                     restFile.setAppointmentType(file.getCurrentStatus().getAppointmentType());
+                    restFile.setClinicCode(file.getCurrentStatus().getClinicCode());
+                    restFile.setClinicDocCode(file.getCurrentStatus().getClinicDocCode());
+                    restFile.setClinicDocName(file.getCurrentStatus().getClinicDocName());
+                    restFile.setClinicName(file.getCurrentStatus().getClinicName());
+
 
                     availableFiles.add(restFile);
                 }
@@ -105,6 +110,10 @@ public class BasicController implements BasicRestfulOperations {
                     request.setAppointmentTime(current.getAppointment_time());
                     request.setAppointmentType(current.getCf_appointment_type());
                     request.setBatchRequestNumber(current.getBatchRequestNumber());
+                    request.setClinicCode(current.getClinicCode());
+                    request.setClinicDocCode(current.getClinic_Doc_Code());
+                    request.setClinicDocName(current.getRequestingDocName());
+                    request.setClinicName(current.getClinicName());
 
                     availableRequests.add(request);
                 }
@@ -284,6 +293,10 @@ public class BasicController implements BasicRestfulOperations {
         history.setAppointment_Made_by(file.getAppointmentMadeBy());
         history.setBatchRequestNumber(file.getBatchRequestNumber());
         history.setAppointmentType(file.getAppointmentType());
+        history.setClinicCode(file.getClinicCode());
+        history.setClinicDocCode(file.getClinicDocCode());
+        history.setClinicDocName(file.getClinicDocName());
+        history.setClinicName(file.getClinicName());
         patientFile.setCurrentStatus(history);
     }
 

@@ -37,6 +37,14 @@ public class FileHistory extends EntityEO {
     private String appointment_Made_by;
     @Column(name="AppointmentType",nullable = true)
     private String appointmentType;
+    @Column(name="ClinicName",nullable = true)
+    private String clinicName;
+    @Column(name="clinicCode",nullable = true)
+    private String clinicCode;
+    @Column(name="ClinicDocName",nullable = true)
+    private String clinicDocName;
+    @Column(name="ClinicDocCode",nullable = true)
+    private String clinicDocCode;
     //TODO : Don't forget to map PatientFile in this Class
     @ManyToOne
     @JoinColumn(name="patientFile")
@@ -127,5 +135,37 @@ public class FileHistory extends EntityEO {
 
     public void setAppointmentType(String appointmentType) {
         this.appointmentType = appointmentType;
+    }
+
+    public String getClinicName() {
+        return clinicName;
+    }
+
+    public void setClinicName(String clinicName) {
+        this.clinicName = clinicName;
+    }
+
+    public String getClinicCode() {
+        return clinicCode;
+    }
+
+    public void setClinicCode(String clinicCode) {
+        this.clinicCode = clinicCode;
+    }
+
+    public String getClinicDocName() {
+        return clinicDocName;
+    }
+
+    public void setClinicDocName(String clinicDocName) {
+        this.clinicDocName = clinicDocName;
+    }
+
+    public String getClinicDocCode() {
+        return clinicDocCode;
+    }
+
+    public void setClinicDocCode(String clinicDocCode) {
+        this.clinicDocCode = clinicDocCode;
     }
 }
