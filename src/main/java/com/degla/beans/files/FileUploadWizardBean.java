@@ -125,7 +125,10 @@ public class FileUploadWizardBean implements Serializable {
             }
 
             //move to the next step in the wizard
-            getWizard().setStep("mapping");
+          // getWizard().setStep("mapping");
+
+           onConfirmAndSubmit();
+
 
 
         } catch (Exception e) {

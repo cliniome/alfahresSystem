@@ -169,16 +169,23 @@ public class FilesService {
 
     private Employee getAccount()
     {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+       try
+       {
+           Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication.isAuthenticated() && authentication.getPrincipal() != null
-                && authentication.getPrincipal() instanceof Employee)
-        {
-            Employee emp = (Employee)authentication.getPrincipal();
+           if(authentication.isAuthenticated() && authentication.getPrincipal() != null
+                   && authentication.getPrincipal() instanceof Employee)
+           {
+               Employee emp = (Employee)authentication.getPrincipal();
 
-            return emp;
+               return emp;
 
-        }else return null;
+           }else return null;
+
+       }catch (Exception s)
+       {
+           return null;
+       }
     }
 
     @Path("/new")

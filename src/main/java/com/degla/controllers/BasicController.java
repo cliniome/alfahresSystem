@@ -89,6 +89,14 @@ public class BasicController implements BasicRestfulOperations {
                     request.setPatientName(current.getPatientName());
                     request.setPatientNumber(current.getPatientNumber());
                     request.setUserName(current.getUserName());
+                    request.setAppointment_Date(current.getAppointment_Date());
+                    request.setAppointment_Type(current.getCf_appointment_type());
+                    request.setAppointmentDate(current.getAppointment_Date());
+                    request.setAppointmentDateH(current.getAppointment_date_h());
+                    request.setAppointmentMadeBy(current.getAppointment_made_by());
+                    request.setAppointmentTime(current.getAppointment_time());
+                    request.setAppointmentType(current.getCf_appointment_type());
+                    request.setBatchRequestNumber(current.getBatchRequestNumber());
 
                     availableRequests.add(request);
                 }

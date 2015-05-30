@@ -36,8 +36,26 @@ public class Request implements Serializable, AnnotatingModel {
     @Column(name="appointment_Type")
     private String appointment_Type;
 
+    @Column(name="app_made_by",nullable = true)
+    private String appointment_made_by;
+
+    @Column(name="appointment_date_h",nullable = true)
+    private String appointment_date_h;
+
+    @Column(name="rmc_ord",nullable = true)
+    private String rmc_ord;
+
+    @Column(name="appointment_time",nullable = true)
+    private String appointment_time;
+
+    @Column(name="t_scheduleRuleNo",nullable = true)
+    private String t_schedule_ruleNo;
+
     @Column(name="appointment_Date")
     private String appointment_Date;
+
+    @Column(name="t_upd_user",nullable = true)
+    private String t_upd_user;
 
     @Column(name="userName")
     @Index(name="req_userName")
@@ -45,6 +63,16 @@ public class Request implements Serializable, AnnotatingModel {
 
     @Column(name="fileCurrentLocation")
     private String fileCurrentLocation;
+
+    @Column(name="cf_appointment_type",nullable = true)
+    private String cf_appointment_type;
+
+
+    @Column(name="ClinicName",nullable = true)
+    private String clinicName;
+
+    @Column(name="requestingDocName",nullable = true)
+    private String requestingDocName;
 
     @Column(name="ClinicCode")
     private String clinicCode;
@@ -55,10 +83,14 @@ public class Request implements Serializable, AnnotatingModel {
     @JoinColumn(name="assigned_To",nullable = true)
     private Employee assignedTo;
 
+    @Column(name = "Batch_Request_Number",nullable = true)
+    private String batchRequestNumber;
+
+    @Column(name="CsGroupCount",nullable = true)
+    private String csGroupCount;
+
 
     private transient boolean selected;
-
-
 
     public Request clone() {
 
@@ -73,6 +105,17 @@ public class Request implements Serializable, AnnotatingModel {
         newRequest.setPatientName(this.getPatientName());
         newRequest.setPatientNumber(this.getPatientNumber());
         newRequest.setUserName(this.getUserName());
+        newRequest.setBatchRequestNumber(this.getBatchRequestNumber());
+        newRequest.setCsGroupCount(this.getCsGroupCount());
+        newRequest.setAppointment_made_by(this.getAppointment_made_by());
+        newRequest.setAppointment_date_h(this.getAppointment_date_h());
+        newRequest.setCf_appointment_type(this.getCf_appointment_type());
+        newRequest.setRequestingDocName(this.getRequestingDocName());
+        newRequest.setClinicName(this.getClinicName());
+        newRequest.setRmc_ord(this.getRmc_ord());
+        newRequest.setAppointment_time(this.getAppointment_time());
+        newRequest.setT_schedule_ruleNo(this.getT_schedule_ruleNo());
+        newRequest.setT_upd_user(this.getT_upd_user());
 
         return newRequest;
     }
@@ -185,5 +228,93 @@ public class Request implements Serializable, AnnotatingModel {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public String getBatchRequestNumber() {
+        return batchRequestNumber;
+    }
+
+    public void setBatchRequestNumber(String batchRequestNumber) {
+        this.batchRequestNumber = batchRequestNumber;
+    }
+
+    public String getCsGroupCount() {
+        return csGroupCount;
+    }
+
+    public void setCsGroupCount(String csGroupCount) {
+        this.csGroupCount = csGroupCount;
+    }
+
+    public String getAppointment_made_by() {
+        return appointment_made_by;
+    }
+
+    public void setAppointment_made_by(String appointment_made_by) {
+        this.appointment_made_by = appointment_made_by;
+    }
+
+    public String getAppointment_date_h() {
+        return appointment_date_h;
+    }
+
+    public void setAppointment_date_h(String appointment_date_h) {
+        this.appointment_date_h = appointment_date_h;
+    }
+
+    public String getCf_appointment_type() {
+        return cf_appointment_type;
+    }
+
+    public void setCf_appointment_type(String cf_appointment_type) {
+        this.cf_appointment_type = cf_appointment_type;
+    }
+
+    public String getClinicName() {
+        return clinicName;
+    }
+
+    public void setClinicName(String clinicName) {
+        this.clinicName = clinicName;
+    }
+
+    public String getRequestingDocName() {
+        return requestingDocName;
+    }
+
+    public void setRequestingDocName(String requestingDocName) {
+        this.requestingDocName = requestingDocName;
+    }
+
+    public String getRmc_ord() {
+        return rmc_ord;
+    }
+
+    public void setRmc_ord(String rmc_ord) {
+        this.rmc_ord = rmc_ord;
+    }
+
+    public String getAppointment_time() {
+        return appointment_time;
+    }
+
+    public void setAppointment_time(String appointment_time) {
+        this.appointment_time = appointment_time;
+    }
+
+    public String getT_schedule_ruleNo() {
+        return t_schedule_ruleNo;
+    }
+
+    public void setT_schedule_ruleNo(String t_schedule_ruleNo) {
+        this.t_schedule_ruleNo = t_schedule_ruleNo;
+    }
+
+    public String getT_upd_user() {
+        return t_upd_user;
+    }
+
+    public void setT_upd_user(String t_upd_user) {
+        this.t_upd_user = t_upd_user;
     }
 }

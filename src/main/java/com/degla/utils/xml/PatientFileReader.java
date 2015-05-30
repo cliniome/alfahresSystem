@@ -3,6 +3,7 @@ package com.degla.utils.xml;
 import com.degla.beans.files.FileUploadWizardBean;
 import com.degla.db.models.Request;
 import com.degla.exceptions.RequestException;
+import com.degla.system.SystemService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,7 +17,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -24,7 +27,126 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class PatientFileReader {
 
-    private static final int NumberOfFields = 7;
+
+    private static final String[] REQUEST_FIELDS = {"PAT_NAME","RMC_NO","RMC_ORD",
+    "T_PAT_NO","T_APPT_DATE","T_APPT_TYPE","T_UPD_USER","T_APPT_TIME","T_SCHEDULE_RULE_NO",
+    "APPT_MADE_BY","APPT_DATE_H","USER_NAME","FILE_CURR_LOC","CF_APPT_TYPE"};
+
+    private static  String TEMP_CLINIC_NAME = "";
+    private static  String TEMP_CLINIC_DOC_NAME="";
+
+    private static Request request = new Request();
+
+
+
+    private static final int NumberOfFields = REQUEST_FIELDS.length;
+
+    private static final String[] BATCH_REQUEST_FIELDS = {"CLINIC_NAME","DOC_NAME","CS_GROUP_COUNT"};
+
+
+    private static String getBatchRequestField(String fieldName)
+    {
+        String foundField = null;
+
+        for(String field : BATCH_REQUEST_FIELDS)
+        {
+            if(field.toLowerCase().equals(fieldName.toLowerCase()))
+            {
+                foundField = field;
+                break;
+            }
+        }
+
+        return foundField;
+    }
+
+    private static Map<String,String> getRequestMappedFields()
+    {
+        Map<String,String> mappedFields = new HashMap<String, String>();
+        mappedFields.put("CLINIC_NAME","clinicName");
+        mappedFields.put("DOC_NAME","requestingDocName");
+        mappedFields.put("CS_GROUP_COUNT","csGroupCount");
+        mappedFields.put("T_CLINIC_CODE","clinicCode");
+        mappedFields.put("T_CLINIC_DOC_CODE","clinic_Doc_Code");
+
+        mappedFields.put("RMC_ORD","rmc_ord");
+        mappedFields.put("T_UPD_USER","t_upd_user");
+        mappedFields.put("T_APPT_TIME","appointment_time");
+        mappedFields.put("T_SCHEDULE_RULE_NO","t_schedule_ruleNo");
+        mappedFields.put("PAT_NAME","patientName");
+        mappedFields.put("RMC_NO","fileNumber");
+        mappedFields.put("T_PAT_NO","patientNumber");
+        mappedFields.put("T_APPT_DATE","appointment_Date");
+        mappedFields.put("T_APPT_TYPE","appointment_Type");
+        mappedFields.put("APPT_MADE_BY","appointment_made_by");
+        mappedFields.put("APPT_DATE_H","appointment_date_h");
+        mappedFields.put("USER_NAME","userName");
+        mappedFields.put("FILE_CURR_LOC","fileCurrentLocation");
+        mappedFields.put("CF_APPT_TYPE","cf_appointment_type");
+
+
+        return mappedFields;
+    }
+
+
+    private static  void autoRecursivelyBuildRequests(Node documentElement ,AtomicInteger controlNum,
+                                                     List<Request> requests)
+            throws NoSuchFieldException , IllegalAccessException , InvocationTargetException , NoSuchMethodException
+    {
+        if(controlNum.intValue() == NumberOfFields)
+        {
+            requests.add(request.clone());
+            request = new Request();
+            controlNum.set(0);
+        }
+
+        String elementName = documentElement.getNodeName();
+
+        String foundAttr = containsField(elementName);
+
+        if(foundAttr != null)
+        {
+            //get the attribute value
+            String attrValue = documentElement.getTextContent();
+            String mappedField = getRequestMappedFields().get(foundAttr);
+            //set the value of the attribute to the attribute member in the request object
+            boolean reflectingResult = setValueThroughReflection(request,mappedField,attrValue);
+
+           if(reflectingResult) controlNum.incrementAndGet();
+            else
+           {
+               System.out.println("Welcome mohamed");
+           }
+
+        }
+
+        NodeList nodes = documentElement.getChildNodes();
+
+        for(int i=0;i<nodes.getLength();i++)
+        {
+            Node currentNode = nodes.item(i);
+            if(currentNode.getNodeType() == Node.ELEMENT_NODE)
+                autoRecursivelyBuildRequests(currentNode, controlNum, requests);
+
+        }
+
+    }
+
+    private static String containsField(String fieldName)
+    {
+        String result = null;
+
+        for(String field : REQUEST_FIELDS)
+        {
+            if(field.equalsIgnoreCase(fieldName.toLowerCase()))
+            {
+                result = field;
+                break;
+            }
+        }
+
+        return result;
+    }
 
 
     public static List<String> readPatientFile(String patientFile) throws Exception
@@ -54,12 +176,28 @@ public class PatientFileReader {
 
         AtomicInteger controlNum = new AtomicInteger(0);
         Document currentDoc = buildDocument(bean.getUploadedFile());
-        recursivelyBuildRequests(currentDoc.getDocumentElement(),new Request(),bean,controlNum,requests);
+        String batchNumber = currentDoc.getDocumentElement().getNodeName();
+        //recursivelyBuildRequests(currentDoc.getDocumentElement(),new Request(),bean,controlNum,requests);
+       try
+       {
+           autoRecursivelyBuildRequests(currentDoc.getDocumentElement(),controlNum,requests);
 
+       }catch (Exception s)
+       {
+           s.printStackTrace();
+       }
+
+        for(Request currentRequest : requests)
+        {
+            currentRequest.setBatchRequestNumber(batchNumber);
+        }
         return requests;
 
 
     }
+
+
+
 
     private static void recursivelyBuildRequests(Node documentElement, Request request, FileUploadWizardBean bean,
                                                  AtomicInteger controlNum,List<Request> requests)
@@ -111,17 +249,7 @@ public class PatientFileReader {
 
         return true;
 
-       /* Class<?> type = request.getClass();
 
-        Field currentField = type.getDeclaredField(foundAttr);
-        currentField.setAccessible(true);
-
-        if(currentField != null)
-        {
-            currentField.set(request,attrValue);
-            return true;
-
-        }else return false;*/
     }
 
     private static String capitalize(final String line) {
