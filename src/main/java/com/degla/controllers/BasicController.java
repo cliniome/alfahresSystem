@@ -61,6 +61,7 @@ public class BasicController implements BasicRestfulOperations {
                     restFile.setAppointmentMadeBy(file.getCurrentStatus().getAppointment_Made_by());
                     restFile.setAppointmentTime(file.getCurrentStatus().getAppointment_Hijri_Date());
                     restFile.setBatchRequestNumber(file.getCurrentStatus().getBatchRequestNumber());
+                    restFile.setAppointmentType(file.getCurrentStatus().getAppointmentType());
 
                     availableFiles.add(restFile);
                 }
