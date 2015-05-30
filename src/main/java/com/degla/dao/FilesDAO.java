@@ -40,15 +40,15 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
      * @param query
      * @return
      */
-    public List<PatientFile> scanForFiles(String query)
+    public List<PatientFile> scanForFiles(String query,List<FileStates> states)
     {
         try
         {
             String queryString = "select f from PatientFile f where f.currentStatus.containerId=:query and " +
-                    "f.currentStatus.state != :state";
+                    "f.currentStatus.state IN (:states)";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("query",query);
-            currentQuery.setParameter("state", FileStates.MISSING);
+            currentQuery.setParameter("states",states);
 
             return currentQuery.getResultList();
 

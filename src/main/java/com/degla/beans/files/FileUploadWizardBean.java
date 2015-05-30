@@ -61,7 +61,8 @@ public class FileUploadWizardBean implements Serializable {
     {
         try
         {
-            List<Request> requests = PatientFileReader.buildRequests(this);
+            PatientFileReader fileReader = new PatientFileReader();
+            List<Request> requests = fileReader.buildRequests(this);
 
 
             //now route them to different employees
@@ -111,7 +112,8 @@ public class FileUploadWizardBean implements Serializable {
             {
                 this.setUploadedFile(writtenFile);
                 //read the file
-                List<String> fields = PatientFileReader.readPatientFile(writtenFile);
+                PatientFileReader fileReader = new PatientFileReader();
+                List<String> fields = fileReader.readPatientFile(writtenFile);
 
                 if(fields != null && fields.size() > 0)
                 {

@@ -26,16 +26,19 @@ public class FileHistory extends EntityEO {
     @Column(name="createdAt")
     @Temporal(TemporalType.TIMESTAMP)
 	private Date createdAt;
-	/**
-	 * This attribute identifies the temporary cabinet IDs which will hold files during the entire workflow
-	 * 
-	 * like temporary Cabinets , Distribution cabinets.....etc
-	 */
-    @Index(name="containerIdIndex")
+	@Index(name="containerIdIndex")
     @Column(name="containerId")
 	private String containerId;
+    @Column(name="Batch_Request_No",nullable = true)
+    private String batchRequestNumber;
+    @Column(name="appointment_Hijri_Date",nullable = true)
+    private String appointment_Hijri_Date;
+    @Column(name="Appointment_Made_by",nullable = true)
+    private String appointment_Made_by;
+    @Column(name="AppointmentType",nullable = true)
+    private String appointmentType;
     //TODO : Don't forget to map PatientFile in this Class
-    @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=PatientFile.class)
+    @ManyToOne
     @JoinColumn(name="patientFile")
 	private PatientFile patientFile;
     @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=Employee.class)
@@ -50,7 +53,12 @@ public class FileHistory extends EntityEO {
 		this.containerId = containerId;
 	}
 
-	public String getContainerId() {
+	/**
+	 * This attribute identifies the temporary cabinet IDs which will hold files during the entire workflow
+	 *
+	 * like temporary Cabinets , Distribution cabinets.....etc
+	 */
+    public String getContainerId() {
 		return this.containerId;
 	}
 
@@ -87,5 +95,37 @@ public class FileHistory extends EntityEO {
 
     public void setState(FileStates state) {
         this.state = state;
+    }
+
+    public String getBatchRequestNumber() {
+        return batchRequestNumber;
+    }
+
+    public void setBatchRequestNumber(String batchRequestNumber) {
+        this.batchRequestNumber = batchRequestNumber;
+    }
+
+    public String getAppointment_Hijri_Date() {
+        return appointment_Hijri_Date;
+    }
+
+    public void setAppointment_Hijri_Date(String appointment_Hijri_Date) {
+        this.appointment_Hijri_Date = appointment_Hijri_Date;
+    }
+
+    public String getAppointment_Made_by() {
+        return appointment_Made_by;
+    }
+
+    public void setAppointment_Made_by(String appointment_Made_by) {
+        this.appointment_Made_by = appointment_Made_by;
+    }
+
+    public String getAppointmentType() {
+        return appointmentType;
+    }
+
+    public void setAppointmentType(String appointmentType) {
+        this.appointmentType = appointmentType;
     }
 }

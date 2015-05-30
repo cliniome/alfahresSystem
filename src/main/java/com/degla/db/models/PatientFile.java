@@ -36,7 +36,9 @@ public class PatientFile extends EntityEO {
     @JoinColumn(name="Ar_cabinetID")
 	private ArchiveCabinet archiveCabinet;
 
-    @ManyToOne(cascade={REFRESH,MERGE,DETACH,PERSIST},fetch=FetchType.EAGER,targetEntity=FileHistory.class)
+    /*@ManyToOne(cascade={REFRESH,MERGE,DETACH,PERSIST},fetch=FetchType.EAGER,targetEntity=FileHistory.class)
+    @JoinColumn(name="currentStatus_ID")*/
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="currentStatus_ID")
 	private FileHistory currentStatus;
 

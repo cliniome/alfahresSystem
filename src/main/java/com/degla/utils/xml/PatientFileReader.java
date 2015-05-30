@@ -35,7 +35,7 @@ public class PatientFileReader {
     private static  String TEMP_CLINIC_NAME = "";
     private static  String TEMP_CLINIC_DOC_NAME="";
 
-    private static Request request = new Request();
+    private  Request request = new Request();
 
 
 
@@ -44,7 +44,7 @@ public class PatientFileReader {
     private static final String[] BATCH_REQUEST_FIELDS = {"CLINIC_NAME","DOC_NAME","CS_GROUP_COUNT"};
 
 
-    private static String getBatchRequestField(String fieldName)
+    private  String getBatchRequestField(String fieldName)
     {
         String foundField = null;
 
@@ -60,7 +60,7 @@ public class PatientFileReader {
         return foundField;
     }
 
-    private static Map<String,String> getRequestMappedFields()
+    private  Map<String,String> getRequestMappedFields()
     {
         Map<String,String> mappedFields = new HashMap<String, String>();
         mappedFields.put("CLINIC_NAME","clinicName");
@@ -89,7 +89,7 @@ public class PatientFileReader {
     }
 
 
-    private static  void autoRecursivelyBuildRequests(Node documentElement ,AtomicInteger controlNum,
+    private   void autoRecursivelyBuildRequests(Node documentElement ,AtomicInteger controlNum,
                                                      List<Request> requests)
             throws NoSuchFieldException , IllegalAccessException , InvocationTargetException , NoSuchMethodException
     {
@@ -132,7 +132,7 @@ public class PatientFileReader {
 
     }
 
-    private static String containsField(String fieldName)
+    private  String containsField(String fieldName)
     {
         String result = null;
 
@@ -149,7 +149,7 @@ public class PatientFileReader {
     }
 
 
-    public static List<String> readPatientFile(String patientFile) throws Exception
+    public  List<String> readPatientFile(String patientFile) throws Exception
     {
         List<String> fields = new ArrayList<String>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -162,7 +162,7 @@ public class PatientFileReader {
 
     }
 
-    private static Document buildDocument(String patientFile) throws Exception
+    private  Document buildDocument(String patientFile) throws Exception
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -170,7 +170,7 @@ public class PatientFileReader {
         return doc;
     }
 
-    public static List<Request> buildRequests(FileUploadWizardBean bean) throws  Exception
+    public  List<Request> buildRequests(FileUploadWizardBean bean) throws  Exception
     {
         List<Request> requests = new ArrayList<Request>();
 
@@ -199,7 +199,7 @@ public class PatientFileReader {
 
 
 
-    private static void recursivelyBuildRequests(Node documentElement, Request request, FileUploadWizardBean bean,
+    private  void recursivelyBuildRequests(Node documentElement, Request request, FileUploadWizardBean bean,
                                                  AtomicInteger controlNum,List<Request> requests)
             throws NoSuchFieldException , IllegalAccessException , InvocationTargetException , NoSuchMethodException
     {
@@ -236,7 +236,7 @@ public class PatientFileReader {
 
     }
 
-    private static boolean setValueThroughReflection(Request request, String foundAttr, String attrValue)
+    private  boolean setValueThroughReflection(Request request, String foundAttr, String attrValue)
             throws NoSuchFieldException,IllegalAccessException,InvocationTargetException,NoSuchMethodException {
 
 
@@ -252,11 +252,11 @@ public class PatientFileReader {
 
     }
 
-    private static String capitalize(final String line) {
+    private  String capitalize(final String line) {
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
-    private static void recursivelyReadDocument(Node documentElement, List<String> fields) {
+    private  void recursivelyReadDocument(Node documentElement, List<String> fields) {
 
         addField(documentElement.getNodeName(),fields);
 
@@ -273,7 +273,7 @@ public class PatientFileReader {
 
     }
 
-    private static void addField(String field,List<String> fields)
+    private  void addField(String field,List<String> fields)
     {
         if(!fields.contains(field))
             fields.add(field);

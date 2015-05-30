@@ -7,9 +7,11 @@ import com.degla.restful.models.BooleanResult;
 import com.degla.restful.models.RestfulFile;
 import com.degla.restful.models.RestfulRequest;
 import com.degla.restful.models.SyncBatch;
+import com.degla.restful.utils.EmployeeUtils;
 import com.degla.restful.utils.RestGsonBuilder;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
+import com.degla.utils.EmployeeLazyModel;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpServer;
 import org.springframework.security.core.Authentication;
@@ -47,18 +49,23 @@ public class FilesService {
         }
     }
 
-    @Path("/scan/{query}")
+    @Path("/scan")
     @GET
     @Produces("application/json")
-    public Response scanFiles(@PathParam("query") String query)
+    public Response scanFiles(@QueryParam("query") String query)
     {
         try
         {
+            Employee emp = getAccount();
+
+            if(emp == null)
+                return Response.status(UNAUTHORIZED).build();
+
             BasicController controller = new BasicController();
 
-            List<RestfulFile> files = controller.scanFiles(query);
+            List<RestfulFile> files = controller.scanFiles(query,EmployeeUtils.getScannableStates(emp));
 
-            if(files == null) throw new Exception();
+            if(files == null || files.size() <=0) throw new Exception("There are no Files for the Moment.");
 
             SyncBatch batch = new SyncBatch(files);
             batch.setCreatedAt(new Date().getTime());
@@ -69,7 +76,7 @@ public class FilesService {
 
         }catch (Exception s)
         {
-            return Response.ok(new BooleanResult(false,"There was an error, please try again")).build();
+            return Response.ok(new BooleanResult(false,s.getMessage())).build();
         }
     }
 

@@ -34,11 +34,11 @@ public class BasicController implements BasicRestfulOperations {
 
     }
 
-    public List<RestfulFile> scanFiles(String query)
+    public List<RestfulFile> scanFiles(String query,List<FileStates> states)
     {
         try
         {
-            List<PatientFile> existingFiles = systemService.getFilesService().scanForFiles(query);
+            List<PatientFile> existingFiles = systemService.getFilesService().scanForFiles(query,states);
 
             if(existingFiles != null && existingFiles.size() > 0)
             {
@@ -54,6 +54,13 @@ public class BasicController implements BasicRestfulOperations {
                     restFile.setShelfId(file.getShelfId());
                     restFile.setState(file.getCurrentStatus().getState().toString());
                     restFile.setTemporaryCabinetId(file.getCurrentStatus().getContainerId());
+                    restFile.setPatientName(file.getPatientName());
+                    restFile.setPatientNumber(file.getPatientNumber());
+                    restFile.setAppointmentDate(file.getCurrentStatus().getAppointment_Hijri_Date());
+                    restFile.setAppointmentDateH(file.getCurrentStatus().getAppointment_Hijri_Date());
+                    restFile.setAppointmentMadeBy(file.getCurrentStatus().getAppointment_Made_by());
+                    restFile.setAppointmentTime(file.getCurrentStatus().getAppointment_Hijri_Date());
+                    restFile.setBatchRequestNumber(file.getCurrentStatus().getBatchRequestNumber());
 
                     availableFiles.add(restFile);
                 }
@@ -130,7 +137,7 @@ public class BasicController implements BasicRestfulOperations {
 
                 if (patientFile != null) {
 
-                    if(!WorkflowValidator.canProceed(patientFile.getCurrentStatus().getState(),
+                   /* if(!WorkflowValidator.canProceed(patientFile.getCurrentStatus().getState(),
                             FileStates.valueOf(file.getState())))
                     {
                         String message =String.format("File: %s needs to be submitted by %s",
@@ -138,7 +145,7 @@ public class BasicController implements BasicRestfulOperations {
                                         .getFirstName(), patientFile.getCurrentStatus().getOwner().getLastName()));
 
                         throw new WorkflowOutOfBoundException(message);
-                    }
+                    }*/
 
                     this.addNewFileHistory(patientFile, file, emp);
 
@@ -206,7 +213,7 @@ public class BasicController implements BasicRestfulOperations {
 
                    if(patientFile != null)
                    {
-                       if(!(WorkflowValidator.canProceed(patientFile.getCurrentStatus().getState(),
+                      /* if(!(WorkflowValidator.canProceed(patientFile.getCurrentStatus().getState(),
                                FileStates.valueOf(file.getState()))))
                        {
                            String message =String.format("File: %s needs to be submitted by %s",
@@ -214,7 +221,7 @@ public class BasicController implements BasicRestfulOperations {
                                            .getFirstName(), patientFile.getCurrentStatus().getOwner().getLastName()));
 
                            throw new WorkflowOutOfBoundException(message);
-                       }
+                       }*/
 
                        this.addNewFileHistory(patientFile, file, emp);
 
@@ -233,7 +240,7 @@ public class BasicController implements BasicRestfulOperations {
 
                 if (patientFile != null) {
 
-                    if(!(WorkflowValidator.canProceed(patientFile.getCurrentStatus().getState(),
+                   /* if(!(WorkflowValidator.canProceed(patientFile.getCurrentStatus().getState(),
                             FileStates.valueOf(file.getState()))))
                     {
                         String message =String.format("File: %s needs to be submitted by %s",
@@ -241,7 +248,7 @@ public class BasicController implements BasicRestfulOperations {
                                         .getFirstName(), patientFile.getCurrentStatus().getOwner().getLastName()));
 
                         throw new WorkflowOutOfBoundException(message);
-                    }
+                    }*/
 
                     this.addNewFileHistory(patientFile, file, emp);
 
@@ -272,6 +279,10 @@ public class BasicController implements BasicRestfulOperations {
 
         history.setCreatedAt(new Date(file.getOperationDate()));
         history.setPatientFile(patientFile);
+        history.setAppointment_Hijri_Date(file.getAppointmentDateH());
+        history.setAppointment_Made_by(file.getAppointmentMadeBy());
+        history.setBatchRequestNumber(file.getBatchRequestNumber());
+        history.setAppointmentType(file.getAppointmentType());
         patientFile.setCurrentStatus(history);
     }
 
