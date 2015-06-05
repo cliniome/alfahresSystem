@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
+import static javax.persistence.CascadeType.*;
 @Entity(name="Employee")
 @Table(name="TBL_EMPLOYEE")
 @DiscriminatorValue("employee")
@@ -24,7 +24,7 @@ public class Employee extends ActorEO implements UserDetails {
     @Column(name="active")
     private boolean active = false;
 
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = {MERGE,REFRESH,DETACH})
     @JoinTable(name="TBL_EMP_CLINICS",joinColumns = {
              @JoinColumn(name="emp_id",referencedColumnName ="id")
     },inverseJoinColumns = {

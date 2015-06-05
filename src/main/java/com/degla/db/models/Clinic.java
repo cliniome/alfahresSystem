@@ -1,5 +1,6 @@
 package com.degla.db.models;
 
+import com.degla.utils.AnnotatingModel;
 import org.hibernate.annotations.Index;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.io.Serializable;
  */
 @Entity(name="Clinic")
 @Table(name="TBL_CLINICS")
-public class Clinic  {
+public class Clinic implements AnnotatingModel {
 
 
     @Id
@@ -22,6 +23,14 @@ public class Clinic  {
     @Index(name="ClinicCodeIdx")
     @Column(name="ClinicCode",nullable = false)
     private String clinicCode;
+
+    public Clinic(){}
+
+    public Clinic(String clinicName , String clinicCode)
+    {
+        this.setClinicName(clinicName);
+        this.setClinicCode(clinicCode);
+    }
 
     public int getId() {
         return id;
@@ -45,5 +54,11 @@ public class Clinic  {
 
     public void setClinicCode(String clinicCode) {
         this.clinicCode = clinicCode;
+    }
+
+    @Override
+    public Object getRowKey() {
+
+        return this.getId();
     }
 }

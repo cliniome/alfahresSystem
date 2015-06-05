@@ -15,11 +15,51 @@
 
             <c:set target="#{cssBean}" property="currentPageName" value="ShowClinics"/>
 
+            <h:form prependId="false">
+
+
             <p:panelGrid columns="1" id="ShowClinicsPane">
 
+                <p:dataTable rows="20" paginator="true" lazy="true"
+                             editable="true"
+                             selectionMode="single"
+                             selection="#{clinic}"
+                             rowKey="#{clinic}"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
+                         {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             value="#{clinicManagementBean.availableClinics}" var="clinic">
+
+                    <p:ajax event="rowSelect" update=":ShowClinicsPane"/>
+
+                    <f:facet name="header">
+                        <b>Available Clinics(<font color="red">#{clinicManagementBean.availableClinics.rowCount}</font>)</b>
+                    </f:facet>
+
+                    <p:column headerText="Clinic Name">
+                        <p:outputLabel value="#{clinic.clinicName}"/>
+                    </p:column>
+
+                    <p:column headerText="Clinic Code">
+                        <p:outputLabel value="#{clinic.clinicCode}"/>
+                    </p:column>
+
+                    <p:column headerText="Options...">
+
+                        <p:commandButton ajax="false"
+                                         value="Edit Clinic" action="#{clinicManagementBean.onSelectClinic}"
+                                         actionListener="#{clinicManagementBean.onShowClinic}">
+
+                            <f:param name="clinicId" value="#{clinic.id}"/>
+
+                        </p:commandButton>
+
+                    </p:column>
+                </p:dataTable>
 
 
             </p:panelGrid>
+
+            </h:form>
 
         </ui:define>
 
