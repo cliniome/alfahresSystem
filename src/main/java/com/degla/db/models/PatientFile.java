@@ -15,7 +15,7 @@ import static javax.persistence.CascadeType.*;
 /**
  * this class represents the patient file which will be stored and retrieved from the system.
  */
-@Entity
+@Entity(name="PatientFile")
 @Table(name="TBL_PATIENTFILE")
 @DiscriminatorValue("patientFile")
 public class PatientFile extends EntityEO {

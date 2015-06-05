@@ -13,7 +13,7 @@ import javax.persistence.*;
 
 import static javax.persistence.CascadeType.*;
 
-@Entity
+@Entity(name="ArchiveCabinet")
 @Table(name="TBL_ARCHIVECABINET")
 @DiscriminatorValue("cabinet")
 public class ArchiveCabinet extends EntityEO {

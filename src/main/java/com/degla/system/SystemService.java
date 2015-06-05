@@ -35,7 +35,8 @@ public class SystemService {
     private RequestsDAO requestsManager;
     @Autowired
     private FileRouter fileRouter;
-
+    @Autowired
+    private ClinicDAO clinicManager;
 
 
 
@@ -127,4 +128,11 @@ public class SystemService {
     }
 
 
+    public ClinicDAO getClinicManager() {
+        return clinicManager;
+    }
+
+    public void setClinicManager(ClinicDAO clinicManager) {
+        this.clinicManager = clinicManager;
+    }
 }

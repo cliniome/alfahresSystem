@@ -10,10 +10,12 @@
 
 <ui:composition template="../fragments/masterLayout.xhtml">
 
-    <c:set target="#{cssBean}" property="currentPageName" value="SearchRequests"/>
+
 
 
     <ui:define name="mainContents">
+
+        <c:set target="#{cssBean}" property="currentPageName" value="SearchRequests"/>
 
         <h:form id="searchRequestsForm" prependId="false">
 

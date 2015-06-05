@@ -5,15 +5,12 @@ import org.hibernate.annotations.Index;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Entity
+@Entity(name="Employee")
 @Table(name="TBL_EMPLOYEE")
 @DiscriminatorValue("employee")
 public class Employee extends ActorEO implements UserDetails {
@@ -26,6 +23,15 @@ public class Employee extends ActorEO implements UserDetails {
 
     @Column(name="active")
     private boolean active = false;
+
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinTable(name="TBL_EMP_CLINICS",joinColumns = {
+             @JoinColumn(name="emp_id",referencedColumnName ="id")
+    },inverseJoinColumns = {
+
+            @JoinColumn(name = "clinic_id",referencedColumnName = "id")
+    })
+    private List<Clinic> clinics;
 
 
 	/**
@@ -87,5 +93,13 @@ public class Employee extends ActorEO implements UserDetails {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public List<Clinic> getClinics() {
+        return clinics;
+    }
+
+    public void setClinics(List<Clinic> clinics) {
+        this.clinics = clinics;
     }
 }

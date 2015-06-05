@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * Created by snouto on 15/05/15.
  */
-@Entity
+@Entity(name="Request")
 @Table(name="TBL_REQUESTS")
 @DiscriminatorValue("Request")
 public class Request implements Serializable, AnnotatingModel {

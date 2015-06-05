@@ -15,7 +15,7 @@ import static javax.persistence.CascadeType.REFRESH;
 /**
  * This class represents a file History and also the current status of a patient file
  */
-@Entity
+@Entity(name="FileHistory")
 @Table(name="TBL_FILEHISTORY")
 @DiscriminatorValue("fileHistory")
 public class FileHistory extends EntityEO {

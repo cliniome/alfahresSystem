@@ -11,7 +11,7 @@ import static javax.persistence.CascadeType.*;
  * 
  * It contains generic shared properties among different employees.
  */
-@Entity
+@Entity(name="ActorEO")
 @Table(name="TBL_ACTOR")
 @DiscriminatorValue("ACTOR")
 public abstract class ActorEO extends EntityEO {

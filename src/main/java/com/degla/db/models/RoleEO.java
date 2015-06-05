@@ -17,7 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 
 
-@Entity
+@Entity(name="RoleEO")
 @Table(name="TBL_ROLE")
 @DiscriminatorValue("ROLE")
 public class RoleEO extends EntityEO implements GrantedAuthority , Serializable {
