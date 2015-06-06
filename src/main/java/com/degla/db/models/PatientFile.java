@@ -141,6 +141,20 @@ public class PatientFile extends EntityEO {
         file.setShelfId(this.getShelfId());
         file.setState(this.getCurrentStatus().getState().toString());
         file.setTemporaryCabinetId(this.getCurrentStatus().getContainerId());
+        file.setAppointmentDate(this.getCurrentStatus().getAppointment_Hijri_Date());
+        file.setAppointmentDateH(this.getCurrentStatus().getAppointment_Hijri_Date());
+        file.setAppointmentMadeBy(this.getCurrentStatus().getAppointment_Made_by());
+        file.setAppointmentTime(this.getCurrentStatus().getAppointment_Hijri_Date());
+        file.setAppointmentType(this.getCurrentStatus().getAppointmentType());
+        file.setBatchRequestNumber(this.getCurrentStatus().getBatchRequestNumber());
+        file.setClinicCode(this.getCurrentStatus().getClinicCode());
+        file.setClinicDocCode(this.getCurrentStatus().getClinicDocCode());
+        file.setClinicDocName(this.getCurrentStatus().getClinicDocName());
+        file.setClinicName(this.getCurrentStatus().getClinicName());
+        file.setPatientName(this.getPatientName());
+        file.setPatientNumber(this.getPatientNumber());
+        file.setState(this.getCurrentStatus().getState().toString());
+
 
         return file;
     }

@@ -1,5 +1,7 @@
 package com.degla.dao;
 
+import com.degla.db.models.Clinic;
+import com.degla.db.models.Employee;
 import com.degla.db.models.FileStates;
 import com.degla.db.models.PatientFile;
 import com.degla.restful.models.FileModelStates;
@@ -32,6 +34,35 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             return null;
         }
 
+    }
+
+
+    public List<PatientFile> collectFiles(Employee coordinator)
+    {
+        try
+        {
+            List<String> clinics = new ArrayList<String>();
+
+            if(coordinator.getClinics() != null)
+            {
+                for(Clinic current : coordinator.getClinics())
+                {
+                    clinics.add(current.getClinicCode().trim());
+                }
+            }
+            String queryString = "select f from PatientFile f where f.currentStatus.clinicCode IN (:clinics) and " +
+                    " f.currentStatus.state =:state and f.currentStatus.owner.id = :id";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("clinics",clinics);
+            currentQuery.setParameter("state",FileStates.COORDINATOR_IN);
+            currentQuery.setParameter("id",coordinator.getId());
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<PatientFile>();
+        }
     }
 
     /**

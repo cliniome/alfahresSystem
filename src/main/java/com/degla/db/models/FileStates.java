@@ -9,7 +9,8 @@ public enum FileStates {
 	, RECEPTIONIST_OUT(9)
 	, KEEPER_IN(13)
 	, COORDINATOR_IN(10)
-	, COORDINATOR_OUT(11);
+	, COORDINATOR_OUT(12)
+	, DISTRIBUTED(11);
 
 	private int step;
 

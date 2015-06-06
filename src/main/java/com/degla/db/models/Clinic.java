@@ -61,4 +61,9 @@ public class Clinic implements AnnotatingModel {
 
         return this.getId();
     }
+
+    @Override
+    public String toString() {
+        return this.getClinicCode();
+    }
 }

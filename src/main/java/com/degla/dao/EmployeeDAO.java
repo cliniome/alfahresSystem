@@ -31,8 +31,10 @@ public class EmployeeDAO extends AbstractDAO<Employee> {
         query.setParameter("rolename", roleName);
 
         return query.getResultList();
-
     }
+
+
+
 
 
 

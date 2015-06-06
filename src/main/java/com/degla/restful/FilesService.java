@@ -1,12 +1,11 @@
 package com.degla.restful;
 import com.degla.controllers.BasicController;
 import com.degla.db.models.Employee;
+import com.degla.db.models.PatientFile;
+import com.degla.db.models.RoleTypes;
 import com.degla.exceptions.RecordNotFoundException;
 import com.degla.exceptions.WorkflowOutOfBoundException;
-import com.degla.restful.models.BooleanResult;
-import com.degla.restful.models.RestfulFile;
-import com.degla.restful.models.RestfulRequest;
-import com.degla.restful.models.SyncBatch;
+import com.degla.restful.models.*;
 import com.degla.restful.utils.EmployeeUtils;
 import com.degla.restful.utils.RestGsonBuilder;
 import com.degla.system.SpringSystemBridge;
@@ -19,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import sun.misc.BASE64Encoder;
 import static javax.ws.rs.core.Response.Status.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -138,6 +138,93 @@ public class FilesService {
             }
 
         }
+    }
+
+
+    @Path("/collect")
+    @POST
+    @Produces("application/json")
+    public Response collectFiles()
+    {
+        try
+        {
+            //get the current Employee account
+            Employee currentEmp = getAccount();
+
+            if(currentEmp == null ||
+                    !currentEmp.getRole().getName()
+                            .equalsIgnoreCase(RoleTypes.COORDINATOR.toString()))
+
+                return Response.status(UNAUTHORIZED).build();
+
+            if(systemService == null)
+                systemService = SpringSystemBridge.services();
+
+            List<PatientFile> availableFiles = systemService.getFilesService().collectFiles(currentEmp);
+
+            if(availableFiles != null && availableFiles.size() > 0)
+            {
+                CollectionBatch batch  = new CollectionBatch();
+
+                List<RestfulClinic> clinics = new ArrayList<RestfulClinic>();
+
+                for(PatientFile file : availableFiles)
+                {
+                    RestfulClinic currentClinic = getRestfulClinicByCode(file.getCurrentStatus().getClinicCode(),clinics);
+
+                    if(currentClinic == null)
+                    {
+                        RestfulClinic clinic = new RestfulClinic();
+                        clinic.setClinicCode(file.getCurrentStatus().getClinicCode());
+                        clinic.setClinicName(file.getCurrentStatus().getClinicName());
+                        clinic.getFiles().add(file.toRestfulFile());
+
+                        //now add it to the current clinics list
+                        clinics.add(clinic);
+                    }else
+                    {
+                        //add the current file to the current clinic
+                        currentClinic.getFiles().add(file.toRestfulFile());
+                    }
+                }
+
+                //once , this is done , now add it to the collection batch
+                batch.setCreatedAt(new Date().getTime());
+                batch.setClinics(clinics);
+
+                //now return the response
+                return Response.ok(batch).build();
+
+
+            }else
+            {
+                return  Response.ok(new BooleanResult(false,"There are no Files to collect For the Moment.")).build();
+            }
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return Response.status(UNAUTHORIZED).build();
+        }
+    }
+
+    private RestfulClinic getRestfulClinicByCode(String clinicCode,List<RestfulClinic> clinics)
+    {
+        RestfulClinic clinic = null;
+
+        for(RestfulClinic current : clinics)
+        {
+            if(current.getClinicCode().equalsIgnoreCase(clinicCode))
+            {
+                clinic = current;
+                break;
+            }
+        }
+
+        return clinic;
+
+
     }
 
 
