@@ -48,14 +48,16 @@
                                 <div class="control-group">
                                     <label class="control-label" for="userName">User Name</label>
                                     <div class="controls">
-                                        <h:inputText styleClass="input-xlarge" required="true" requiredMessage="User Name is required"
+                                        <h:inputText styleClass="input-xlarge"
+                                                     readonly="true"
+                                                     required="true" requiredMessage="User Name is required"
                                                      id="userName" value="#{registrationBean.updateableEmployee.userName}"/>
                                     </div>
                                 </div>
                                 <div class="control-group">
                                     <label class="control-label" for="password">Password</label>
                                     <div class="controls">
-                                        <h:inputSecret required="true" requiredMessage="Password is required"
+                                        <h:inputSecret required="true" requiredMessage="Password is required" redisplay="true"
                                                        styleClass="input-xlarge" id="password" value="#{registrationBean.updateableEmployee.password}"/>
                                     </div>
                                 </div>
@@ -83,6 +85,49 @@
                                         <h:selectBooleanCheckbox id="active" value="#{registrationBean.updateableEmployee.active}"/>
                                     </div>
                                 </div>
+
+
+                                <div class="control-group" >
+                                    <p:outputLabel rendered="#{registrationBean.returnUpdateableCoordinator()}"
+                                                   styleClass="control-label" for="clinics">Clinics</p:outputLabel>
+                                    <div class="controls">
+                                        <p:dataTable rendered="#{registrationBean.returnUpdateableCoordinator()}"
+                                                     id="clinics" value="#{registrationBean.updateableEmployee.clinics}"
+                                                     var="clinic">
+                                            <f:facet name="header">
+                                                <p:toolbar >
+                                                    <p:toolbarGroup align="left">
+                                                        <p:commandButton immediate="true" actionListener="#{registrationBean.openSelectClinicDialog}"
+                                                                         value="Add Clinic">
+
+                                                            <p:ajax event="dialogReturn" listener="#{registrationBean.onUpdateableEmployeeClinicChosen}"
+                                                                    update="clinics"/>
+                                                        </p:commandButton>
+                                                    </p:toolbarGroup>
+                                                </p:toolbar>
+                                            </f:facet>
+
+                                            <p:column headerText="Clinic Name">
+                                                <p:outputLabel value="#{clinic.clinicName}"></p:outputLabel>
+                                            </p:column>
+
+                                            <p:column headerText="Clinic Code">
+                                                <p:outputLabel value="#{clinic.clinicCode}"/>
+                                            </p:column>
+                                            <p:column headerText="Options...">
+                                                <h:panelGrid columns="2">
+                                                    <p:commandButton value="Delete Clinic" immediate="true" ajax="false"
+                                                                     actionListener="#{registrationBean.onDeleteUpdateableEmployeeClinic(clinic)}">
+
+                                                    </p:commandButton>
+                                                </h:panelGrid>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </div>
+                                </div>
+
+
+
                                 <div class="form-actions">
                                     <p:commandButton ajax="false"  actionListener="#{registrationBean.onUpdate}" update="growl"
                                                      styleClass="btn btn-success btn-large" value="Update User"/>

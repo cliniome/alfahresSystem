@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Choose Clinics</title>
+    <style type="text/css">
+        .ui-widget {
+            font-size: 90%;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <h:form>
+
+        <p:dataTable var="clinic" rows="10"
+
+                     paginator="true" value="#{registrationBean.clinics}" widgetVar="selectClinic" id="selectClinic"
+                      editable="true">
+
+            <p:column headerText="Clinic Name">
+                <p:outputLabel value="#{clinic.clinicName}"/>
+            </p:column>
+
+            <p:column headerText="Clinic Code">
+                <p:outputLabel value="#{clinic.clinicCode}"/>
+            </p:column>
+
+            <p:column headerText="Select Clinic" >
+
+                <p:commandButton icon="ui-icon-search" actionListener="#{registrationBean.selectClinicFromDialog(clinic)}"/>
+
+            </p:column>
+        </p:dataTable>
+
+    </h:form>
+
+</h:body>
+
+</html>

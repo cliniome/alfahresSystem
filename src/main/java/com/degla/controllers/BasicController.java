@@ -38,7 +38,7 @@ public class BasicController implements BasicRestfulOperations {
     {
         try
         {
-            List<PatientFile> existingFiles = systemService.getFilesService().scanForFiles(query,states);
+            List<PatientFile> existingFiles = systemService.getFilesService().scanForFiles(query, states);
 
             if(existingFiles != null && existingFiles.size() > 0)
             {
@@ -169,10 +169,22 @@ public class BasicController implements BasicRestfulOperations {
                     //Create a new Patient File
                     PatientFile newPatientFile = new PatientFile();
                     //create a new file cabinet
-                    ArchiveCabinet cabinet = new ArchiveCabinet();
-                    cabinet.setCabinetID(file.getCabinetId());
-                    cabinet.setCreationTime(new Date());
-                    newPatientFile.setArchiveCabinet(cabinet);
+                    ArchiveCabinet cabinet = null;
+
+                    cabinet = systemService.getCabinetsService().getCabinetByID(file.getCabinetId());
+
+                    if(cabinet != null)
+                    {
+                        newPatientFile.setArchiveCabinet(cabinet);
+
+                    }else
+                    {
+                        cabinet = new ArchiveCabinet();
+                        cabinet.setCabinetID(file.getCabinetId());
+                        cabinet.setCreationTime(new Date());
+                        newPatientFile.setArchiveCabinet(cabinet);
+                    }
+
                     newPatientFile.setCreationTime(new Date());
                     newPatientFile.setFileID(file.getFileNumber());
                     newPatientFile.setShelfId(file.getShelfId());

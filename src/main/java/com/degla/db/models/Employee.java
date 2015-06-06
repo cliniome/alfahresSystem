@@ -24,7 +24,7 @@ public class Employee extends ActorEO implements UserDetails {
     @Column(name="active")
     private boolean active = false;
 
-    @ManyToMany(fetch = FetchType.LAZY,cascade = {MERGE,REFRESH,DETACH})
+    @ManyToMany(fetch = FetchType.EAGER,cascade = {MERGE,REFRESH,DETACH,REMOVE})
     @JoinTable(name="TBL_EMP_CLINICS",joinColumns = {
              @JoinColumn(name="emp_id",referencedColumnName ="id")
     },inverseJoinColumns = {
@@ -32,6 +32,12 @@ public class Employee extends ActorEO implements UserDetails {
             @JoinColumn(name = "clinic_id",referencedColumnName = "id")
     })
     private List<Clinic> clinics;
+
+
+    public Employee(){
+
+        clinics = new ArrayList<Clinic>();
+    }
 
 
 	/**

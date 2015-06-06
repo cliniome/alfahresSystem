@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <f:view>
@@ -26,7 +27,8 @@
                     <div class="page-header">
                         <h1>New Employee <small>Employee registration</small></h1>
                     </div>
-                    <h:form class="form-horizontal" prependId="false">
+                    <h:form id="parentContainer" class="form-horizontal" prependId="false">
+                        <c:set target="#{cssBean}" property="currentPageName" value="EditEmployee"/>
                         <!--<p:growl id="growl" life="2000"  />-->
                         <fieldset>
                             <p:messages  showDetail="true" id="growl" closable="true" showSummary="false"/>
@@ -69,12 +71,16 @@
                             <div class="control-group">
                                 <label class="control-label" for="role">Role</label>
                                 <div class="controls">
-                                    <h:selectOneMenu required="true" requiredMessage="Role is required"
+                                    <p:selectOneMenu
+                                                     required="true" requiredMessage="Role is required"
+
                                                      value="#{registrationBean.chosenRole}" id="role">
+                                        <p:ajax event="change" listener="#{registrationBean.onRoleChanged}"
+                                                update="parentContainer"/>
                                         <f:selectItems  value="#{registrationBean.roles}"
                                                 var="role" itemLabel="#{role.displayName}"  itemValue="#{role}"/>
                                         <f:converter converterId="com.degla.converters.RoleConverter"/>
-                                    </h:selectOneMenu>
+                                    </p:selectOneMenu>
                                 </div>
                             </div>
                             <div class="control-group">
@@ -83,10 +89,51 @@
                                     <h:selectBooleanCheckbox id="active" value="#{registrationBean.active}"/>
                                 </div>
                             </div>
+
+                            <div class="control-group" >
+                                <p:outputLabel rendered="#{registrationBean.coordinator}"
+                                               styleClass="control-label" for="clinics">Clinics</p:outputLabel>
+                                <div class="controls">
+                                    <p:dataTable rendered="#{registrationBean.coordinator}"
+                                                 id="clinics" value="#{registrationBean.chosenClinics}"
+                                                 var="clinic">
+                                        <f:facet name="header">
+                                            <p:toolbar >
+                                                <p:toolbarGroup align="left">
+                                                    <p:commandButton immediate="true" actionListener="#{registrationBean.openSelectClinicDialog}"
+                                                                     value="Add Clinic">
+
+                                                        <p:ajax event="dialogReturn" listener="#{registrationBean.onClinicChosen}"
+                                                                update="clinics"/>
+                                                    </p:commandButton>
+                                                </p:toolbarGroup>
+                                            </p:toolbar>
+                                        </f:facet>
+
+                                        <p:column headerText="Clinic Name">
+                                            <p:outputLabel value="#{clinic.clinicName}"></p:outputLabel>
+                                        </p:column>
+
+                                        <p:column headerText="Clinic Code">
+                                            <p:outputLabel value="#{clinic.clinicCode}"/>
+                                        </p:column>
+                                        <p:column headerText="Options...">
+                                            <h:panelGrid columns="2">
+                                                <p:commandButton value="Delete Clinic" immediate="true" ajax="false"
+                                                                 actionListener="#{registrationBean.onDeleteClinic(clinic)}">
+
+                                                </p:commandButton>
+                                            </h:panelGrid>
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </div>
                             <div class="form-actions">
                                 <p:commandButton ajax="false"  actionListener="#{registrationBean.onRegister}" update="growl"
                                                  styleClass="btn btn-success btn-large" value="Save User"/>
-                                <a class="btn" href="ShowEmployees.xhtml">Cancel</a>
+                                <!--<a class="btn" href="ShowEmployees.xhtml">Cancel</a>-->
+                                <p:commandLink immediate="true" styleClass="btn" ajax="false"
+                                               action="#{registrationBean.onCancel}">Cancel</p:commandLink>
                             </div>
                         </fieldset>
                     </h:form>

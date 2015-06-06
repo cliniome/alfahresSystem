@@ -13,59 +13,55 @@
 
         <ui:define name="mainContents">
 
+            <c:set target="#{cssBean}" property="currentPageName" value="ShowEmployees"/>
 
-            <c:set target="#{cssBean}" property="currentPageName" value="Employees"/>
+            <h:form prependId="false">
 
-            <h:panelGrid columns="1" id="employeesTable">
-            <p:dataTable rows="2" paginator="true" lazy="true"
-                         editable="true"
-                         selectionMode="single"
-                         selection="#{emp}"
-                         rowKey="#{emp}"
-                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
+
+                <p:panelGrid columns="1" id="ShowClinicsPane">
+
+                    <p:dataTable rows="20" paginator="true" lazy="true"
+                                 editable="true"
+                                 selectionMode="single"
+                                 selection="#{emp}"
+                                 rowKey="#{emp}"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                          {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         value="#{showEmployeeBean.employees}" var="emp">
+                                 value="#{showEmployeeBean.employees}" var="emp">
 
-                <p:ajax event="rowSelect" update=":employeesTable"/>
+                        <p:ajax event="rowSelect" update=":ShowClinicsPane"/>
 
-                <f:facet name="header">
-                    <b>Available Employees(<font color="red">#{showEmployeeBean.employees.rowCount}</font>)</b>
-                </f:facet>
+                        <f:facet name="header">
+                            <b>Available Employees(<font color="red">#{showEmployeeBean.employees.rowCount}</font>)</b>
+                        </f:facet>
+
+                        <p:column headerText="First Name">
+                            <p:outputLabel value="#{emp.firstName}"/>
+                        </p:column>
+
+                        <p:column headerText="Last Name">
+                            <p:outputLabel value="#{emp.lastName}"/>
+                        </p:column>
+
+                        <p:column headerText="User Name">
+                            <p:outputLabel value="#{emp.userName}"/>
+                        </p:column>
+
+                        <p:column headerText="Options...">
+
+                            <a href="UpdateEmployee.xhtml?id=#{emp.id}">Edit Employee</a>
+
+                        </p:column>
+                    </p:dataTable>
 
 
-                <p:column headerText="First Name">
-                    <p:outputLabel value="#{emp.firstName}"></p:outputLabel>
-                </p:column>
+                </p:panelGrid>
 
-                <p:column headerText="Last Name">
-                    <p:outputLabel value="#{emp.lastName}"/>
-                </p:column>
-
-                <p:column headerText="Employee ID">
-                    <p:outputLabel value="#{emp.empID}"/>
-                </p:column>
-
-                <p:column headerText="User Name">
-                    <p:outputLabel value="#{emp.userName}"/>
-                </p:column>
-
-                <p:column headerText="Role">
-                    <p:outputLabel value="#{emp.role.displayName}"/>
-                </p:column>
-                <p:column headerText="Options...">
-                   <h:form prependId="false">
-                       <p:commandButton ajax="false" value="Edit..." action="#{registrationBean.onEdit}">
-                           <f:param name="empID" value="#{emp.id}"/>
-                       </p:commandButton>
-                   </h:form>
-                </p:column>
-
-             </p:dataTable>
-            </h:panelGrid>
-
+            </h:form>
 
         </ui:define>
 
     </ui:composition>
+
 </f:view>
 </html>
