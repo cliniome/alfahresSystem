@@ -22,7 +22,7 @@ public class PatientFile extends EntityEO {
 
 
     @Index(name="fileIdIndex")
-    @Column(name="fileID")
+    @Column(name="fileID",unique = true)
 	private String fileID;
     @Column(name="description",nullable = true)
 	private String description;

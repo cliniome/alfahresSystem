@@ -114,6 +114,7 @@ public class BasicController implements BasicRestfulOperations {
                     request.setClinicDocCode(current.getClinic_Doc_Code());
                     request.setClinicDocName(current.getRequestingDocName());
                     request.setClinicName(current.getClinicName());
+                    request.setState(FileStates.NEW.toString());
 
                     availableRequests.add(request);
                 }

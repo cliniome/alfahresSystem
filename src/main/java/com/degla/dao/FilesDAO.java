@@ -54,7 +54,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
                     " f.currentStatus.state =:state and f.currentStatus.owner.id = :id";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("clinics",clinics);
-            currentQuery.setParameter("state",FileStates.COORDINATOR_IN);
+            currentQuery.setParameter("state",FileStates.DISTRIBUTED);
             currentQuery.setParameter("id",coordinator.getId());
             return currentQuery.getResultList();
 
@@ -86,6 +86,25 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         }catch (Exception s)
         {
             return new ArrayList<PatientFile>();
+        }
+    }
+
+    public List<PatientFile> getFilesByStateAndEmployee(FileStates state , Employee emp)
+    {
+        try
+        {
+            String queryString = "select f from PatientFile f where f.currentStatus.state=:state AND f.currentStatus.owner.id" +
+                    " = :id";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("state",state);
+            currentQuery.setParameter("id",emp.getId());
+
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return null;
         }
     }
 

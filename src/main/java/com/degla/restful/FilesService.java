@@ -1,6 +1,7 @@
 package com.degla.restful;
 import com.degla.controllers.BasicController;
 import com.degla.db.models.Employee;
+import com.degla.db.models.FileStates;
 import com.degla.db.models.PatientFile;
 import com.degla.db.models.RoleTypes;
 import com.degla.exceptions.RecordNotFoundException;
@@ -47,6 +48,53 @@ public class FilesService {
         {
             s.printStackTrace();
         }
+    }
+
+    @Path("/distribute")
+    @Produces("application/json")
+    @GET
+    public Response distributedFiles()
+    {
+
+        try
+        {
+            Employee emp = getAccount();
+
+            if(emp == null)
+                return Response.status(UNAUTHORIZED).build();
+            else
+            {
+                if(systemService == null)
+                    systemService = SpringSystemBridge.services();
+
+                List<PatientFile> files = systemService.getFilesService().getFilesByStateAndEmployee(
+                        FileStates.COORDINATOR_IN,emp);
+
+                if(files == null) files = new ArrayList<PatientFile>();
+
+                List<RestfulFile> restFiles = new ArrayList<RestfulFile>();
+
+                for(PatientFile file : files)
+                {
+                    restFiles.add(file.toRestfulFile());
+                }
+
+                //now create a sync Batch
+                SyncBatch batch = new SyncBatch(restFiles);
+                batch.setCreatedAt(new Date().getTime());
+                batch.setState(true);
+
+                //now return the sync Batch
+                return Response.ok(batch).build();
+
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
     }
 
     @Path("/scan")
