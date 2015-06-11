@@ -34,7 +34,7 @@ import javax.ws.rs.core.SecurityContext;
  */
 // The Java class will be hosted at the URI path "/helloworld"
 @Path("/files")
-public class FilesService {
+public class FilesService extends BasicRestful {
 
     private SystemService systemService;
 
@@ -309,7 +309,7 @@ public class FilesService {
     }
 
 
-    private Employee getAccount()
+   /* private Employee getAccount()
     {
        try
        {
@@ -328,7 +328,7 @@ public class FilesService {
        {
            return null;
        }
-    }
+    }*/
 
     @Path("/new")
     @GET

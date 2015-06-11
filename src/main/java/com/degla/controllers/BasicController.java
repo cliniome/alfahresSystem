@@ -131,164 +131,81 @@ public class BasicController implements BasicRestfulOperations {
     }
 
     @Override
-    public boolean updateFile(RestfulFile file, Employee emp) throws
-            RecordNotFoundException,WorkflowOutOfBoundException{
+    public boolean updateFile(RestfulFile file, Employee emp)
+            throws RecordNotFoundException, WorkflowOutOfBoundException {
 
+        try
+        {
+            //First check to see if the request is found
+            Request foundRequest = systemService.getRequestsManager().getRequestByBatchNumber(
+                    file.getFileNumber(),file.getBatchRequestNumber());
 
-        try {
-            if (file.getState() != null && FileStates.valueOf(file.getState()) == FileStates.CHECKED_OUT)
+            if(foundRequest != null)
             {
-                //Step one : to select the request that contains that file number
-                Request currentRequest = systemService.getRequestsManager()
-                        .getSingleRequest(file.getFileNumber());
+                //That means the current restful file is just checked out from the keeper
+                //Create a new Patient File
+                PatientFile newPatientFile = new PatientFile();
+                //create a new file cabinet
+                ArchiveCabinet cabinet = null;
 
-                //Step Two : Check to see if the file Exists
-                PatientFile patientFile = systemService.getFilesService()
-                        .getFileWithNumber(file.getFileNumber());
+                cabinet = systemService.getCabinetsService().getCabinetByID(file.getCabinetId());
 
-                if (patientFile != null) {
+                if(cabinet != null)
+                {
+                    newPatientFile.setArchiveCabinet(cabinet);
 
-                   /* if(!WorkflowValidator.canProceed(patientFile.getCurrentStatus().getState(),
-                            FileStates.valueOf(file.getState())))
-                    {
-                        String message =String.format("File: %s needs to be submitted by %s",
-                                patientFile.getFileID(),String.format("%s %s", patientFile.getCurrentStatus().getOwner()
-                                        .getFirstName(), patientFile.getCurrentStatus().getOwner().getLastName()));
-
-                        throw new WorkflowOutOfBoundException(message);
-                    }*/
-
-                    this.addNewFileHistory(patientFile, file, emp);
-
-                    boolean result = systemService.getFilesService().updateEntity(patientFile);
-
-                    if (result)
-                        return systemService.getRequestsManager().removeEntity(currentRequest);
-                    else return false;
-
-                } else {
-                    //Create a new Patient File
-                    PatientFile newPatientFile = new PatientFile();
-                    //create a new file cabinet
-                    ArchiveCabinet cabinet = null;
-
-                    cabinet = systemService.getCabinetsService().getCabinetByID(file.getCabinetId());
-
-                    if(cabinet != null)
-                    {
-                        newPatientFile.setArchiveCabinet(cabinet);
-
-                    }else
-                    {
-                        cabinet = new ArchiveCabinet();
-                        cabinet.setCabinetID(file.getCabinetId());
-                        cabinet.setCreationTime(new Date());
-                        newPatientFile.setArchiveCabinet(cabinet);
-                    }
-
-                    newPatientFile.setCreationTime(new Date());
-                    newPatientFile.setFileID(file.getFileNumber());
-                    newPatientFile.setShelfId(file.getShelfId());
-                    newPatientFile.setPatientName(currentRequest.getPatientName());
-                    newPatientFile.setPatientNumber(currentRequest.getPatientNumber());
-                    this.addNewFileHistory(newPatientFile, file, emp);
-
-                    boolean result = systemService.getFilesService().addEntity(newPatientFile);
-
-                    if (result) {
-                        //now remove the current request
-                        return systemService.getRequestsManager().removeEntity(currentRequest);
-
-                    } else return false;
-
+                }else
+                {
+                    cabinet = new ArchiveCabinet();
+                    cabinet.setCabinetID(file.getCabinetId());
+                    cabinet.setCreationTime(new Date());
+                    newPatientFile.setArchiveCabinet(cabinet);
                 }
-            }else if (file.getState() != null &&
-                    file.getState().equals(FileModelStates.MISSING.toString())){
 
-                //Step one : to select the request that contains that file number
-                Request currentRequest = systemService.getRequestsManager()
-                        .getSingleRequest(file.getFileNumber());
+                newPatientFile.setCreationTime(new Date());
+                newPatientFile.setFileID(file.getFileNumber());
+                newPatientFile.setShelfId(file.getShelfId());
+                newPatientFile.setPatientName(foundRequest.getPatientName());
+                newPatientFile.setPatientNumber(foundRequest.getPatientNumber());
+                this.addNewFileHistory(newPatientFile, file, emp);
 
-               if(currentRequest != null)
-               {
-                   PatientFile missingFile = new PatientFile();
-                   ArchiveCabinet cabinet = new ArchiveCabinet();
-                   cabinet.setCreationTime(new Date());
-                   cabinet.setCabinetID(file.getCabinetId());
-                   missingFile.setArchiveCabinet(cabinet);
-                   missingFile.setCreationTime(new Date());
-                   missingFile.setPatientName(currentRequest.getPatientName());
-                   missingFile.setPatientNumber(currentRequest.getPatientNumber());
-                   missingFile.setFileID(file.getFileNumber());
-                   this.addNewFileHistory(missingFile,file,emp);
+                boolean result = systemService.getFilesService().addEntity(newPatientFile);
 
-                   boolean result = systemService.getFilesService().addEntity(missingFile);
+                if (result) {
+                    //now remove the current request
+                    return systemService.getRequestsManager().removeEntity(foundRequest);
 
-                   if(result)
-                       return systemService.getRequestsManager().removeEntity(currentRequest);
-                   else return false;
+                } else return false;
 
-               }else
-               {
-                   //Get the file by knowing its file number
-                   PatientFile patientFile = systemService.getFilesService()
-                           .getFileWithNumber(file.getFileNumber());
-
-                   if(patientFile != null)
-                   {
-                      /* if(!(WorkflowValidator.canProceed(patientFile.getCurrentStatus().getState(),
-                               FileStates.valueOf(file.getState()))))
-                       {
-                           String message =String.format("File: %s needs to be submitted by %s",
-                                   patientFile.getFileID(),String.format("%s %s", patientFile.getCurrentStatus().getOwner()
-                                           .getFirstName(), patientFile.getCurrentStatus().getOwner().getLastName()));
-
-                           throw new WorkflowOutOfBoundException(message);
-                       }*/
-
-                       this.addNewFileHistory(patientFile, file, emp);
-
-                       boolean result = systemService.getFilesService().updateEntity(patientFile);
-
-                       return result;
-
-                   }else return false;
-               }
-
-
-            } else {
-                //Step Two : Check to see if the file Exists
+            }else
+            {
+                //that means the current request is not found
+                //it means it is not the first time for that file in the system
+                //Get the file by knowing its file number
                 PatientFile patientFile = systemService.getFilesService()
                         .getFileWithNumber(file.getFileNumber());
 
-                if (patientFile != null) {
+                if(patientFile == null) throw new RecordNotFoundException("There is something wrong " +
+                        "in the system , Please contact your system administrator");
 
-                   /* if(!(WorkflowValidator.canProceed(patientFile.getCurrentStatus().getState(),
-                            FileStates.valueOf(file.getState()))))
-                    {
-                        String message =String.format("File: %s needs to be submitted by %s",
-                                patientFile.getFileID(),String.format("%s %s", patientFile.getCurrentStatus().getOwner()
-                                        .getFirstName(), patientFile.getCurrentStatus().getOwner().getLastName()));
+                //now update the current Patient File with the restful File
+                patientFile.updateWithRestful(file);
+                //then add new file History to that
+                this.addNewFileHistory(patientFile,file,emp);
 
-                        throw new WorkflowOutOfBoundException(message);
-                    }*/
+                //finally update the current patient file
+                return systemService.getFilesService().updateEntity(patientFile);
 
-                    this.addNewFileHistory(patientFile, file, emp);
 
-                    boolean result = systemService.getFilesService().updateEntity(patientFile);
-
-                    return result;
-
-                } else throw new RecordNotFoundException("Requested Patient File is not recorded");
             }
 
-
-        } catch (EntityNotFoundException s) {
-            throw new RecordNotFoundException("Requested File does not exists");
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return false;
         }
-
-
     }
+
 
     private void addNewFileHistory(PatientFile patientFile, RestfulFile file, Employee emp) {
 

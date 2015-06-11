@@ -19,6 +19,24 @@ public class RequestsDAO extends  AbstractDAO<Request> {
     }
 
 
+    public Request getRequestByBatchNumber(String fileNumber , String batchNumber)
+    {
+        try
+        {
+            String queryString = "select r from Request r where r.fileNumber=:file AND " +
+                    " r.batchRequestNumber=:batch";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("file",fileNumber);
+            currentQuery.setParameter("batch",batchNumber);
+
+            return (Request) currentQuery.getSingleResult();
+
+        }catch (Exception s)
+        {
+            return null;
+        }
+    }
+
     public Request getSingleRequest(String fileNumber)
     {
        try

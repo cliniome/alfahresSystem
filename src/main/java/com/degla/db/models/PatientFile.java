@@ -132,6 +132,15 @@ public class PatientFile extends EntityEO {
     }
 
 
+    public boolean updateWithRestful(RestfulFile file)
+    {
+        this.setFileID(file.getFileNumber());
+        this.setPatientName(file.getPatientName());
+        this.setPatientNumber(this.getPatientNumber());
+        this.setShelfId(file.getShelfId());
+        return true;
+    }
+
     public RestfulFile toRestfulFile()
     {
         RestfulFile file = new RestfulFile();

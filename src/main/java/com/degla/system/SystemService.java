@@ -37,6 +37,8 @@ public class SystemService {
     private FileRouter fileRouter;
     @Autowired
     private ClinicDAO clinicManager;
+    @Autowired
+    private FileHistoryDAO fileHistoryDAO;
 
 
 
@@ -134,5 +136,13 @@ public class SystemService {
 
     public void setClinicManager(ClinicDAO clinicManager) {
         this.clinicManager = clinicManager;
+    }
+
+    public FileHistoryDAO getFileHistoryDAO() {
+        return fileHistoryDAO;
+    }
+
+    public void setFileHistoryDAO(FileHistoryDAO fileHistoryDAO) {
+        this.fileHistoryDAO = fileHistoryDAO;
     }
 }

@@ -5,6 +5,7 @@ import com.degla.db.models.Employee;
 import com.degla.db.models.FileStates;
 import com.degla.db.models.PatientFile;
 import com.degla.restful.models.FileModelStates;
+import com.degla.restful.models.RestfulFile;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Query;
@@ -19,6 +20,73 @@ import java.util.List;
 public class FilesDAO extends AbstractDAO<PatientFile> {
 
 
+
+    public List<PatientFile> getFilesWithBatchNumber(String batchNumber)
+    {
+        try
+        {
+            String queryString = "select f from PatientFile f where " +
+                    "f.currentStatus.batchRequestNumber = :number";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("number",batchNumber);
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<PatientFile>();
+        }
+    }
+
+
+    public List<PatientFile> getFilesWithPatientName(String patientName)
+    {
+        try
+        {
+            String queryString = "select f from PatientFile f where f.patientName = :name";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("name",patientName);
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<PatientFile>();
+        }
+    }
+
+    public List<PatientFile> getFilesWithPatientNumber(String patientNumber)
+    {
+        try
+        {
+            String queryString = "select f from PatientFile f where f.patientNumber = :number";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("number",patientNumber);
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<PatientFile>();
+        }
+    }
+
+    public List<PatientFile> getFilesWithNumber(String fileNumber)
+    {
+        try
+        {
+
+            String queryString = "select f from PatientFile f where f.fileID = :file";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("file",fileNumber);
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<PatientFile>();
+        }
+    }
 
     public PatientFile getFileWithNumber(String fileNumber)
     {

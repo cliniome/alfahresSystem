@@ -12,6 +12,7 @@ import com.degla.system.SystemService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.persistence.Basic;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -23,7 +24,7 @@ import java.io.Serializable;
  * Created by snouto on 22/05/15.
  */
 @Path("/sync")
-public class SyncService implements Serializable {
+public class SyncService extends BasicRestful implements Serializable {
 
 
     @Path("/now")
@@ -81,19 +82,7 @@ public class SyncService implements Serializable {
         }
     }
 
-    private Employee getAccount()
-    {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication.isAuthenticated() && authentication.getPrincipal() != null
-                && authentication.getPrincipal() instanceof Employee)
-        {
-            Employee emp = (Employee)authentication.getPrincipal();
-
-            return emp;
-
-        }else return null;
-    }
 
 
 }

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<f:view>
+
+    <ui:composition template="../fragments/masterLayout.xhtml">
+
+
+        <ui:define name="mainContents">
+
+
+            <h:form prependId="false">
+
+                <h:panelGrid columns="1">
+
+                    <p:panel header="Patient File :#{fileDetailsBean.file.fileID} Details">
+
+                        <p:panelGrid columns="2">
+
+                            <p:outputLabel value="File Number"/>
+                            <p:outputLabel value="#{fileDetailsBean.file.fileID}"/>
+                            <p:outputLabel value="Patient Name"/>
+                            <p:outputLabel value="#{fileDetailsBean.file.patientName}"/>
+                            <p:outputLabel value="Patient Number"/>
+                            <p:outputLabel value="#{fileDetailsBean.file.patientNumber}"/>
+                            <p:outputLabel value="File's State"/>
+                            <p:outputLabel value="#{fileDetailsBean.file.currentStatus.state}"/>
+                            <p:outputLabel value="Archive Cabinet"/>
+                            <p:outputLabel value="#{fileDetailsBean.file.archiveCabinet.cabinetID}"/>
+                            <p:outputLabel value="Shelf ID"/>
+                            <p:outputLabel value="#{fileDetailsBean.file.shelfId}"/>
+                            <p:outputLabel value="Latest Batch Number"/>
+                            <p:outputLabel value="#{fileDetailsBean.file.currentStatus.batchRequestNumber}"/>
+
+                        </p:panelGrid>
+                    </p:panel>
+
+                    <p:separator/>
+
+                    <p:panel header="File History Details">
+
+
+                        <p:dataTable var="history" value="#{fileDetailsBean.fileHistories}" rows="5"
+                                     paginator="true" rowKey="#{history}" sortBy="#{history.createdAt}"
+                                     >
+
+                            <f:facet name="header">
+                                <b> Total History Steps(<font color="red">#{fileDetailsBean.fileHistories.size()}</font>)</b>
+                            </f:facet>
+
+                            <p:column headerText="Clinic Code" filterable="true" filterMatchMode="contains"
+                                      sortable="true">
+                                <p:outputLabel value="#{history.clinicCode}"/>
+                            </p:column>
+
+                            <p:column headerText="Clinic Name" filterable="true" filterMatchMode="contains"
+                                      >
+                                <p:outputLabel value="#{history.clinicName}"/>
+                            </p:column>
+
+                            <p:column headerText="Doc Name" filterable="true"
+                                      filterMatchMode="contains">
+                                <p:outputLabel value="#{history.clinicDocName}"/>
+                            </p:column>
+
+
+                            <p:column headerText="Trolley ID" filterable="true"
+                                      filterMatchMode="contains">
+                                <p:outputLabel value="#{history.containerId}"/>
+                            </p:column>
+
+                            <p:column headerText="Status" filterable="true" filterMatchMode="contains"
+                                     >
+                                <p:outputLabel value="#{history.state}"/>
+                            </p:column>
+
+                            <p:column headerText="Employee Name" filterable="true" filterMatchMode="contains"
+                                     >
+
+                                <p:outputLabel value="#{history.owner.getfullName()}"/>
+
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </p:panel>
+
+
+                </h:panelGrid>
+
+            </h:form>
+
+
+        </ui:define>
+
+    </ui:composition>
+
+</f:view>
+</html>
