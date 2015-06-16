@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Created by snouto on 15/05/15.
@@ -79,6 +80,11 @@ public class FileUploadWizardBean implements Serializable {
                 {
                     for(Request req : values)
                     {
+
+                        String regex = "[0-9]+";
+                        Pattern pattern = Pattern.compile(regex);
+                        if(!pattern.matcher(req.getFileNumber()).matches())
+                            continue;
                         req.setClinic_Doc_Code(key.getT_clinic_doc_code());
                         req.setClinicCode(key.getT_clinic_code());
                         req.setClinicName(key.getClinic_name());
@@ -186,6 +192,7 @@ public class FileUploadWizardBean implements Serializable {
 
             FileOutputStream outputStream = new FileOutputStream(new File(fileFullPath));
 
+
             int read = 0;
             byte[] bytes = new byte[1024];
 
@@ -197,6 +204,11 @@ public class FileUploadWizardBean implements Serializable {
             outputStream.flush();
             outputStream.close();
 
+
+
+            //Here is our Preprocessing step after uploading the file successfully
+            this.preprocessFile(fileFullPath);
+
             return fileFullPath;
 
 
@@ -206,6 +218,58 @@ public class FileUploadWizardBean implements Serializable {
             return null;
         }
 
+    }
+
+    private void preprocessFile(String fileFullPath) {
+
+        try
+        {
+            File inputFile = new File(fileFullPath);
+
+            if(inputFile.exists() && inputFile.canRead())
+            {
+                //now begin the reading process
+                StringBuffer fileContents = new StringBuffer();
+
+                BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+
+                String line = null;
+
+                while((line = reader.readLine()) != null)
+                {
+                    fileContents.append(line);
+                }
+
+                //Now let us see this in action now , the system has been deployed successfully on my local application server
+                //Let us open it in the browser.
+
+                //now the actual pre-processing happens
+                //Here is the replacement code , i am replacing all occurrences of non-breaking space
+                //in the file contents after reading it
+                String newContents = fileContents.toString().trim().replaceAll("\u00A0"," ");
+
+                //now delete that file
+                //Deleting the actual file with non-breaking space
+                inputFile.delete();
+
+                //now create the file again
+                //Then creating the new one without the non-breaking space
+                File outputFile = new File(fileFullPath);
+
+                BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+
+                writer.write(newContents);
+
+                writer.flush();
+                writer.close();
+
+
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
     }
 
     public String getPatientNumber() {

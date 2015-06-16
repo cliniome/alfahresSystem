@@ -44,21 +44,33 @@ public class FileRouter {
             @Override
             public int compare(Request first, Request second) {
 
-                //get the size of the first file number
-                int firstSize = first.getFileNumber().length();
-                int secondSize = second.getFileNumber().length();
+               try
+               {
+                   //get the size of the first file number
+                   int firstSize = first.getFileNumber().length();
+                   int secondSize = second.getFileNumber().length();
 
-                //get the last two Digits of the first File Number
-                String first_TwoDigits = first.getFileNumber().substring(firstSize-2);
-                String second_TwoDigits = second.getFileNumber().substring(secondSize-2);
+                   //get the last two Digits of the first File Number
+                   String first_TwoDigits = first.getFileNumber().substring(firstSize-2);
+                   String second_TwoDigits = second.getFileNumber().substring(secondSize-2);
 
-                //convert them into numbers
-                int firstNumber = Integer.parseInt(first_TwoDigits);
-                int secondNumber = Integer.parseInt(second_TwoDigits);
+                   if(first_TwoDigits.equals("le") || second_TwoDigits.equals("le"))
+                   {
+                       System.out.println("");
+                   }
 
-                if(firstNumber > secondNumber) return 1;
-                else if (firstNumber < secondNumber) return -1;
-                else return 0;
+                   //convert them into numbers
+                   int firstNumber = Integer.parseInt(first_TwoDigits);
+                   int secondNumber = Integer.parseInt(second_TwoDigits);
+
+                   if(firstNumber > secondNumber) return 1;
+                   else if (firstNumber < secondNumber) return -1;
+                   else return 0;
+
+               }catch (Exception s)
+               {
+                   return 0;
+               }
 
 
             }
