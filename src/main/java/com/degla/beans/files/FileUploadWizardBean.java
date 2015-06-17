@@ -14,11 +14,14 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
+import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
-import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +52,11 @@ public class FileUploadWizardBean implements Serializable {
     private List<Request> failedRequests;
 
 
+    @ManagedProperty(name="failedRequestsBean",value = "#{failedRequestsBean}")
+    private FailedRequestsBean failedRequestsBean;
+
+
+
 
     @PostConstruct
     public void onInit()
@@ -58,12 +66,19 @@ public class FileUploadWizardBean implements Serializable {
             setGeneratedFields(new ArrayList<SelectItem>());
             getGeneratedFields().add(new SelectItem());
             this.setFailedRequests(new ArrayList<Request>());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
+
+    @PreDestroy
+    public void onDestroy()
+    {
+        this.setFailedRequests(new ArrayList<Request>());
+    }
 
 
     public void onConfirmAndSubmit()
@@ -87,6 +102,13 @@ public class FileUploadWizardBean implements Serializable {
                     for(Request req : values)
                     {
 
+
+                        req.setClinic_Doc_Code(key.getT_clinic_doc_code());
+                        req.setClinicCode(key.getT_clinic_code());
+                        req.setClinicName(key.getClinic_name());
+                        req.setCsGroupCount(key.getCs_group_count());
+                        req.setRequestingDocName(key.getDoc_name());
+
                         String regex = "[0-9]+";
                         Pattern pattern = Pattern.compile(regex);
                         if(!pattern.matcher(req.getFileNumber()).matches())
@@ -95,11 +117,6 @@ public class FileUploadWizardBean implements Serializable {
                             getFailedRequests().add(req);
                             continue;
                         }
-                        req.setClinic_Doc_Code(key.getT_clinic_doc_code());
-                        req.setClinicCode(key.getT_clinic_code());
-                        req.setClinicName(key.getClinic_name());
-                        req.setCsGroupCount(key.getCs_group_count());
-                        req.setRequestingDocName(key.getDoc_name());
                         //get the new File Number structure
                         BarcodeUtils barcodeUtils = new BarcodeUtils(req.getFileNumber());
                         req.setFileNumber(barcodeUtils.getNewBarcodeStructure());
@@ -107,9 +124,11 @@ public class FileUploadWizardBean implements Serializable {
                         availableRequests.add(req);
                     }
 
-                    //add failed requests to the flash variable
-                    FacesContext.getCurrentInstance().getExternalContext()
-                            .getFlash().putNow("failedRequests",getFailedRequests());
+                    //set the failed Requests
+                    failedRequestsBean.setFailedRequests(getFailedRequests());
+
+
+
                 }
 
             }
@@ -396,5 +415,13 @@ public class FileUploadWizardBean implements Serializable {
 
     public void setFailedRequests(List<Request> failedRequests) {
         this.failedRequests = failedRequests;
+    }
+
+    public FailedRequestsBean getFailedRequestsBean() {
+        return failedRequestsBean;
+    }
+
+    public void setFailedRequestsBean(FailedRequestsBean failedRequestsBean) {
+        this.failedRequestsBean = failedRequestsBean;
     }
 }

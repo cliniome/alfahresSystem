@@ -60,6 +60,18 @@
             <to-view-id>/admin/ShowEmployees.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+        
+        <navigation-case>
+            <from-outcome>EDITREQUEST</from-outcome>
+            <to-view-id>/admin/EditRequest.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <navigation-case>
+            <from-outcome>SUBMITFILES</from-outcome>
+            <to-view-id>/admin/SubmitFiles.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>
 
 

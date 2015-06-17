@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<f:view>
+
+<ui:composition template="../fragments/masterLayout.xhtml">
+
+
+    <ui:define name="mainContents">
+
+        <h:form prependId="false">
+
+
+            <p:messages id="growl" showDetail="false" showSummary="true"/>
+
+            <h:panelGrid columns="1">
+
+                <p:panel header="Edit Current Request">
+
+                    <p>You can Edit the current Request then click Save Request to save the modified request
+                     in the system.</p>
+
+                    <h:panelGrid columns="2">
+
+                        <p:outputLabel value="Request Number"/>
+                        <p:inputText value="#{editRequestBean.fileNumber}" required="true"
+                                requiredMessage="Request File Number is required"/>
+
+
+
+                        <p:outputLabel value="Patient Number"/>
+                        <p:inputText value="#{editRequestBean.patientNumber}" required="true"
+                                     requiredMessage="Patient Number is required"/>
+
+                        <p:outputLabel value="Patient Name"/>
+                        <p:inputText value="#{editRequestBean.patientName}" required="true"
+                                requiredMessage="Patient Name is required."/>
+
+                        <br/>
+                        <h:panelGrid columns="3" cellspacing="3">
+                            <p:commandButton value="Save Request" actionListener="#{editRequestBean.onSubmit}"
+                                             ajax="false" update="growl"/>
+                            <p:commandButton value="Cancel" action="SUBMITFILES"
+                                             immediate="true"/>
+                            <h:inputHidden value="#{editRequestBean.oldNumber}"/>
+                        </h:panelGrid>
+
+                    </h:panelGrid>
+
+                </p:panel>
+
+            </h:panelGrid>
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>
+
+</f:view>
+</html>

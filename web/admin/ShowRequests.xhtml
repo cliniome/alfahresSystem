@@ -16,35 +16,50 @@
 
         <c:set target="#{cssBean}" property="currentPageName" value="ShowRequests"/>
 
+
+
+        <h:form prependId="false">
+
         <h:panelGrid columns="1" id="requestsTablePanel">
 
             <p:dataTable lazy="true" paginator="true" rows="20" id="requestsTable"
                          rowKey="#{filerequest}"
                          selectionMode="single" selection="#{filerequest}"
-                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
+                         paginatorTemplate=" {Exporters}    {CurrentPageReport}  {FirstPageLink}
                          {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          var="filerequest" value="#{requestsBean.availableRequests}"
                          stickyHeader="true" emptyMessage="There are no Available Requests"
                          widgetVar="requestsTable">
 
+
                 <p:ajax event="rowSelect" update=":requestsTable"/>
+                <p:ajax event="page" listener="#{requestsBean.onPagination}"/>
 
                 <f:facet name="header">
                     <b>Available Requests(<font color="red">#{requestsBean.totalCount}</font>)</b>
                 </f:facet>
 
-                <p:column headerText="Request Number" sortable="true" sortBy="#{filerequest.fileNumber}">
+                <f:facet name="{Exporters}">
+                    <p:commandLink ajax="false">
+                        <img src="../img/excel.png" alt="img"/>
+                        <p:fileDownload value="#{requestsBean.excelFile}"
+                                        contentDisposition="application/vnd.ms-excel"/>
+                    </p:commandLink>
+                </f:facet>
+
+                <p:column exportable="true"
+                          headerText="Request Number" sortable="true" sortBy="#{filerequest.fileNumber}">
                     <p:outputLabel value="#{filerequest.fileNumber}"/>
                 </p:column>
 
-                <p:column headerText="Patient Number" sortable="true"
+                <p:column exportable="true" headerText="Patient Number" sortable="true"
                           sortBy="#{filerequest.patientNumber}">
 
                     <p:outputLabel value="#{filerequest.patientNumber}"/>
 
                 </p:column>
 
-                <p:column headerText="Patient Name"
+                <p:column exportable="false" headerText="Patient Name"
                           sortable="true" sortBy="#{filerequest.patientName}"
                           >
 
@@ -52,19 +67,19 @@
 
                 </p:column>
 
-                <p:column headerText="App. Date">
+                <p:column exportable="false" headerText="App. Date">
                     <p:outputLabel value="#{filerequest.appointment_Date}"/>
                 </p:column>
 
-                <p:column headerText="Location">
+                <p:column exportable="false" headerText="Location">
                     <p:outputLabel value="#{filerequest.fileCurrentLocation}"/>
                 </p:column>
-                <p:column headerText="Requested By"
+                <p:column exportable="false" headerText="Requested By"
                           sortable="true" sortBy="#{filerequest.userName}">
                     <p:outputLabel value="#{filerequest.userName}"/>
                 </p:column>
 
-                <p:column headerText="Assigned To">
+                <p:column exportable="false" headerText="Assigned To">
 
                     <p:outputLabel value="#{filerequest.assignedTo.firstName} #{filerequest.assignedTo.lastName}
                      (#{filerequest.assignedTo.userName})"/>
@@ -74,6 +89,8 @@
 
 
         </h:panelGrid>
+
+        </h:form>
 
     </ui:define>
 

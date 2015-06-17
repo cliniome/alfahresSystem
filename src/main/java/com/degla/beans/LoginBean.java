@@ -15,6 +15,7 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import java.util.List;
 
@@ -68,6 +69,8 @@ public class LoginBean {
         try
         {
             systemService.getLoginService().dologOut();
+            //invalidate the session in here
+            FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 
         }catch(Exception s)
         {
