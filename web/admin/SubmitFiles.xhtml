@@ -27,7 +27,7 @@
 
                      <p>Specify the location of the Xml Document you have saved locally.</p>
 
-                     <p:fileUpload update="growl" fileLimit="3" auto="true"
+                     <p:fileUpload update="growl,failedRequestsPane" fileLimit="3" auto="true"
                                    fileUploadListener="#{fileWizard.onFileUploadListener}"
                                    mode="advanced" sizeLimit="1000000"  allowTypes="/(\.|\/)(xml)$/">
 
@@ -38,6 +38,56 @@
                  </p:panel>
 
              </p:panel>
+
+                 <br/>
+                 <p:separator/>
+                 <br/>
+                 <p:panel id="failedRequestsPane" rendered="#{fileWizard.failedRequests.size() > 0}"
+                          header="Failed Requests" style="width: 600px;">
+
+                     <p>These Requests failed to be added to the system, Please , Review them carefully</p>
+                     <p>You can Click individual Request , Modify the request and then proces it </p>
+                     <p:dataTable id="failedrequestsTable" widgetVar="failedrequestsTable"
+                                  var="request" value="#{fileWizard.failedRequests}"
+                                  paginator="true">
+
+                         <f:facet name="header">
+
+                             <b>Failed Requests :<font color="red">(#{fileWizard.failedRequests.size()})</font></b>
+
+                         </f:facet>
+
+                         <p:column headerText="File Number">
+                             <p:outputLabel value="#{request.fileNumber}"/>
+                         </p:column>
+
+                         <p:column headerText="Patient Number">
+                             <p:outputLabel value="#{request.patientNumber}"/>
+                         </p:column>
+
+                         <p:column headerText="Patient Name">
+                             <p:outputLabel value="#{request.patientName}"/>
+                         </p:column>
+
+
+                         <p:column headerText="Doc Name">
+                             <p:outputLabel value="#{request.requestingDocName}"/>
+                         </p:column>
+
+                         <p:column headerText="Batch Number">
+                             <p:outputLabel value="#{request.batchRequestNumber}"/>
+                         </p:column>
+
+                         <p:column headerText="Options...">
+
+
+
+                         </p:column>
+
+                     </p:dataTable>
+
+                 </p:panel>
+
 
 
              </h:form>

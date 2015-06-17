@@ -1,9 +1,11 @@
 package com.degla.beans.files;
 
 import com.degla.db.models.Request;
+import com.degla.exceptions.BarcodeFormatException;
 import com.degla.exceptions.RequestException;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
+import com.degla.utils.BarcodeUtils;
 import com.degla.utils.WebUtils;
 import com.degla.utils.xml.BatchRequestDetails;
 import com.degla.utils.xml.PatientFileReader;
@@ -14,6 +16,7 @@ import org.primefaces.event.FlowEvent;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import java.awt.event.ActionEvent;
 import java.io.*;
@@ -43,6 +46,8 @@ public class FileUploadWizardBean implements Serializable {
     private SystemService systemService;
     private Wizard wizard;
     private String uploadedFile;
+    private List<Request> failedRequests;
+
 
 
     @PostConstruct
@@ -52,6 +57,7 @@ public class FileUploadWizardBean implements Serializable {
             systemService = SpringSystemBridge.services();
             setGeneratedFields(new ArrayList<SelectItem>());
             getGeneratedFields().add(new SelectItem());
+            this.setFailedRequests(new ArrayList<Request>());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,15 +90,26 @@ public class FileUploadWizardBean implements Serializable {
                         String regex = "[0-9]+";
                         Pattern pattern = Pattern.compile(regex);
                         if(!pattern.matcher(req.getFileNumber()).matches())
+                        {
+                            //add the current request to the failed requests
+                            getFailedRequests().add(req);
                             continue;
+                        }
                         req.setClinic_Doc_Code(key.getT_clinic_doc_code());
                         req.setClinicCode(key.getT_clinic_code());
                         req.setClinicName(key.getClinic_name());
                         req.setCsGroupCount(key.getCs_group_count());
                         req.setRequestingDocName(key.getDoc_name());
+                        //get the new File Number structure
+                        BarcodeUtils barcodeUtils = new BarcodeUtils(req.getFileNumber());
+                        req.setFileNumber(barcodeUtils.getNewBarcodeStructure());
 
                         availableRequests.add(req);
                     }
+
+                    //add failed requests to the flash variable
+                    FacesContext.getCurrentInstance().getExternalContext()
+                            .getFlash().putNow("failedRequests",getFailedRequests());
                 }
 
             }
@@ -120,7 +137,11 @@ public class FileUploadWizardBean implements Serializable {
         }catch(Exception s)
         {
             s.printStackTrace();
-            WebUtils.addMessage("There was a problem inserting new requests, Contact System Administrator");
+            if(s instanceof BarcodeFormatException)
+            {
+                WebUtils.addMessage(s.getMessage());
+            }else
+                WebUtils.addMessage("There was a problem inserting new requests, Contact System Administrator");
         }
     }
 
@@ -367,5 +388,13 @@ public class FileUploadWizardBean implements Serializable {
 
     public void setUploadedFile(String uploadedFile) {
         this.uploadedFile = uploadedFile;
+    }
+
+    public List<Request> getFailedRequests() {
+        return failedRequests;
+    }
+
+    public void setFailedRequests(List<Request> failedRequests) {
+        this.failedRequests = failedRequests;
     }
 }
