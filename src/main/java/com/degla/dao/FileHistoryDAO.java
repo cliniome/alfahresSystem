@@ -2,6 +2,7 @@ package com.degla.dao;
 
 import com.degla.db.models.FileHistory;
 import com.degla.db.models.PatientFile;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Query;
@@ -12,6 +13,7 @@ import java.util.List;
  * Created by snouto on 18/05/15.
  */
 @Component("fileHistoryDAO")
+@Scope("prototype")
 public class FileHistoryDAO extends AbstractDAO<FileHistory> {
     @Override
     public String getEntityName() {

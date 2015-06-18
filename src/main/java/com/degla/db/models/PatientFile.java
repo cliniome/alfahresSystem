@@ -2,6 +2,7 @@ package com.degla.db.models;
 
 import com.degla.restful.models.FileModelStates;
 import com.degla.restful.models.RestfulFile;
+import com.degla.utils.FileStateUtils;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Index;
 
@@ -77,6 +78,8 @@ public class PatientFile extends EntityEO {
     public String getDescription() {
 		return this.description;
 	}
+
+
 
 
     /**

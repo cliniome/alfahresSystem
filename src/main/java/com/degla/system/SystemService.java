@@ -6,6 +6,7 @@ import com.degla.security.LoginService;
 import com.degla.utils.FileRouter;
 import com.degla.utils.SystemSettings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**

@@ -6,6 +6,7 @@ import com.degla.db.models.FileStates;
 import com.degla.db.models.PatientFile;
 import com.degla.restful.models.FileModelStates;
 import com.degla.restful.models.RestfulFile;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Query;
@@ -17,9 +18,11 @@ import java.util.List;
  * Created by snouto on 03/05/2015.
  */
 @Component
+@Scope(value = "prototype")
 public class FilesDAO extends AbstractDAO<PatientFile> {
 
 
+    private FileStates queryState = null;
 
     public List<PatientFile> getFilesWithBatchNumber(String batchNumber)
     {
@@ -38,6 +41,31 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         }
     }
 
+
+    @Override
+    public List<PatientFile> getPaginatedResults(int first, int pageSize) {
+
+
+        if(queryState != null)
+        {
+            String query = "select f from PatientFile f where f.currentStatus.state=:state";
+            Query currentQuery = getManager().createQuery(query);
+            currentQuery.setFirstResult(first);
+            currentQuery.setMaxResults(pageSize);
+            currentQuery.setParameter("state",getQueryState());
+            return currentQuery.getResultList();
+
+        }else
+        {
+            String query = " select f from PatientFile f";
+            Query currentQuery = getManager().createQuery(query);
+            currentQuery.setFirstResult(first);
+            currentQuery.setMaxResults(pageSize);
+            return currentQuery.getResultList();
+
+        }
+
+    }
 
     public List<PatientFile> getFilesWithPatientName(String patientName)
     {
@@ -241,10 +269,11 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
     {
         try
         {
-            String query = "select f from PatientFile f where f.currentStatus.state=:missing";
+            String query = "select f from PatientFile f where f.currentStatus.state=:missing ORDER BY f.currentStatus.createdAt DESC";
+
             Query currentQuery = getManager().createQuery(query);
             currentQuery.setParameter("missing", FileStates.MISSING);
-
+            currentQuery.setMaxResults(100);
             return currentQuery.getResultList();
 
         }catch(Exception s)
@@ -261,4 +290,11 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
     }
 
 
+    public FileStates getQueryState() {
+        return queryState;
+    }
+
+    public void setQueryState(FileStates queryState) {
+        this.queryState = queryState;
+    }
 }

@@ -1,6 +1,7 @@
 package com.degla.dao;
 
 import com.degla.db.models.ArchiveCabinet;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Query;

@@ -2,6 +2,7 @@ package com.degla.beans;
 
 import com.degla.db.models.ActorEO;
 import com.degla.db.models.Employee;
+import com.degla.db.models.PatientFile;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.WebUtils;
@@ -12,6 +13,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by snouto on 03/05/2015.
@@ -54,6 +57,23 @@ public class DashboardBean {
         {
             s.printStackTrace();
             return -1;
+        }
+    }
+
+
+    public List<PatientFile> getMissingFiles()
+    {
+        try
+        {
+            List<PatientFile> missingFiles = systemService.getFilesService().getMissingFiles();
+
+            if(missingFiles != null && missingFiles.size() > 0) return missingFiles;
+            else return new ArrayList<PatientFile>();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<PatientFile>();
         }
     }
 

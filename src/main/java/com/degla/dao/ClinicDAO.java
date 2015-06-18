@@ -1,6 +1,7 @@
 package com.degla.dao;
 
 import com.degla.db.models.Clinic;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 
@@ -11,6 +12,7 @@ import java.util.List;
  * Created by snouto on 05/06/15.
  */
 @Component("clinicDAO")
+@Scope("prototype")
 public class ClinicDAO extends AbstractDAO<Clinic> {
     @Override
     public String getEntityName() {

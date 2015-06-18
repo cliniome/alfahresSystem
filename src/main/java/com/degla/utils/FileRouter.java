@@ -6,6 +6,7 @@ import com.degla.db.models.Request;
 import com.degla.db.models.RoleEO;
 import com.degla.db.models.RoleTypes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -17,6 +18,7 @@ import java.util.Random;
  * Created by snouto on 17/05/15.
  */
 @Component("fileRouter")
+@Scope("prototype")
 public class FileRouter {
 
     @Autowired

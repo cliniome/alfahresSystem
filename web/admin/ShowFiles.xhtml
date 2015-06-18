@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<f:view>
+
+    <ui:composition template="../fragments/masterLayout.xhtml">
+
+        <ui:define name="mainContents">
+
+            <h:form prependId="false">
+            <h:panelGrid columns="1">
+
+                <p:panel header="Available Patient Files">
+
+                    <h:panelGrid columns="3" cellspacing="4" cellpadding="4">
+
+                        <p:outputLabel value="Filter Files"/>
+                        <p:selectOneMenu value="#{showFilesBean.chosenState}">
+                            <f:selectItems value="#{showFilesBean.items}"/>
+                        </p:selectOneMenu>
+
+                        <p:commandButton value="Filter" icon="fa-filter" actionListener="#{showFilesBean.filter}"
+                                         update="@form"/>
+
+                    </h:panelGrid>
+
+                </p:panel>
+
+                <p:separator/>
+
+                <h:panelGrid columns="1">
+
+                    <p:dataTable var="patientFile" value="#{showFilesBean.patientFiles}"
+                                 paginator="true" rows="20" lazy="true">
+
+
+                        <p:column headerText="File Number">
+                            <p:outputLabel  value="#{patientFile.fileID}"/>
+                        </p:column>
+                        <p:column headerText="Patient Number">
+                            <p:outputLabel value="#{patientFile.patientNumber}"/>
+                        </p:column>
+
+                        <p:column headerText="Batch Number">
+                            <p:outputLabel value="#{patientFile.currentStatus.batchRequestNumber}"/>
+                        </p:column>
+
+                        <p:column headerText="State">
+                            <p:outputLabel value="#{patientFile.currentStatus.readableState}"/>
+                        </p:column>
+                        <p:column headerText="Last Seen By">
+                            <p:outputLabel styleClass="label label-danger"
+                                           value="#{patientFile.currentStatus.owner.getfullName()}"/>
+                        </p:column>
+
+                        <p:column headerText="...">
+                            <a href="EditFile.xhtml?fileNumber=#{patientFile.fileID}">Edit File</a>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </h:panelGrid>
+
+            </h:panelGrid>
+
+            </h:form>
+
+        </ui:define>
+
+    </ui:composition>
+
+</f:view>
+</html>

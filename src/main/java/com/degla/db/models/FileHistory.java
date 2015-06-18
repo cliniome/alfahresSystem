@@ -1,5 +1,6 @@
 package com.degla.db.models;
 
+import com.degla.utils.FileStateUtils;
 import org.hibernate.annotations.Index;
 
 import java.util.Date;
@@ -167,5 +168,11 @@ public class FileHistory extends EntityEO {
 
     public void setClinicDocCode(String clinicDocCode) {
         this.clinicDocCode = clinicDocCode;
+    }
+
+    public String getReadableState()
+    {
+        FileStateUtils utils = new FileStateUtils(getState());
+        return utils.getReadableState();
     }
 }

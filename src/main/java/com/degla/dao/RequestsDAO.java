@@ -1,6 +1,7 @@
 package com.degla.dao;
 
 import com.degla.db.models.Request;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
@@ -11,6 +12,7 @@ import java.util.List;
  * Created by snouto on 15/05/15.
  */
 @Component("requestsDAO")
+@Scope("prototype")
 public class RequestsDAO extends  AbstractDAO<Request> {
 
     @Override
