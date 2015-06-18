@@ -70,19 +70,17 @@
                 <p:column exportable="false" headerText="App. Date">
                     <p:outputLabel value="#{filerequest.appointment_Date}"/>
                 </p:column>
-
-                <p:column exportable="false" headerText="Location">
-                    <p:outputLabel value="#{filerequest.fileCurrentLocation}"/>
-                </p:column>
                 <p:column exportable="false" headerText="Requested By"
                           sortable="true" sortBy="#{filerequest.userName}">
                     <p:outputLabel value="#{filerequest.userName}"/>
                 </p:column>
-
                 <p:column exportable="false" headerText="Assigned To">
-
                     <p:outputLabel value="#{filerequest.assignedTo.firstName} #{filerequest.assignedTo.lastName}
                      (#{filerequest.assignedTo.userName})"/>
+                </p:column>
+
+                <p:column headerText="...">
+                    <a href="EditSavedRequest.xhtml?id=#{filerequest.fileNumber}">Edit Request</a>
                 </p:column>
 
             </p:dataTable>

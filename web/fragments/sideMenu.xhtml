@@ -16,21 +16,10 @@
         <div class="well sidebar-nav">
            <h:form prependId="false">
                <ul class="nav nav-list">
-                   <li class="nav-header"><i class="icon-wrench"></i> Administration</li>
-
-                   <li class="#{cssBean.setActive('Employees')}"><a href="ShowEmployees.xhtml">Employees</a></li>
-                   <li class="#{cssBean.setActive('EditEmployee')}"><a href="RegisterUser.xhtml">Add New Employee</a></li>
-
-                   <li class="nav-header"><i class="icon-book"></i>Clinics</li>
-                   <li class="#{cssBean.setActive('AddClinic')}"><a href="AddClinic.xhtml">Add New Clinic</a></li>
-                   <li class="#{cssBean.setActive('ShowClinics')}"><a href="ShowClinics.xhtml">Show Clinics</a></li>
-
-                   <li class="nav-header"><i class="icon-file"></i>Patient Files</li>
 
 
-                   <li class="#{cssBean.setActive('SearchFiles')}"><a href="SearchFiles.xhtml">File Management</a></li>
 
-                   <li class="nav-header"><i class="icon-briefcase"></i>Requests</li>
+                   <li class="nav-header"><i class="icon-briefcase"></i>File Requests</li>
 
                    <li class="#{cssBean.setActive('RequestNewFiles')}"><a href="SubmitFiles.xhtml">Request New Files</a></li>
                    <li class="#{cssBean.setActive('ShowRequests')}">
@@ -38,6 +27,22 @@
 
                    <li class="#{cssBean.setActive('SearchRequests')}">
                        <a href="SearchRequests.xhtml">Search Requests</a></li>
+
+
+
+                   <li class="nav-header"><i class="icon-user"></i> Employees</li>
+
+                   <li class="#{cssBean.setActive('EditEmployee')}"><a href="RegisterUser.xhtml">Add New Employee</a></li>
+                   <li class="#{cssBean.setActive('Employees')}"><a href="ShowEmployees.xhtml">Manage Employees</a></li>
+
+                   <li class="nav-header"><i class="icon-book"></i>Clinics</li>
+                   <li class="#{cssBean.setActive('AddClinic')}"><a href="AddClinic.xhtml">Add New Clinic</a></li>
+                   <li class="#{cssBean.setActive('ShowClinics')}"><a href="ShowClinics.xhtml">Manage Clinics</a></li>
+
+                   <li class="nav-header"><i class="icon-file"></i>Patient Files</li>
+
+
+                   <li class="#{cssBean.setActive('SearchFiles')}"><a href="SearchFiles.xhtml">Search Files</a></li>
 
                    <li class="nav-header"><i class="icon-barcode"></i> Cabinets</li>
 

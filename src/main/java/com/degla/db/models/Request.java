@@ -3,7 +3,7 @@ package com.degla.db.models;
 import com.degla.restful.models.RestfulRequest;
 import com.degla.utils.AnnotatingModel;
 import org.hibernate.annotations.Index;
-
+import static javax.persistence.CascadeType.*;
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -79,7 +79,7 @@ public class Request implements Serializable, AnnotatingModel {
 
     @Column(name="clinic_Doc_Code")
     private String clinic_Doc_Code;
-    @ManyToOne
+    @ManyToOne(cascade = {MERGE,REFRESH,DETACH})
     @JoinColumn(name="assigned_To",nullable = true)
     private Employee assignedTo;
 

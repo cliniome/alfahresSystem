@@ -10,9 +10,6 @@
 
 <ui:composition template="../fragments/masterLayout.xhtml">
 
-
-
-
     <ui:define name="mainContents">
 
         <c:set target="#{cssBean}" property="currentPageName" value="SearchRequests"/>
@@ -55,38 +52,26 @@
 
                     <p:dataTable paginator="true" rows="10" id="requestsTable"
                                  rowKey="#{filerequest}"
-                                 selectionMode="single" selection="#{filerequest}"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                          {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  var="filerequest" value="#{searchRequestsBean.searchedRequests}"
-                                 stickyHeader="true" emptyMessage="There are no Available Requests"
+                                  emptyMessage="There are no Available Requests"
                                  widgetVar="requestsTable">
 
-                        <p:ajax event="rowSelect" update=":requestsTable"/>
 
                         <f:facet name="header">
-                           <p:toolbar id="toolbar">
-                               <f:facet name="left">
-                                   <p:commandButton value="Assign" onclick="PF('employeesChoser').show();" icon="ui-icon-document"/>
-                               </f:facet>
-                               <f:facet name="right">
-                                   <b>Available Requests(<font color="red">#{searchRequestsBean.totalCount()}</font>)</b>
-                               </f:facet>
-                           </p:toolbar>
+                            <b>Available Requests(<font color="red">#{searchRequestsBean.totalCount()}</font>)</b>
                         </f:facet>
 
                         <p:column headerText="..">
-                            <p:selectBooleanCheckbox  value="#{filerequest.selected}">
-                                <p:ajax update="ajaxstatus" partialSubmit="true"/>
-                            </p:selectBooleanCheckbox>
+                          <a class="btn-link" href="EditSavedRequest.xhtml?id=#{filerequest.fileNumber}">Edit Request</a>
                         </p:column>
 
-                        <p:column headerText="Request Number" sortable="true" sortBy="#{filerequest.fileNumber}">
+                        <p:column headerText="Request Number">
                             <p:outputLabel value="#{filerequest.fileNumber}"/>
                         </p:column>
 
-                        <p:column headerText="Patient Number" sortable="true"
-                                  sortBy="#{filerequest.patientNumber}">
+                        <p:column headerText="Patient Number">
 
                             <p:outputLabel value="#{filerequest.patientNumber}"/>
 
@@ -108,7 +93,7 @@
                             <p:outputLabel value="#{filerequest.fileCurrentLocation}"/>
                         </p:column>
                         <p:column headerText="Requested By"
-                                  sortable="true" sortBy="#{filerequest.userName}">
+                                  >
                             <p:outputLabel value="#{filerequest.userName}"/>
                         </p:column>
 
@@ -126,7 +111,7 @@
                               header="Choose Employees..." footer="Once you choose click Choose button">
 
 
-                        <h:form prependId="false">
+
 
                             <h:panelGrid columns="1">
 
@@ -150,7 +135,7 @@
 
                             </h:panelGrid>
 
-                        </h:form>
+
 
                     </p:dialog>
 

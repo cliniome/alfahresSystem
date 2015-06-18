@@ -15,8 +15,12 @@ import org.primefaces.model.StreamedContent;
 import sun.misc.OSEnvironment;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,7 +32,7 @@ import java.util.List;
  * Created by snouto on 20/05/15.
  */
 @ManagedBean(name="requestsBean")
-@SessionScoped
+@ViewScoped
 public class RequestsBean implements Serializable {
 
 
@@ -38,12 +42,10 @@ public class RequestsBean implements Serializable {
 
     private StreamedContent excelFile;
 
-    private int currentPage = 0;
-
     public static final int MAX_RESULTS = 20;
 
-
-
+    @ManagedProperty("#{dashboardBean}")
+    private DashboardBean dashboardBean;
 
 
     public RequestsBean()
@@ -62,7 +64,7 @@ public class RequestsBean implements Serializable {
 
     public void onPagination(PageEvent event)
     {
-        this.setCurrentPage(event.getPage());
+        getDashboardBean().setCurrentPageNumber(event.getPage());
     }
 
     public long getTotalCount()
@@ -78,6 +80,7 @@ public class RequestsBean implements Serializable {
 
 
     public GenericLazyDataModel<Request> getAvailableRequests() {
+
         return availableRequests;
     }
 
@@ -90,6 +93,13 @@ public class RequestsBean implements Serializable {
         {
             //Get all the files in here
             excelFile = getFileContents();
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            HttpServletResponse response = (HttpServletResponse)context.getExternalContext().getResponse();
+
+           /* String fileName = String.format("%s%s.xls","patientFiles",getCurrentPage());
+            response.addHeader("Content-Disposition",String.format("attachment; filename=%s.pdf;",
+                    fileName));*/
 
             return excelFile;
 
@@ -116,7 +126,8 @@ public class RequestsBean implements Serializable {
         patientNumber.setCellValue("Patient Number");
 
         //Get all Requests in the database
-        List<Request> pageRequests =  systemService.getRequestsManager().getPaginatedResults(getCurrentPage() * MAX_RESULTS
+        List<Request> pageRequests =  systemService.getRequestsManager().getPaginatedResults(
+                getDashboardBean().getCurrentPageNumber() * MAX_RESULTS
                 ,MAX_RESULTS);
 
         if(pageRequests != null && pageRequests.size() > 0)
@@ -149,7 +160,7 @@ public class RequestsBean implements Serializable {
 
 
             return  new DefaultStreamedContent(inputStream,"application/vnd.ms-excel",String.format("%s-%s.xls",
-                    "PatientFiles",String.valueOf(currentPage)));
+                    "PatientFiles",String.valueOf(getDashboardBean().getCurrentPageNumber())));
 
         }
 
@@ -161,11 +172,13 @@ public class RequestsBean implements Serializable {
         this.excelFile = excelFile;
     }
 
-    public int getCurrentPage() {
-        return currentPage;
+
+
+    public DashboardBean getDashboardBean() {
+        return dashboardBean;
     }
 
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
+    public void setDashboardBean(DashboardBean dashboardBean) {
+        this.dashboardBean = dashboardBean;
     }
 }

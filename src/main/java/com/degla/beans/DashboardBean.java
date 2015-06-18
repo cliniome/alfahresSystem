@@ -27,6 +27,8 @@ public class DashboardBean {
 
     private ActorEO account;
 
+    private int currentPageNumber;
+
 
 
 
@@ -135,5 +137,13 @@ public class DashboardBean {
 
     public void setAccount(ActorEO account) {
         this.account = account;
+    }
+
+    public int getCurrentPageNumber() {
+        return currentPageNumber;
+    }
+
+    public void setCurrentPageNumber(int currentPageNumber) {
+        this.currentPageNumber = currentPageNumber;
     }
 }
