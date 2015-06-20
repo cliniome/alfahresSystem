@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Entity(name="Request")
 @Table(name="TBL_REQUESTS")
 @DiscriminatorValue("Request")
-public class Request implements Serializable, AnnotatingModel {
+public class Request implements Serializable, AnnotatingModel, Comparable<Request> {
 
 
     @Id
@@ -316,5 +316,29 @@ public class Request implements Serializable, AnnotatingModel {
 
     public void setT_upd_user(String t_upd_user) {
         this.t_upd_user = t_upd_user;
+    }
+
+    @Override
+    public int compareTo(Request request) {
+
+
+        //Order them in ascending order
+        return this.getHourofAppointment() - request.getHourofAppointment();
+
+    }
+
+
+    public int getHourofAppointment()
+    {
+        String appHour = getAppointment_time();
+
+        if(appHour != null && appHour.contains(":"))
+        {
+            appHour = appHour.split(":")[0];
+
+            return Integer.parseInt(appHour);
+
+
+        }else return Integer.MAX_VALUE;
     }
 }
