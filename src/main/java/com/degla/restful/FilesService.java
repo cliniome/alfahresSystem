@@ -50,6 +50,46 @@ public class FilesService extends BasicRestful {
         }
     }
 
+
+    @Path("/oneFile")
+    @GET
+    @Produces("application/json")
+    public Response scanFile(@QueryParam("fileNumber") String fileNumber)
+    {
+        try
+        {
+            //get the employee
+            Employee emp = getAccount();
+
+            if(emp == null)
+            {
+                return Response.status(UNAUTHORIZED).build();
+            }else
+            {
+                SyncBatch batch = new SyncBatch();
+                batch.setCreatedAt(new Date().getTime());
+
+                List<RestfulFile> foundFiles = new ArrayList<RestfulFile>();
+                //get the file
+                PatientFile foundFile = systemService.getFilesService().getFileWithNumber(fileNumber);
+                if(foundFile != null)
+                {
+                    foundFiles.add(foundFile.toRestfulFile());
+                }
+
+                batch.setFiles(foundFiles);
+
+                return Response.ok(batch).build();
+
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
     @Path("/distribute")
     @Produces("application/json")
     @GET
@@ -124,7 +164,7 @@ public class FilesService extends BasicRestful {
 
         }catch (Exception s)
         {
-            return Response.ok(new BooleanResult(false,s.getMessage())).build();
+            return Response.ok(new BooleanResult(false, s.getMessage())).build();
         }
     }
 
@@ -189,6 +229,10 @@ public class FilesService extends BasicRestful {
     }
 
 
+    /**
+     * This function will be called by coordinator to collect files in his expandable ListView
+     * @return
+     */
     @Path("/collect")
     @POST
     @Produces("application/json")
@@ -216,8 +260,11 @@ public class FilesService extends BasicRestful {
 
                 List<RestfulClinic> clinics = new ArrayList<RestfulClinic>();
 
+
                 for(PatientFile file : availableFiles)
                 {
+
+                    boolean hasMultipleClinics = systemService.getTransferManager().hasTransfer(file.getFileID());
                     RestfulClinic currentClinic = getRestfulClinicByCode(file.getCurrentStatus().getClinicCode(),clinics);
 
                     if(currentClinic == null)
@@ -226,23 +273,23 @@ public class FilesService extends BasicRestful {
                         clinic.setClinicCode(file.getCurrentStatus().getClinicCode());
                         clinic.setClinicName(file.getCurrentStatus().getClinicName());
                         RestfulFile restfile = file.toRestfulFile();
-
-                        boolean hasMultipleClinics = systemService.getTransferManager().hasTransfer(file.getFileID());
-                        restfile.setHasMultipleClinics(hasMultipleClinics);
+                        restfile.setMultipleClinics(hasMultipleClinics);
                         clinic.getFiles().add(restfile);
-
                         //now add it to the current clinics list
                         clinics.add(clinic);
                     }else
                     {
+                        RestfulFile currenteFile = file.toRestfulFile();
+                        currenteFile.setMultipleClinics(hasMultipleClinics);
                         //add the current file to the current clinic
-                        currentClinic.getFiles().add(file.toRestfulFile());
+                        currentClinic.getFiles().add(currenteFile);
                     }
                 }
 
                 //once , this is done , now add it to the collection batch
                 batch.setCreatedAt(new Date().getTime());
                 batch.setClinics(clinics);
+
 
                 //now return the response
                 return Response.ok(batch).build();

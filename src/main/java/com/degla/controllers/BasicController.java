@@ -6,10 +6,7 @@ import com.degla.exceptions.WorkflowOutOfBoundException;
 import com.degla.restful.models.*;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
-import com.degla.utils.WorkflowValidator;
-import com.sun.xml.internal.ws.api.pipe.FiberContextSwitchInterceptor;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,13 +17,13 @@ import java.util.List;
 public class BasicController implements BasicRestfulOperations {
 
 
-    protected SystemService systemService;
+    private SystemService systemService;
 
 
     public BasicController() {
 
         try {
-            systemService = SpringSystemBridge.services();
+            setSystemService(SpringSystemBridge.services());
 
         } catch (Exception s) {
             s.printStackTrace();
@@ -38,7 +35,7 @@ public class BasicController implements BasicRestfulOperations {
     {
         try
         {
-            List<PatientFile> existingFiles = systemService.getFilesService().scanForFiles(query, states);
+            List<PatientFile> existingFiles = getSystemService().getFilesService().scanForFiles(query, states);
 
             if(existingFiles != null && existingFiles.size() > 0)
             {
@@ -90,7 +87,7 @@ public class BasicController implements BasicRestfulOperations {
         try {
             List<RestfulRequest> availableRequests = new ArrayList<RestfulRequest>();
 
-            List<Request> requests = systemService.getRequestsManager().getNewRequestsFor(userName);
+            List<Request> requests = getSystemService().getRequestsManager().getNewRequestsFor(userName);
 
             if (requests != null) {
                 for (Request current : requests) {
@@ -137,7 +134,7 @@ public class BasicController implements BasicRestfulOperations {
         try
         {
             //First check to see if the request is found
-            Request foundRequest = systemService.getRequestsManager().getRequestByBatchNumber(
+            Request foundRequest = getSystemService().getRequestsManager().getRequestByBatchNumber(
                     file.getFileNumber(),file.getBatchRequestNumber());
 
             if(foundRequest != null)
@@ -148,7 +145,7 @@ public class BasicController implements BasicRestfulOperations {
                 //create a new file cabinet
                 ArchiveCabinet cabinet = null;
 
-                cabinet = systemService.getCabinetsService().getCabinetByID(file.getCabinetId());
+                cabinet = getSystemService().getCabinetsService().getCabinetByID(file.getCabinetId());
 
                 if(cabinet != null)
                 {
@@ -159,6 +156,12 @@ public class BasicController implements BasicRestfulOperations {
                     cabinet = new ArchiveCabinet();
                     cabinet.setCabinetID(file.getCabinetId());
                     cabinet.setCreationTime(new Date());
+
+                    //save the cabin into the database
+                    getSystemService().getCabinetsService().addEntity(cabinet);
+
+                    cabinet = getSystemService().getCabinetsService().getCabinetByID(cabinet.getCabinetID());
+
                     newPatientFile.setArchiveCabinet(cabinet);
                 }
 
@@ -169,11 +172,11 @@ public class BasicController implements BasicRestfulOperations {
                 newPatientFile.setPatientNumber(foundRequest.getPatientNumber());
                 this.addNewFileHistory(newPatientFile, file, emp);
 
-                boolean result = systemService.getFilesService().addEntity(newPatientFile);
+                boolean result = getSystemService().getFilesService().addEntity(newPatientFile);
 
                 if (result) {
                     //now remove the current request
-                    return systemService.getRequestsManager().removeEntity(foundRequest);
+                    return getSystemService().getRequestsManager().removeEntity(foundRequest);
 
                 } else return false;
 
@@ -182,7 +185,7 @@ public class BasicController implements BasicRestfulOperations {
                 //that means the current request is not found
                 //it means it is not the first time for that file in the system
                 //Get the file by knowing its file number
-                PatientFile patientFile = systemService.getFilesService()
+                PatientFile patientFile = getSystemService().getFilesService()
                         .getFileWithNumber(file.getFileNumber());
 
                 if(patientFile == null) throw new RecordNotFoundException("There is something wrong " +
@@ -194,7 +197,7 @@ public class BasicController implements BasicRestfulOperations {
                 this.addNewFileHistory(patientFile,file,emp);
 
                 //finally update the current patient file
-                return systemService.getFilesService().updateEntity(patientFile);
+                return getSystemService().getFilesService().updateEntity(patientFile);
 
 
             }
@@ -262,7 +265,7 @@ public class BasicController implements BasicRestfulOperations {
         try {
             List<RestfulFile> availableFiles = new ArrayList<RestfulFile>();
 
-            List<PatientFile> files = systemService.getFilesService().searchFiles(query);
+            List<PatientFile> files = getSystemService().getFilesService().searchFiles(query);
 
             if (files != null && files.size() > 0) {
                 for (PatientFile file : files) {
@@ -278,5 +281,13 @@ public class BasicController implements BasicRestfulOperations {
             s.printStackTrace();
             return null;
         }
+    }
+
+    public SystemService getSystemService() {
+        return systemService;
+    }
+
+    public void setSystemService(SystemService systemService) {
+        this.systemService = systemService;
     }
 }

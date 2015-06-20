@@ -1,7 +1,7 @@
 package com.degla.restful;
 
 import com.degla.controllers.BasicController;
-import com.degla.db.models.Employee;
+import com.degla.db.models.*;
 import com.degla.exceptions.RecordNotFoundException;
 import com.degla.exceptions.WorkflowOutOfBoundException;
 import com.degla.restful.models.BooleanResult;
@@ -19,6 +19,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by snouto on 22/05/15.
@@ -52,6 +54,51 @@ public class SyncService extends BasicRestful implements Serializable {
                 {
                     try
                     {
+                        boolean hasTransfer = controller.getSystemService().getTransferManager().hasTransfer(file.getFileNumber());
+
+                        if(hasTransfer &&  file.getState().equals(FileStates.COORDINATOR_OUT.toString())
+                                &&
+                                currentEmployee.getRole().getName().equals(RoleTypes.COORDINATOR.toString()))
+                        {
+                            //that means the syncing comes from a coordinator and the file has transfer
+                            //so transfer that file
+                            List<Transfer> transferList = controller.getSystemService().getTransferManager()
+                                    .getTransfers(file.getFileNumber());
+
+                            if(transferList != null)
+                            {
+                                controller.updateFile(file,currentEmployee);
+                                //Sort them according to the appointment time
+                                Collections.sort(transferList);
+                                //get the first Transfer
+                                Transfer tobeTransferredTo = transferList.get(0);
+
+                                FileHistory transferrableHistory = tobeTransferredTo.toFileHistory();
+                                transferrableHistory.setOwner(currentEmployee);
+                                PatientFile patientFile = controller.getSystemService().getFilesService().getFileWithNumber(file.getFileNumber());
+                                transferrableHistory.setPatientFile(patientFile);
+
+                                //now add that history to the current patient file and update it
+                                patientFile.setCurrentStatus(transferrableHistory);
+
+                                //now update that patient file
+                                boolean result = controller.getSystemService().getFilesService().updateEntity(patientFile);
+                                result &= controller.getSystemService().getTransferManager().removeEntity(tobeTransferredTo);
+
+                                if(!result)
+                                    failedBatches.getFiles().add(file);
+
+
+                            }else
+                            {
+                                failedBatches.getFiles().add(file);
+                            }
+
+
+                            //continue in the looping
+                            continue;
+                        }
+
                         boolean result = controller.updateFile(file,currentEmployee);
 
                         if(!result)

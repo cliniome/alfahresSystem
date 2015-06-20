@@ -10,6 +10,8 @@ public enum FileStates {
 	, KEEPER_IN(13)
 	, COORDINATOR_IN(10)
 	, COORDINATOR_OUT(12)
+	,TRANSFERRED(15)
+	,OUT_OF_CABIN(7)
 	, DISTRIBUTED(11),
 	NEW(-2);
 

@@ -42,6 +42,10 @@ public class FileStateUtils implements Serializable {
                 return "Received by Receptionist";
             case RECEPTIONIST_OUT:
                 return "Sent out by Receptionist";
+            case OUT_OF_CABIN:
+                return "Prepared by Keeper";
+            case TRANSFERRED:
+                return "Transferred by coordinator";
             default:
                 return readableState;
         }

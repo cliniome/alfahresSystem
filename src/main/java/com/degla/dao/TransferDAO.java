@@ -18,6 +18,9 @@ public class TransferDAO extends AbstractDAO<Transfer> {
         return "Transfer";
     }
 
+
+
+
     public boolean hasTransfer(String fileNumber)
     {
         try

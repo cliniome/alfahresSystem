@@ -12,7 +12,7 @@ import java.util.Date;
 @Entity(name="Transfer")
 @Table(name="TBL_FILETRANSFER")
 @DiscriminatorValue("fileTransfer")
-public class Transfer extends EntityEO implements Serializable {
+public class Transfer extends EntityEO implements Serializable , Comparable<Transfer> {
 
     @Index(name="fileNumberIdx")
     @Column(name="fileNumber")
@@ -126,5 +126,51 @@ public class Transfer extends EntityEO implements Serializable {
 
     public void setAppointmentTime(String appointmentTime) {
         this.appointmentTime = appointmentTime;
+    }
+
+    @Override
+    public int compareTo(Transfer transfer) {
+
+       return this.getHourofAppointment() - transfer.getHourofAppointment();
+
+    }
+
+    public int getHourofAppointment()
+    {
+        String appHour = this.getAppointmentTime();
+
+        if(appHour != null && appHour.contains(":"))
+        {
+            appHour = appHour.split(":")[0];
+
+            return Integer.parseInt(appHour);
+
+
+        }else return Integer.MAX_VALUE;
+    }
+
+
+    public FileHistory toFileHistory()
+    {
+        try
+        {
+            FileHistory history = new FileHistory();
+            history.setAppointment_Hijri_Date(this.getAppointment_Hijri_Date());
+            history.setAppointment_Made_by(this.getAppointment_Made_by());
+            history.setAppointmentType(this.getAppointmentType());
+            history.setBatchRequestNumber(this.getBatchRequestNumber());
+            history.setClinicCode(this.getClinicCode());
+            history.setClinicDocCode(this.getClinicDocCode());
+            history.setClinicDocName(this.getClinicDocName());
+            history.setClinicName(this.getClinicName());
+            history.setCreatedAt(new Date());
+            history.setState(FileStates.TRANSFERRED);
+            return history;
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return null;
+        }
     }
 }

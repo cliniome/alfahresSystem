@@ -33,7 +33,7 @@ public class PatientFile extends EntityEO {
     @Temporal(TemporalType.TIMESTAMP)
 	private Date creationTime;
 
-    @ManyToOne(cascade={REFRESH,MERGE,DETACH,PERSIST},fetch=FetchType.EAGER,targetEntity=ArchiveCabinet.class)
+    @ManyToOne(cascade={REFRESH,MERGE,DETACH},fetch=FetchType.EAGER,targetEntity=ArchiveCabinet.class)
     @JoinColumn(name="Ar_cabinetID")
 	private ArchiveCabinet archiveCabinet;
 
