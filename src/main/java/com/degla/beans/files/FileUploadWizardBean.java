@@ -1,6 +1,7 @@
 package com.degla.beans.files;
 
 import com.degla.db.models.Request;
+import com.degla.db.models.Transfer;
 import com.degla.exceptions.BarcodeFormatException;
 import com.degla.exceptions.RequestException;
 import com.degla.system.SpringSystemBridge;
@@ -23,10 +24,7 @@ import javax.faces.context.Flash;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -133,17 +131,45 @@ public class FileUploadWizardBean implements Serializable {
 
             }
 
-            //now route them to different employees
-            systemService.getFileRouter().routeFiles(availableRequests);
+            //Before routing the Requests
+            //Sort the requests based on appointment time in ascending order
+            Collections.sort(availableRequests);
+            //Create a temporary list
+            List<Request> temporaryList = new ArrayList<Request>();
+            List<Transfer> transfers = new ArrayList<Transfer>();
 
-            if(requests != null && requests.size() > 0)
+            for(Request current:availableRequests)
+            {
+                if(!this.tempListContains(current,temporaryList))
+                    temporaryList.add(current);
+                else
+                {
+                    //add it to the duplicates list
+                    transfers.add(current.clone().toTransferObject());
+                }
+            }
+
+
+            //now route them to different employees
+            systemService.getFileRouter().routeFiles(temporaryList);
+
+            if(temporaryList != null && temporaryList.size() > 0)
             {
                 boolean result = true;
                 //insert all requests one by one
-                for(Request currentRequest : availableRequests)
+                for(Request currentRequest : temporaryList)
                 {
                     boolean stepResult = systemService.getRequestsManager().addEntity(currentRequest);
                     result = result && stepResult;
+                }
+
+                //check to see if the transfers already contains data
+                if(transfers != null && transfers.size() > 0)
+                {
+                    for(Transfer currentTransfer : transfers)
+                    {
+                        systemService.getTransferManager().addEntity(currentTransfer);
+                    }
                 }
 
                 if(result)
@@ -164,6 +190,24 @@ public class FileUploadWizardBean implements Serializable {
         }
     }
 
+    private boolean tempListContains(Request current, List<Request> availableRequests) {
+
+        if(availableRequests == null || availableRequests.size()<=0) return false;
+
+        boolean result  = false;
+
+        for(Request req : availableRequests)
+        {
+            if(req.getFileNumber().equals(current.getFileNumber()))
+            {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+
+    }
 
 
     public String onFlowListener(FlowEvent event)

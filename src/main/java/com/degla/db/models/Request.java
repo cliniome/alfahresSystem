@@ -6,6 +6,7 @@ import org.hibernate.annotations.Index;
 import static javax.persistence.CascadeType.*;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by snouto on 15/05/15.
@@ -91,6 +92,32 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
 
 
     private transient boolean selected;
+
+
+    public Transfer toTransferObject()
+    {
+        try
+        {
+            Transfer currentTransfer = new Transfer();
+            currentTransfer.setAppointment_Hijri_Date(this.getAppointment_date_h());
+            currentTransfer.setAppointment_Made_by(this.getAppointment_made_by());
+            currentTransfer.setAppointmentType(this.getAppointment_Type());
+            currentTransfer.setBatchRequestNumber(this.getBatchRequestNumber());
+            currentTransfer.setClinicCode(this.getClinicCode());
+            currentTransfer.setClinicDocCode(this.getClinic_Doc_Code());
+            currentTransfer.setClinicDocName(this.getRequestingDocName());
+            currentTransfer.setClinicName(this.getClinicName());
+            currentTransfer.setCreatedAt(new Date());
+            currentTransfer.setFileNumber(this.getFileNumber());
+            currentTransfer.setAppointmentTime(this.getAppointment_time());
+            return currentTransfer;
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return null;
+        }
+    }
 
     public Request clone() {
 

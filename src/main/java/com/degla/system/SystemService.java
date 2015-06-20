@@ -40,7 +40,8 @@ public class SystemService {
     private ClinicDAO clinicManager;
     @Autowired
     private FileHistoryDAO fileHistoryDAO;
-
+    @Autowired
+    private TransferDAO transferManager;
 
 
 
@@ -145,5 +146,13 @@ public class SystemService {
 
     public void setFileHistoryDAO(FileHistoryDAO fileHistoryDAO) {
         this.fileHistoryDAO = fileHistoryDAO;
+    }
+
+    public TransferDAO getTransferManager() {
+        return transferManager;
+    }
+
+    public void setTransferManager(TransferDAO transferManager) {
+        this.transferManager = transferManager;
     }
 }

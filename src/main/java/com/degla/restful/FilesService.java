@@ -225,7 +225,11 @@ public class FilesService extends BasicRestful {
                         RestfulClinic clinic = new RestfulClinic();
                         clinic.setClinicCode(file.getCurrentStatus().getClinicCode());
                         clinic.setClinicName(file.getCurrentStatus().getClinicName());
-                        clinic.getFiles().add(file.toRestfulFile());
+                        RestfulFile restfile = file.toRestfulFile();
+
+                        boolean hasMultipleClinics = systemService.getTransferManager().hasTransfer(file.getFileID());
+                        restfile.setHasMultipleClinics(hasMultipleClinics);
+                        clinic.getFiles().add(restfile);
 
                         //now add it to the current clinics list
                         clinics.add(clinic);
