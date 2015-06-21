@@ -51,6 +51,48 @@ public class FilesService extends BasicRestful {
     }
 
 
+    @Path("/scanOneFile")
+    @GET
+    @Produces("application/json")
+    public Response ScanOneFile(@QueryParam("fileNumber") String fileNumber)
+    {
+        try
+        {
+            //get the employee
+            Employee emp = getAccount();
+
+            if(emp == null)
+            {
+                return Response.status(UNAUTHORIZED).build();
+            }else
+            {
+                SyncBatch batch = new SyncBatch();
+                batch.setCreatedAt(new Date().getTime());
+
+                List<RestfulFile> foundFiles = new ArrayList<RestfulFile>();
+                //get the file
+                PatientFile foundFile = systemService.getFilesService().getSpecificFileNumberForCoordinator
+                        (fileNumber, emp);
+
+                if(foundFile != null)
+                {
+                    foundFiles.add(foundFile.toRestfulFile());
+                }
+
+                batch.setFiles(foundFiles);
+
+                return Response.ok(batch).build();
+
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return Response.status(NOT_FOUND).build();
+        }
+    }
+
+
     @Path("/oneFile")
     @GET
     @Produces("application/json")
