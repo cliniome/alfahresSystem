@@ -218,14 +218,6 @@ public class FileUploadWizardBean implements Serializable {
 
     }
 
-
-    public String onFlowListener(FlowEvent event)
-    {
-        if(event.getNewStep() == null)
-            return "upload";
-        else return event.getNewStep();
-    }
-
     public void onFileUploadListener(FileUploadEvent event)
     {
         String fileName = UUID.randomUUID().toString()+"."+systemService.getSystemSettings().getUploadableFileExtension();

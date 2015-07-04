@@ -7,6 +7,7 @@ import com.degla.db.models.RoleTypes;
 import com.degla.security.LoginService;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
+import com.degla.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -95,6 +96,7 @@ public class LoginBean {
 
         }catch(Exception s)
         {
+            WebUtils.addMessage("Invalid Credentials , Please Try again !");
             s.printStackTrace();
             return FAILURE;
         }

@@ -19,13 +19,11 @@
 
              <h:form prependId="false">
 
-             <p:panel id="main" header="Patient Files Upload Wizard" style="width:600px;">
+             <p:panel id="main" header="Files Requests Upload Wizard" style="width:600px;">
 
                  <p:messages closable="true" id="growl" showDetail="true" showSummary="false"/>
 
-                 <p:panel header="Choose Patient File">
-
-                     <p>Specify the location of the Xml Document you have saved locally.</p>
+                 <p:panel header="Specify the location of the Xml Document you have saved locally.">
 
                      <p:fileUpload update="mainContainerPane" fileLimit="3" auto="true"
                                    fileUploadListener="#{fileWizard.onFileUploadListener}"

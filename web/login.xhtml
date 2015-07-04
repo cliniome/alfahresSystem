@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <f:view>
     <h:head>
@@ -22,38 +23,8 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </a>
-                <a class="brand" href="#">AlFahres System</a>
-               <!-- <div class="btn-group pull-right">
-                    <a class="btn" href="my-profile.html"><i class="icon-user"></i> Admin</a>
-                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="my-profile.html">Profile</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Logout</a></li>
-                    </ul>
-                </div>-->
-                <!--<div class="nav-collapse">
-                    <ul class="nav">
-                        <li><a href="index-2.html">Home</a></li>
-                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Users <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="new-user.html">New User</a></li>
-                                <li class="divider"></li>
-                                <li><a href="users.html">Manage Users</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Roles <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="new-role.html">New Role</a></li>
-                                <li class="divider"></li>
-                                <li><a href="roles.html">Manage Roles</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="stats.html">Stats</a></li>
-                    </ul>
-                </div>-->
+                <a class="brand" href="#">Al Fahres System(W.D Systems)</a>
+
             </div>
         </div>
     </div>
@@ -63,11 +34,16 @@
      include the remember me checkbox
      -->
     <div class="container">
+        <img class="profile-img-card right pull-right" src="img/logo.png"/>
+        <h2 class="profile-name-card" style="color: white">Welcome To</h2>
+        <h2 class="profile-name-card" style="color:white">KSMC Medical Records Management System</h2>
         <div class="card card-container">
             <!-- <img class="profile-img-card" src="//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120" alt="" /> -->
            <!-- <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />-->
-            <p id="profile-name" class="profile-name-card"></p>
             <h:form class="form-signin" prependId="false">
+                <p id="profile-name" class="profile-name-card">
+                    <p:messages id="errorMsgs" sticky="false" showDetail="true" showSummary="false"/>
+                </p>
                 <span id="reauth-email" class="reauth-email"></span>
                 <h:inputText  id="inputEmail" styleClass="form-control" placeholder="User Name" value="#{loginBean.username}"/>
                 <h:inputSecret id="inputPassword" styleClass="form-control" placeholder="Password" value="#{loginBean.password}"/>
@@ -81,11 +57,15 @@
                     </label>
                 </div>
                 <!--<button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>-->
-                <h:commandButton styleClass="btn btn-lg btn-primary btn-block btn-signin" value="Sign in" action="#{loginBean.login}"/>
+                <p:commandButton ajax="false" update="errorMsgs" styleClass="btn btn-lg btn-primary btn-block btn-signin" value="Sign in" action="#{loginBean.login}"/>
             </h:form><!-- /form -->
 
         </div><!-- /card-container -->
     </div><!-- /container -->
+    <br/>
+    <footer class="well">
+        W.D.Systems @ 2015
+    </footer>
 
     <script src="js/login.js"/>
 </h:body>
