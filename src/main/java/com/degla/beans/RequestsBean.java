@@ -138,7 +138,7 @@ public class RequestsBean implements Serializable {
                 Row contentRow = currentSheet.createRow(i+1);
                 //Create the first Cell
                 Cell fileNumberCell = contentRow.createCell(0);
-                fileNumberCell.setCellFormula(pageRequests.get(i).getFileNumber());
+                fileNumberCell.setCellValue(pageRequests.get(i).getFileNumber());
                 //Create the patient Number Cell
                 Cell patientNumberCell = contentRow.createCell(1);
                 patientNumberCell.setCellValue(pageRequests.get(i).getPatientNumber());

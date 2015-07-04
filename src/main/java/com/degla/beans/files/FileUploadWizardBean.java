@@ -100,13 +100,22 @@ public class FileUploadWizardBean implements Serializable {
                     for(Request req : values)
                     {
 
-
                         req.setClinic_Doc_Code(key.getT_clinic_doc_code());
                         req.setClinicCode(key.getT_clinic_code());
                         req.setClinicName(key.getClinic_name());
                         req.setCsGroupCount(key.getCs_group_count());
                         req.setRequestingDocName(key.getDoc_name());
+                        if(req.getFileNumber() == null || req.getFileNumber().length() <= 0)
+                        {
+                            getFailedRequests().add(req);
+                            continue;
+                        }
 
+                        if(req.getPatientNumber() == null || req.getPatientNumber().length() <=0)
+                        {
+                            getFailedRequests().add(req);
+                            continue;
+                        }
                         String regex = "[0-9]+";
                         Pattern pattern = Pattern.compile(regex);
                         if(!pattern.matcher(req.getFileNumber()).matches())
@@ -115,10 +124,10 @@ public class FileUploadWizardBean implements Serializable {
                             getFailedRequests().add(req);
                             continue;
                         }
+
                         //get the new File Number structure
                         BarcodeUtils barcodeUtils = new BarcodeUtils(req.getFileNumber());
                         req.setFileNumber(barcodeUtils.getNewBarcodeStructure());
-
                         availableRequests.add(req);
                     }
 
