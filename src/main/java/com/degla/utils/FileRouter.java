@@ -31,7 +31,7 @@ public class FileRouter {
         if(newRequests == null || newRequests.size() <=0) return;
         //get all employees whose Role is File keeper
 
-        List<Employee> keepers = employeeDAO.getEmployeesByRole(RoleTypes.KEEPER.toString());
+        List<Employee> keepers = employeeDAO.getEmployeesByRole(RoleTypes.KEEPER.toString(),true);
         if(keepers == null || keepers.size() <= 0) return;
 
         //get their size

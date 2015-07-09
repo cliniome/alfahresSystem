@@ -5,6 +5,7 @@ import com.degla.db.models.Request;
 import com.degla.db.models.RoleTypes;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
+import com.degla.utils.BarcodeUtils;
 import com.degla.utils.WebUtils;
 
 import javax.annotation.PostConstruct;
@@ -39,7 +40,7 @@ public class EditSavedRequestsBean implements Serializable {
         try
         {
             systemService = SpringSystemBridge.services();
-            setEmployees(systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString()));
+            setEmployees(systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString(),true));
 
             this.loadQueryString();
 

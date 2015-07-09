@@ -31,25 +31,18 @@ public class SearchRequestsBean {
 
     private String updateResultsLbl;
 
-
-
-
-
     @PostConstruct
     public void init()
     {
         try
         {
             systemService = SpringSystemBridge.services();
-            employees = systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString());
-
+            employees = systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString(),true);
         }catch (Exception s)
         {
             s.printStackTrace();
         }
     }
-
-
     /**
      * This method will select the chosen employee from the list
      */

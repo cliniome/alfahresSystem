@@ -43,6 +43,12 @@ public class AddClinicBean {
     {
         try
         {
+
+            if(systemService.getClinicManager().clinicExists(getClinicCode()))
+            {
+                WebUtils.addMessage("Current Clinic Exists, Please try to add different Clinic");
+                return;
+            }
             Clinic newClinic = new Clinic(this.getClinicName(),this.getClinicCode());
             //now try to add the current clinic
             boolean result = systemService.getClinicManager().addEntity(newClinic);

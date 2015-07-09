@@ -26,7 +26,7 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
     @Index(name="req_patientNumber")
     private String patientNumber;
 
-    @Column(name="FileNumber")
+    @Column(name="FileNumber",unique = true)
     @Index(name="req_fileNumber")
     private String fileNumber;
 

@@ -119,8 +119,14 @@ public class EditRequestDetailsBean implements Serializable {
             {
                 Request currentRequest = getFileRequest();
                 String fileNumber = getFileNumber();
-
                 BarcodeUtils utils = new BarcodeUtils(fileNumber);
+
+                if(utils.isNewFileStructure())
+                {
+                    WebUtils.addMessage("Please insert The number without \"01-\"");
+                    return;
+                }
+
                 currentRequest.setFileNumber(utils.getNewBarcodeStructure());
                 currentRequest.setPatientName(getPatientName());
                 currentRequest.setPatientNumber(getPatientNumber());

@@ -10,13 +10,28 @@
             font-size: 90%;
         }
     </style>
+
 </h:head>
 
 <h:body>
-    <h:form>
+    <h:form prependId="false">
 
-        <p:dataTable var="clinic" rows="10"
 
+        <p:panelGrid id="rootPane">
+
+        <p:panelGrid columns="4" id="filterPane">
+            <p:outputLabel value="Query"/>
+            <p:inputText value="#{registrationBean.filterQuery}"/>
+            <p:commandButton value="Filter" update="selectClinic" actionListener="#{registrationBean.onFilter}"
+                             styleClass="btn btn-primary btn-success"/>
+            <p:commandButton value="Reset" actionListener="#{registrationBean.onReset}"
+                             update="selectClinic"
+                             styleClass="btn btn-primary btn-warning"/>
+        </p:panelGrid>
+
+        <p:separator/>
+
+        <p:dataTable var="clinic" rows="5"
                      paginator="true" value="#{registrationBean.clinics}" widgetVar="selectClinic" id="selectClinic"
                       editable="true">
 
@@ -34,6 +49,9 @@
 
             </p:column>
         </p:dataTable>
+
+        </p:panelGrid>
+
 
     </h:form>
 

@@ -33,7 +33,6 @@ public class RegistrationBean {
 
     public static String SHOWEMPLOYEE = "UPDATEEMPLOYEENOW";
     public static String CANCEL_SHOWEMPLOYEES = "CANCELANDSHOWEMPS";
-
     private String firstName;
     private String lastName;
     private String userName;
@@ -49,8 +48,8 @@ public class RegistrationBean {
     private List<Clinic> filteredClinics;
     private List<Clinic> chosenClinics;
     private boolean coordinator;
-
     private String passedEmpId;
+    private String filterQuery;
 
 
     @PostConstruct
@@ -79,6 +78,41 @@ public class RegistrationBean {
         }
     }
 
+
+
+    public void onFilter(ActionEvent event)
+    {
+        try
+        {
+            if(this.getFilterQuery() == null || this.getFilterQuery().length() <=0)
+                return;
+
+            List<Clinic> filteredClinics = systemService.getClinicManager()
+                    .selectClinicByCodeOrName(getFilterQuery());
+
+            if(filteredClinics == null)
+                filteredClinics = new ArrayList<Clinic>();
+
+            this.setClinics(filteredClinics);
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+    }
+
+    public void onReset(ActionEvent event)
+    {
+        try
+        {
+            this.setClinics(systemService.getClinicManager().getAllClinics());
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+    }
 
 
     public boolean returnUpdateableCoordinator()
@@ -407,5 +441,13 @@ public class RegistrationBean {
 
     public void setPassedEmpId(String passedEmpId) {
         this.passedEmpId = passedEmpId;
+    }
+
+    public String getFilterQuery() {
+        return filterQuery;
+    }
+
+    public void setFilterQuery(String filterQuery) {
+        this.filterQuery = filterQuery;
     }
 }

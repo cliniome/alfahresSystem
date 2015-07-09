@@ -28,8 +28,13 @@
                     <h:panelGrid columns="2">
 
                         <p:outputLabel value="Request Number"/>
-                        <p:inputText value="#{editRequestBean.fileNumber}" required="true"
-                                requiredMessage="Request File Number is required"/>
+                        <p:inputText value="#{editRequestBean.fileNumber}" styleClass="form-control"
+                                     required="true"
+                                     validatorMessage="Request Number should be 6-8 digits Long only"
+                                     requiredMessage="Request File Number is required">
+                            <f:validateLength minimum="6" maximum="8"/>
+                            <f:validateRegex pattern="[0-9]{6,8}$"/>
+                        </p:inputText>
 
                         <p:outputLabel value="Patient Number"/>
                         <p:inputText value="#{editRequestBean.patientNumber}" required="true"

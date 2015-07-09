@@ -168,8 +168,15 @@ public class FileUploadWizardBean implements Serializable {
                 //insert all requests one by one
                 for(Request currentRequest : temporaryList)
                 {
-                    boolean stepResult = systemService.getRequestsManager().addEntity(currentRequest);
-                    result = result && stepResult;
+                    try
+                    {
+                        boolean stepResult = systemService.getRequestsManager().addEntity(currentRequest);
+                        result = result && stepResult;
+
+                    }catch (Exception s)
+                    {
+                        continue;
+                    }
                 }
 
                 //check to see if the transfers already contains data

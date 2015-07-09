@@ -25,12 +25,12 @@ public class EmployeeDAO extends AbstractDAO<Employee> {
         return query.getResultList();
     }
 
-    public List<Employee> getEmployeesByRole(String roleName)
+    public List<Employee> getEmployeesByRole(String roleName,boolean active)
     {
-        String queryString = "select e from Employee e where e.role.name=:rolename";
+        String queryString = "select e from Employee e where e.role.name=:rolename AND e.active=:active";
         Query query = getManager().createQuery(queryString);
         query.setParameter("rolename", roleName);
-
+        query.setParameter("active",active);
         return query.getResultList();
     }
 
