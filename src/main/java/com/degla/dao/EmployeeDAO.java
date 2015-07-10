@@ -2,6 +2,7 @@ package com.degla.dao;
 
 import com.degla.db.models.Employee;
 import com.degla.db.models.RoleEO;
+import com.degla.db.models.RoleTypes;
 import com.degla.utils.Paginator;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,26 @@ public class EmployeeDAO extends AbstractDAO<Employee> {
         return query.getResultList();
     }
 
+
+    public List<Employee> getEmployeesForClinicCode(String clinicCode)
+    {
+        try
+        {
+            String queryString = "select e from Employee e inner join e.clinics c where c.clinicCode = :code " +
+                    " AND e.active=:active AND e.role.name =:roleName";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("code",clinicCode);
+            currentQuery.setParameter("active",true);
+            currentQuery.setParameter("roleName", RoleTypes.COORDINATOR.toString());
+
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return null;
+        }
+    }
 
 
 

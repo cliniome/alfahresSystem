@@ -1,9 +1,6 @@
 package com.degla.restful;
 import com.degla.controllers.BasicController;
-import com.degla.db.models.Employee;
-import com.degla.db.models.FileStates;
-import com.degla.db.models.PatientFile;
-import com.degla.db.models.RoleTypes;
+import com.degla.db.models.*;
 import com.degla.exceptions.RecordNotFoundException;
 import com.degla.exceptions.WorkflowOutOfBoundException;
 import com.degla.restful.models.*;
@@ -20,6 +17,7 @@ import sun.misc.BASE64Encoder;
 import static javax.ws.rs.core.Response.Status.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -47,6 +45,65 @@ public class FilesService extends BasicRestful {
         }catch(Exception s)
         {
             s.printStackTrace();
+        }
+    }
+
+
+    @Path("/transferInfo")
+    @GET
+    @Produces("application/json")
+    public Response getTransferInfo(@QueryParam("fileNumber") String fileNumber)
+    {
+        try
+        {
+            Employee emp = getAccount();
+
+            if(emp == null)
+                return Response.status(UNAUTHORIZED).build();
+
+
+            List<Transfer> transfers = systemService.getTransferManager().getTransfers(fileNumber);
+
+            if(transfers == null || transfers.size() <= 0 )
+                return Response.status(NOT_FOUND).build();
+
+            //sort them according to the appointment time
+            Collections.sort(transfers);
+
+            //get the first one
+            Transfer currentTransfer = transfers.get(0);
+
+            //Create a transfer info card
+            RestfulTransferInfo info = new RestfulTransferInfo();
+            info.setAppointmentDate(currentTransfer.getAppointment_Hijri_Date());
+            info.setAppointmentTime(currentTransfer.getAppointmentTime());
+            info.setClinicCode(currentTransfer.getClinicCode());
+            info.setClinicName(currentTransfer.getClinicName());
+            info.setClinicDocCode(currentTransfer.getClinicDocCode());
+            info.setClinicDocName(currentTransfer.getClinicDocName());
+            String coordinatorName = "<No Coordinator Available>";
+
+            List<Employee> employeeList = systemService.getEmployeeService()
+                    .getEmployeesForClinicCode(currentTransfer.getClinicCode());
+
+            if(employeeList != null && employeeList.size() > 0)
+            {
+                //take the first coordinator in this list
+                Employee coordinator = employeeList.get(0);
+                coordinatorName = coordinator.getfullName();
+            }
+
+            info.setCoordinatorName(coordinatorName);
+
+            return Response.ok(info).build();
+
+
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return Response.status(NOT_FOUND).build();
         }
     }
 

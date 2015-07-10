@@ -1,5 +1,6 @@
 package com.degla.beans.files;
 
+import com.degla.db.models.Clinic;
 import com.degla.db.models.Request;
 import com.degla.db.models.Transfer;
 import com.degla.exceptions.BarcodeFormatException;
@@ -170,6 +171,30 @@ public class FileUploadWizardBean implements Serializable {
                 {
                     try
                     {
+                        //Take the clinic and try to add it if it is not exist
+                        try
+                        {
+                            String clinicCode = currentRequest.getClinicCode();
+                            if(clinicCode != null)
+                                clinicCode = clinicCode.trim();
+
+                            boolean exists = systemService.getClinicManager().clinicExists(clinicCode);
+
+                            if(!exists)
+                            {
+                                //create a new clinic for it
+                                Clinic newClinic = new Clinic(currentRequest.getClinicName(),clinicCode);
+
+                                //add the clinic to the data base
+                                systemService.getClinicManager().addEntity(newClinic);
+
+                            }
+
+                        }catch (Exception s)
+                        {
+
+                        }
+
                         boolean stepResult = systemService.getRequestsManager().addEntity(currentRequest);
                         result = result && stepResult;
 
