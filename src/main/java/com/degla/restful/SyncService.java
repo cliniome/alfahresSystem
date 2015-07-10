@@ -75,8 +75,23 @@ public class SyncService extends BasicRestful implements Serializable {
                                 //get the first Transfer
                                 Transfer tobeTransferredTo = transferList.get(0);
 
+                                //Get the coordinator that has the current clinic assigned to him
+                                List<Employee> coordinators = controller.getSystemService()
+                                        .getEmployeeService().getEmployeesForClinicCode(tobeTransferredTo.getClinicCode());
+
+                                Employee owner = currentEmployee;
+
+                                if(coordinators != null && coordinators.size() > 0)
+                                {
+                                    //that means there is a coordinator administering the current clinic
+                                    //assign that file to him
+
+                                    owner = coordinators.get(0); //get the first one
+                                }
+
                                 FileHistory transferrableHistory = tobeTransferredTo.toFileHistory();
-                                transferrableHistory.setOwner(currentEmployee);
+                                transferrableHistory.setOwner(owner);
+
                                 PatientFile patientFile = controller.getSystemService().getFilesService().getFileWithNumber(file.getFileNumber());
                                 transferrableHistory.setPatientFile(patientFile);
 

@@ -22,8 +22,9 @@
 
                         <p:toolbar>
                             <p:toolbarGroup align="left">
-                                <p:commandButton value="Change Status" action="CHANGESTATUS"
-                                                 ajax="false" icon="fa-hand-o-right"/>
+                                <!--<p:commandButton value="Change Status" action="CHANGESTATUS"
+                                                 ajax="false" icon="fa-hand-o-right"/>-->
+                                <a class="btn btn-danger" href="ChangeFile.xhtml?id=#{fileDetailsBean.file.fileID}">Change Status</a>
                             </p:toolbarGroup>
                         </p:toolbar>
 
@@ -52,8 +53,10 @@
                     <p:panel header="File History Details">
 
 
-                        <p:dataTable var="history" value="#{fileDetailsBean.fileHistories}" rows="5"
-                                     paginator="true" rowKey="#{history}" sortBy="#{history.createdAt}"
+                        <p:dataTable id="historiesTable" var="history" value="#{fileDetailsBean.fileHistories}"
+                                     paginator="true" rowKey="#{history}"
+                                     sortBy="#{history.createdAt}"
+                                     rows="20"
                                      >
 
                             <f:facet name="header">

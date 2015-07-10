@@ -8,5 +8,71 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <f:view>
 
+    <ui:composition template="../fragments/masterLayout.xhtml">
+
+        <ui:define name="mainContents">
+
+
+            <h:form prependId="false">
+
+                <h:panelGrid columns="1">
+
+
+                    <h:inputHidden value="#{changeFileStatusBean.fileNumber}"/>
+
+                    <p:panel header="File Status">
+
+                        <p:messages id="messages" showDetail="true" closable="true"/>
+
+                        <h:panelGrid columns="2">
+
+
+
+
+                            <p:outputLabel value="File Number"/>
+                            <p:inputText readonly="true" disabled="true"
+                                         value="#{changeFileStatusBean.fileNumber}"/>
+
+                            <p:outputLabel value="Assigned To"/>
+                            <p:selectOneMenu value="#{changeFileStatusBean.assignedEmployee}"
+                                             filter="true" filterMatchMode="startsWith"
+                                             converter="com.degla.converter.EmployeeConverter">
+
+                                <f:selectItems value="#{changeFileStatusBean.employees}" var="emp"
+                                               itemLabel="#{emp.getfullName()}"
+                                               itemValue="#{emp}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Current Status"/>
+                            <p:selectOneMenu value="#{changeFileStatusBean.status}" filter="true" filterMatchMode="startsWith">
+
+                                <f:selectItems value="#{changeFileStatusBean.items}"
+                                               var="state" itemLabel="#{state}"
+                                               itemValue="#{state}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Shelf Number"/>
+                            <p:inputText value="#{changeFileStatusBean.shelfNumber}"/>
+
+                            <p:commandButton styleClass="btn btn-primary" value="Update Status" ajax="false"
+                                             update="messages"
+                                    actionListener="#{changeFileStatusBean.onUpdate}"/>
+
+                            <p:commandButton styleClass="btn btn-warning" value="Cancel" ajax="false"
+                                    action="BACKTOEDITFILE"/>
+
+                        </h:panelGrid>
+
+                    </p:panel>
+
+
+
+                </h:panelGrid>
+
+
+            </h:form>
+
+        </ui:define>
+
+    </ui:composition>
 </f:view>
 </html>

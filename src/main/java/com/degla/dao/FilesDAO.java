@@ -149,11 +149,10 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             }
 
             String queryString = "select f from PatientFile f where f.currentStatus.clinicCode IN (:clinics) and " +
-                    " f.currentStatus.state =:state and f.currentStatus.owner.id = :id and f.fileID=:fileNumber";
+                    " f.currentStatus.state =:state and f.fileID=:fileNumber";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("clinics",clinics);
             currentQuery.setParameter("state",FileStates.TRANSFERRED);
-            currentQuery.setParameter("id",coordinator.getId());
             currentQuery.setParameter("fileNumber",fileNumber);
 
             return (PatientFile) currentQuery.getSingleResult();

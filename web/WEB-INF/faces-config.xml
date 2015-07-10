@@ -95,6 +95,16 @@
         </navigation-case>
     </navigation-rule>
 
+    <navigation-rule>
+        <from-view-id>/admin/ChangeFile.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>BACKTOEDITFILE</from-outcome>
+            <to-view-id>/admin/SearchFiles.xhtml</to-view-id>
+            <redirect/>
+
+        </navigation-case>
+    </navigation-rule>
+
 
 
 </faces-config>
