@@ -51,6 +51,8 @@ public class RegistrationBean {
     private String passedEmpId;
     private String filterQuery;
 
+    private boolean canDeleteEmployee;
+
 
     @PostConstruct
     public void init()
@@ -139,11 +141,25 @@ public class RegistrationBean {
     public void selectClinicFromDialog(Clinic clinic)
     {
         RequestContext.getCurrentInstance().closeDialog(clinic);
-
-
-
     }
 
+
+    public void onDeleteEmployee(ActionEvent event)
+    {
+        try
+        {
+            Employee emp = this.getUpdateableEmployee();
+
+            if(!this.isCanDeleteEmployee()) return;
+
+            //Now try to remove that employee
+            systemService.getEmployeeService().removeEntity(emp);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+    }
 
     public void openSelectClinicDialog()
     {
@@ -393,8 +409,14 @@ public class RegistrationBean {
 
     public Employee getUpdateableEmployee() {
 
-        if(updateableEmployee == null)
+        if(updateableEmployee == null) {
             updateableEmployee = systemService.getEmployeeService().getEntity(Integer.parseInt(getPassedEmpId()));
+
+            this.setCanDeleteEmployee(systemService
+                    .getRequestsManager()
+                    .getRequestsCountFor(updateableEmployee.getUsername()) <= 0);
+
+        }
 
         return updateableEmployee;
     }
@@ -449,5 +471,13 @@ public class RegistrationBean {
 
     public void setFilterQuery(String filterQuery) {
         this.filterQuery = filterQuery;
+    }
+
+    public boolean isCanDeleteEmployee() {
+        return canDeleteEmployee;
+    }
+
+    public void setCanDeleteEmployee(boolean canDeleteEmployee) {
+        this.canDeleteEmployee = canDeleteEmployee;
     }
 }

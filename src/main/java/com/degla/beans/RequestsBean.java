@@ -3,6 +3,7 @@ package com.degla.beans;
 import com.degla.db.models.Request;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
+import com.degla.utils.ExcelFileBuilder;
 import com.degla.utils.GenericLazyDataModel;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -114,57 +115,23 @@ public class RequestsBean implements Serializable {
 
     private StreamedContent getFileContents() throws Exception
     {
-        Workbook wb = new HSSFWorkbook();
 
-        //Create a new Sheet
-        Sheet currentSheet = wb.createSheet("Files");
-        //Create the header
-        Row headerRow = currentSheet.createRow(0);
-        Cell fileNumber  =headerRow.createCell(0);
-        fileNumber.setCellValue("File Number");
-        Cell patientNumber = headerRow.createCell(1);
-        patientNumber.setCellValue("Patient Number");
+        ExcelFileBuilder fileBuilder = new ExcelFileBuilder(systemService);
 
-        //Get all Requests in the database
-        List<Request> pageRequests =  systemService.getRequestsManager().getPaginatedResults(
-                getDashboardBean().getCurrentPageNumber() * MAX_RESULTS
-                ,MAX_RESULTS);
+        Workbook wb = fileBuilder.buildExcelFile();
+        if(wb == null) return null;
 
-        if(pageRequests != null && pageRequests.size() > 0)
-        {
-            for(int i=0;i<pageRequests.size() ;i++)
-            {
-                //create a row
-                Row contentRow = currentSheet.createRow(i+1);
-                //Create the first Cell
-                Cell fileNumberCell = contentRow.createCell(0);
-                fileNumberCell.setCellValue(pageRequests.get(i).getFileNumber());
-                //Create the patient Number Cell
-                Cell patientNumberCell = contentRow.createCell(1);
-                patientNumberCell.setCellValue(pageRequests.get(i).getPatientNumber());
-            }
-
-            //then write it
-            String fullPath = systemService.getSystemSettings().getSystemUploadPath();
-            fullPath = String.format("%s%s.xls",fullPath,new Date().toString());
-
-            FileOutputStream outputStream = new FileOutputStream(fullPath);
-
-            wb.write(outputStream);
-            outputStream.flush();
-            outputStream.close();
-
-
-            //now read that file
-            FileInputStream inputStream = new FileInputStream(fullPath);
-
-
-            return  new DefaultStreamedContent(inputStream,"application/vnd.ms-excel",String.format("%s-%s.xls",
-                    "PatientFiles",String.valueOf(getDashboardBean().getCurrentPageNumber())));
-
-        }
-
-        return null;
+        //then write it
+        String fullPath = systemService.getSystemSettings().getSystemUploadPath();
+        fullPath = String.format("%s%s.xls",fullPath,String.valueOf(new Date().getTime()));
+        FileOutputStream outputStream = new FileOutputStream(fullPath);
+        wb.write(outputStream);
+        outputStream.flush();
+        outputStream.close();
+        //now read that file
+        FileInputStream inputStream = new FileInputStream(fullPath);
+        return  new DefaultStreamedContent(inputStream,"application/vnd.ms-excel",String.format("%s-%s.xls",
+                "PatientFiles",String.valueOf(new Date().getTime())));
 
     }
 

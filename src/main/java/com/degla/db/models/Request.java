@@ -80,6 +80,7 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
 
     @Column(name="clinic_Doc_Code")
     private String clinic_Doc_Code;
+
     @ManyToOne(cascade = {MERGE,REFRESH,DETACH})
     @JoinColumn(name="assigned_To",nullable = true)
     private Employee assignedTo;

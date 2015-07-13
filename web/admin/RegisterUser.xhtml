@@ -76,7 +76,7 @@
 
                                                      value="#{registrationBean.chosenRole}" id="role">
                                         <p:ajax event="change" listener="#{registrationBean.onRoleChanged}"
-                                                update="parentContainer"/>
+                                                update="clinicsRegion"/>
                                         <f:selectItems  value="#{registrationBean.roles}"
                                                 var="role" itemLabel="#{role.displayName}"  itemValue="#{role}"/>
                                         <f:converter converterId="com.degla.converters.RoleConverter"/>
@@ -94,6 +94,7 @@
                                 <p:outputLabel rendered="#{registrationBean.coordinator}"
                                                styleClass="control-label" for="clinics">Clinics</p:outputLabel>
                                 <div class="controls">
+                                    <p:panelGrid id="clinicsRegion" columns="1">
                                     <p:dataTable rendered="#{registrationBean.coordinator}"
                                                  id="clinics" value="#{registrationBean.chosenClinics}"
                                                  var="clinic">
@@ -126,6 +127,8 @@
                                             </h:panelGrid>
                                         </p:column>
                                     </p:dataTable>
+
+                                    </p:panelGrid>
                                 </div>
                             </div>
                             <div class="form-actions">

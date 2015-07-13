@@ -1,5 +1,6 @@
 package com.degla.dao;
 
+import com.degla.db.models.Employee;
 import com.degla.db.models.Request;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -38,6 +39,8 @@ public class RequestsDAO extends  AbstractDAO<Request> {
             return null;
         }
     }
+
+
 
     public Request getSingleRequest(String fileNumber)
     {
@@ -111,6 +114,28 @@ public class RequestsDAO extends  AbstractDAO<Request> {
         }catch(Exception s)
         {
             return null;
+        }
+    }
+
+    public long getRequestsCountFor(String username)
+    {
+
+        try
+        {
+            String queryString = "select count(r) from Request r where r.assignedTo.userName=:username and " +
+                    "r.assignedTo.active=:state";
+
+            Query currentQuery = getManager().createQuery(queryString);
+
+            currentQuery.setParameter("username",username);
+            currentQuery.setParameter("state",true);
+
+            return (Long)currentQuery.getSingleResult();
+
+
+        }catch(Exception s)
+        {
+            return Long.MIN_VALUE;
         }
     }
 }

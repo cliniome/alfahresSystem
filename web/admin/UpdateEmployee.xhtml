@@ -130,7 +130,12 @@
 
                                 <div class="form-actions">
                                     <p:commandButton ajax="false"  actionListener="#{registrationBean.onUpdate}" update="growl"
-                                                     styleClass="btn btn-success btn-large" value="Update User"/>
+                                                     styleClass="btn btn-success btn-large" value="Update Employee"/>
+
+                                    <p:commandButton ajax="false" action="CANCELANDSHOWEMPS" disabled="#{!registrationBean.canDeleteEmployee}"
+                                                     actionListener="#{registrationBean.onDeleteEmployee}" update="growl"
+                                                     styleClass="btn btn-danger btn-large" value="Delete Employee"/>
+
                                     <a class="btn" href="ShowEmployees.xhtml">Cancel</a>
                                 </div>
                             </fieldset>
