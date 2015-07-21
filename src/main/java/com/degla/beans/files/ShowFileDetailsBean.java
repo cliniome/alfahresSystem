@@ -43,15 +43,17 @@ public class ShowFileDetailsBean {
                 //get the Patient File
                 this.setFile(getSystemService().getFilesService().getFileWithNumber(fileNumber));
                 //get the current file history
-                this.setFileHistories(getSystemService().getFileHistoryDAO().getFileHistory(getFile()));
+                List<FileHistory> histories = getSystemService().getFileHistoryDAO().getFileHistory(getFile());
+                this.setFileHistories(histories);
+                //Sort them
                 if(this.getFileHistories() != null && this.getFileHistories().size() > 0)
                 {
                     //now sort them in descending order based on the createdAt flag
                     Collections.sort(this.getFileHistories(), new Comparator<FileHistory>() {
                         @Override
-                        public int compare(FileHistory fileHistory, FileHistory t1) {
+                        public int compare(FileHistory first, FileHistory second) {
 
-                            return t1.getCreatedAt().compareTo(fileHistory.getCreatedAt());
+                            return first.getCreatedAt().compareTo(second.getCreatedAt());
                         }
                     });
                 }
