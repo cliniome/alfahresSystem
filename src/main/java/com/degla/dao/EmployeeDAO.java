@@ -35,6 +35,26 @@ public class EmployeeDAO extends AbstractDAO<Employee> {
         return query.getResultList();
     }
 
+    public boolean employeeIDExists(String empID)
+    {
+        try
+        {
+            String stringQuery = "select e from Employee e where e.empID = :id";
+            Query query = getManager().createQuery(stringQuery);
+            query.setParameter("id",empID);
+
+            List<Employee> emps = query.getResultList();
+
+            if(emps == null || emps.size() <=0)
+                return false;
+            else return true;
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return false;
+        }
+    }
 
     public List<Employee> getEmployeesForClinicCode(String clinicCode)
     {

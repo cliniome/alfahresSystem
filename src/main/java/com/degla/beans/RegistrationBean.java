@@ -19,6 +19,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -311,31 +312,43 @@ public class RegistrationBean {
 
     public void onRegister(ActionEvent event)
     {
-        Employee emp = new Employee();
-        emp.setFirstName(this.getFirstName());
-        emp.setLastName(this.getLastName());
-        emp.setRole(this.chosenRole);
-        emp.setPassword(this.getPassword());
-        emp.setUserName(this.getUserName());
-        emp.setActive(this.isActive());
-        emp.setEmpID(this.getEmpID());
-        emp.setClinics(this.getChosenClinics());
+       try
+       {
+           Employee emp = new Employee();
+           emp.setFirstName(this.getFirstName());
+           emp.setLastName(this.getLastName());
+           emp.setRole(this.chosenRole);
+           emp.setPassword(this.getPassword());
+           emp.setUserName(this.getUserName());
+           emp.setActive(this.isActive());
+           emp.setEmpID(this.getEmpID());
+           emp.setClinics(this.getChosenClinics());
 
-        //now adding the employee into the database
-        boolean result = false;
-        String message = "";
-        if(emp.getId() == -1) {
-            result = systemService.getEmployeeService().addEntity(emp);
-            message = "Employee was added Successfully";
-            this.setChosenClinics(new ArrayList<Clinic>());
-            this.clear();
-        }
-        else {
-            result = systemService.getEmployeeService().updateEntity(emp);
-            message = "Employee was updated Successfully";
-        }
-        if(result)
-            WebUtils.addMessage(message);
+           //now adding the employee into the database
+           boolean result = false;
+           String message = "";
+           if(emp.getId() == -1) {
+               result = systemService.getEmployeeService().addEntity(emp);
+               message = "Employee was added Successfully";
+               this.setChosenClinics(new ArrayList<Clinic>());
+               this.clear();
+           }
+           else {
+               result = systemService.getEmployeeService().updateEntity(emp);
+               message = "Employee was updated Successfully";
+           }
+           if(result)
+               WebUtils.addMessage(message);
+
+       }catch (Exception s)
+       {
+           if(s instanceof ServletException)
+           {
+               WebUtils.addMessage("Duplicate Insertion of Employee ID");
+
+           }else
+               WebUtils.addMessage("Exception : " + s.getMessage());
+       }
 
     }
 

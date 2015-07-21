@@ -65,7 +65,10 @@
                                 <label class="control-label" for="empid">Employee ID</label>
                                 <div class="controls">
                                     <h:inputText required="true" requiredMessage="Employee ID is required"
-                                                 styleClass="input-xlarge" id="empid" value="#{registrationBean.empID}"/>
+
+                                                 styleClass="input-xlarge" id="empid" value="#{registrationBean.empID}">
+                                        <f:validator validatorId="com.delga.validators.EmployeeIDValidator"/>
+                                    </h:inputText>
                                 </div>
                             </div>
                             <div class="control-group">
