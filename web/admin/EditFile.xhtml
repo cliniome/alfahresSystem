@@ -36,6 +36,10 @@
                             <p:outputLabel value="#{fileDetailsBean.file.patientName}"/>
                             <p:outputLabel value="Patient Number"/>
                             <p:outputLabel value="#{fileDetailsBean.file.patientNumber}"/>
+                            <p:outputLabel value="Clinic Name"/>
+                            <p:outputLabel value="#{fileDetailsBean.file.currentStatus.clinicName}"/>
+                            <p:outputLabel value="Requesting Doc Name"/>
+                            <p:outputLabel value="#{fileDetailsBean.file.currentStatus.clinicDocName}"/>
                             <p:outputLabel value="File's State"/>
                             <p:outputLabel value="#{fileDetailsBean.file.currentStatus.readableState}"/>
                             <p:outputLabel value="Archive Cabinet"/>
@@ -44,6 +48,7 @@
                             <p:outputLabel value="#{fileDetailsBean.file.shelfId}"/>
                             <p:outputLabel value="Latest Batch Number"/>
                             <p:outputLabel value="#{fileDetailsBean.file.currentStatus.batchRequestNumber}"/>
+
 
                         </p:panelGrid>
                     </p:panel>
@@ -73,12 +78,6 @@
                                 <p:outputLabel value="#{history.clinicName}"/>
                             </p:column>
 
-                            <p:column headerText="Doc Name" filterable="true"
-                                      filterMatchMode="contains">
-                                <p:outputLabel value="#{history.clinicDocName}"/>
-                            </p:column>
-
-
                             <p:column headerText="Trolley ID" filterable="true"
                                       filterMatchMode="contains">
                                 <p:outputLabel value="#{history.containerId}"/>
@@ -89,8 +88,13 @@
                                 <p:outputLabel value="#{history.readableState}"/>
                             </p:column>
 
-                            <p:column headerText="Employee Name" filterable="true" filterMatchMode="contains"
-                                     >
+                            <p:column headerText="Time" filterable="true">
+                                <p:outputLabel value="#{history.createdAt}">
+                                    <f:convertDateTime  pattern="d-M-yyyy hh:mm"/>
+                                </p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Employee Name" filterable="true" filterMatchMode="contains">
 
                                 <p:outputLabel value="#{history.owner.getfullName()}"/>
 
