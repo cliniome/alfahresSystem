@@ -56,7 +56,7 @@ public class EditSavedRequestsBean implements Serializable {
     {
         try
         {
-            //TODO : Delete the current selected request
+
             if(systemService == null)
                 systemService = SpringSystemBridge.services();
 
