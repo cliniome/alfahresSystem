@@ -217,8 +217,15 @@ public class BasicController implements BasicRestfulOperations {
         history.setOwner(emp);
         FileStates state = FileStates.valueOf(file.getState().toString());
         history.setState(state);
-        if(file.getOperationDate() == null)
-            file.setOperationDate(new Date().getTime());
+        //I have deactivated this feature because it allows for mixing different time periods
+        //coming from the browser to the server which both might not be in sync, please look at
+        //the YouTrack Task, for a bug related to improper display of Patient File's FileHistories
+        /*if(file.getOperationDate() == null)
+            file.setOperationDate(new Date().getTime());*/
+
+        //Always set the time of operation to the server side Received Date to solve
+        //the above problem
+        file.setOperationDate(new Date().getTime());
 
         history.setCreatedAt(new Date(file.getOperationDate()));
         history.setPatientFile(patientFile);
