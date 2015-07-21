@@ -1,11 +1,14 @@
 package com.degla.beans.files;
 
 import com.degla.db.models.Request;
+import com.degla.utils.WebUtils;
 
 import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.event.ActionEvent;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +39,22 @@ public class FailedRequestsBean implements Serializable {
 
             if(tempRequest != null)
                 getFailedRequests().remove(tempRequest);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+    }
+
+
+    public void clearRequests(ActionEvent event)
+    {
+        try
+        {
+
+            this.setFailedRequests(new ArrayList<Request>());
+
+            WebUtils.addMessage("Failed Requests have been deleted Successfully");
 
         }catch (Exception s)
         {

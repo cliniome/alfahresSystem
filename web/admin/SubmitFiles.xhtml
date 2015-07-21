@@ -38,7 +38,7 @@
              </p:panel>
 
                  <br/>
-                 <p:separator rendered="#{fileWizard.failedRequests.size() > 0}"/>
+                 <p:separator rendered="#{failedRequestsBean.failedRequests.size() > 0}" />
                  <br/>
                  <p:panel id="failedRequestsPane" rendered="#{failedRequestsBean.failedRequests.size() > 0}"
                           header="Failed Requests" style="width: 600px;">
@@ -84,6 +84,16 @@
                          </p:column>
 
                      </p:dataTable>
+
+                     <p:panelGrid columns="1">
+                         <div class="alert alert-danger">
+                             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                             <p>Note : You can Permenantly Delete the Failed Requests by clicking the below button.</p>
+                         </div>
+                         <h:commandButton styleClass="btn btn-danger" value="Delete Failed Requests"
+
+                                          actionListener="#{failedRequestsBean.clearRequests}"/>
+                     </p:panelGrid>
 
                  </p:panel>
 
