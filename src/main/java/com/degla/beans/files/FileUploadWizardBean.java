@@ -1,8 +1,6 @@
 package com.degla.beans.files;
 
-import com.degla.db.models.Clinic;
-import com.degla.db.models.Request;
-import com.degla.db.models.Transfer;
+import com.degla.db.models.*;
 import com.degla.exceptions.BarcodeFormatException;
 import com.degla.exceptions.RequestException;
 import com.degla.system.SpringSystemBridge;
@@ -252,6 +250,16 @@ public class FileUploadWizardBean implements Serializable {
 
     public void onFileUploadListener(FileUploadEvent event)
     {
+        List<Employee> activeKeepers = systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString()
+                ,true);
+
+        if(activeKeepers == null || activeKeepers.size() <=0)
+        {
+            WebUtils.addMessage("There are no Active Keepers to assign the uploaded Requests , Please try to " +
+                    "add Keepers in the system before proceeding with the upload.");
+            return;
+        }
+
         String fileName = UUID.randomUUID().toString()+"."+systemService.getSystemSettings().getUploadableFileExtension();
         try {
             String writtenFile = uploadFile(fileName,event.getFile().getInputstream());
