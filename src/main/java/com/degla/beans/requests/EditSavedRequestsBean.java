@@ -11,6 +11,7 @@ import com.degla.utils.WebUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 
 @ManagedBean(name="editSavedRequestBean")
-@SessionScoped
+@ViewScoped
 public class EditSavedRequestsBean implements Serializable {
 
 
@@ -50,15 +51,44 @@ public class EditSavedRequestsBean implements Serializable {
         }
     }
 
+
+    public void deleteRequest(ActionEvent event)
+    {
+        try
+        {
+            //TODO : Delete the current selected request
+            if(systemService == null)
+                systemService = SpringSystemBridge.services();
+
+            if(this.chosenRequest == null)
+            {
+
+                this.chosenRequest = systemService.getRequestsManager().getSingleRequest(this.getFileNumber());
+            }
+
+            boolean done = systemService.getRequestsManager().removeEntity(this.chosenRequest);
+
+            if(done)
+            {
+                WebUtils.addMessage("The current Request has been deleted Successfully");
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+    }
+
     public void onSubmit(ActionEvent event)
     {
         try
         {
             if(this.chosenRequest == null)
             {
-                WebUtils.addMessage("There was a problem , Please contact your system administrator");
-                return;
+                //WebUtils.addMessage("There was a problem , Please contact your system administrator");
+                this.chosenRequest = this.systemService.getRequestsManager().getSingleRequest(this.getFileNumber());
             }
+
 
             this.chosenRequest.setFileNumber(this.getFileNumber());
             this.chosenRequest.setPatientName(this.getPatientName());

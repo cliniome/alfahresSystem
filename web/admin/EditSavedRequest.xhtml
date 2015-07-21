@@ -60,6 +60,18 @@
 
                         </h:panelGrid>
 
+                        <h:inputHidden value="#{editSavedRequestBean.fileNumber}"/>
+
+                        <div class="alert alert-block alert-danger">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            <p>You can permenantly delete the current request by pressing the below button</p>
+                            <p>Please note , this operation is irreversible.</p>
+                            <br/>
+                            <h:commandButton styleClass="btn btn-large btn-danger" value="Delete Request"
+                                             action="SUBMITFILES"
+                                             actionListener="#{editSavedRequestBean.deleteRequest}"/>
+                        </div>
+
                     </p:panel>
 
                 </h:panelGrid>
