@@ -35,6 +35,14 @@ public class EmployeeDAO extends AbstractDAO<Employee> {
         return query.getResultList();
     }
 
+    public List<Employee> getEmployeesByRole(String roleName)
+    {
+        String queryString = "select e from Employee e where e.role.name=:rolename";
+        Query query = getManager().createQuery(queryString);
+        query.setParameter("rolename", roleName);
+        return query.getResultList();
+    }
+
     public boolean employeeIDExists(String empID)
     {
         try

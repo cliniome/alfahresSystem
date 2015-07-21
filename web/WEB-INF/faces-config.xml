@@ -44,6 +44,12 @@
         </navigation-case>
 
         <navigation-case>
+            <from-outcome>HOMESCREEN</from-outcome>
+            <to-view-id>/admin/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+        <navigation-case>
             <from-outcome>EDITCABINET</from-outcome>
             <to-view-id>/admin/UpdateCabinet.xhtml</to-view-id>
             <redirect/>

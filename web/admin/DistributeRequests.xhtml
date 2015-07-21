@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<f:view>
+    <ui:composition template="../fragments/masterLayout.xhtml">
+
+        <ui:define name="mainContents">
+            <c:set target="#{cssBean}" property="currentPageName" value="RedistributeRequests"/>
+
+            <h:form prependId="false">
+
+                <h:panelGrid columns="1">
+                    <p:messages id="growl" showSummary="true" showIcon="true" closable="true"/>
+                <p:panel header="Re-Distribute Requests">
+
+
+                    <div class="alert alert-block alert-info">
+                        <p>You can re-distribute requests to other keepers in the system.</p>
+                        <p>Note: The system only allows redistribution of requests to active keepers in the system</p>
+                    </div>
+
+                    <p:panelGrid columns="2">
+
+                        <p:outputLabel value="From Keeper : "/>
+                        <p:selectOneMenu id="fromkeeper_search" converter="com.degla.converter.EmployeeConverter"
+                                         value="#{redistributeRequestsBean.fromKeeper}">
+                            <f:selectItem itemLabel="Please Select"/>
+                            <f:selectItems var="emp" value="#{redistributeRequestsBean.keepers}"
+                                           itemValue="#{emp}" itemLabel="#{emp.getfullName()}"/>
+
+                            <p:ajax event="change" update="tokeeper_choice" listener="#{redistributeRequestsBean.onChange}"
+                                    process="fromkeeper_search"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="To Keeper(s) : "/>
+                        <p:pickList id="tokeeper_choice" var="emp"
+                                    converter="com.degla.converter.EmployeeConverter"
+                                    value="#{redistributeRequestsBean.toKeepersList}"
+                                    itemValue="#{emp}" itemLabel="#{emp}"/>
+
+                        <br/>
+
+                        <h:panelGrid columns="2">
+
+                            <h:commandButton styleClass="btn btn-large btn-primary" value="Re-distribute Requests"
+                                             actionListener="#{redistributeRequestsBean.redistributeRequests}"
+                                             />
+                            <h:commandButton styleClass="btn btn-large btn-warning" value="Cancel" immediate="true" action="HOMESCREEN"/>
+
+                        </h:panelGrid>
+
+
+                    </p:panelGrid>
+
+                </p:panel>
+
+            </h:panelGrid>
+
+            </h:form>
+
+        </ui:define>
+
+    </ui:composition>
+</f:view>
+</html>
