@@ -69,10 +69,11 @@
 
                             <p:column headerText="Clinic Code" filterable="true" filterMatchMode="contains"
                                       sortable="true">
-                                <h:panelGrid columns="2">
-                                    <img alt="inpatient" src="../img/in-patient.png"/>
+                                <h:panelGrid columns="2" rendered="#{fileDetailsBean.file.currentStatus.inpatient}">
+                                   <h:graphicImage url="../img/in-patient.png" rendered="#{fileDetailsBean.file.currentStatus.inpatient}"/>
                                 <p:outputLabel value="#{history.clinicCode}"/>
                                 </h:panelGrid>
+                                <p:outputLabel value="#{history.clinicCode}" rendered="#{!fileDetailsBean.file.currentStatus.inpatient}"/>
                             </p:column>
 
                             <p:column headerText="Clinic Name" filterable="true" filterMatchMode="contains"
