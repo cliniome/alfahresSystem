@@ -81,6 +81,8 @@ public class FilesService extends BasicRestful {
             info.setClinicName(currentTransfer.getClinicName());
             info.setClinicDocCode(currentTransfer.getClinicDocCode());
             info.setClinicDocName(currentTransfer.getClinicDocName());
+            info.setInpatient(currentTransfer.isInpatient());
+
             String coordinatorName = "<No Coordinator Available>";
 
             List<Employee> employeeList = systemService.getEmployeeService()

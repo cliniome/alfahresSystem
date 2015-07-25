@@ -13,7 +13,6 @@
 
         <ui:define name="mainContents">
 
-
             <h:form prependId="false">
 
                 <h:panelGrid columns="1">
@@ -70,7 +69,10 @@
 
                             <p:column headerText="Clinic Code" filterable="true" filterMatchMode="contains"
                                       sortable="true">
+                                <h:panelGrid columns="2">
+                                    <img alt="inpatient" src="../img/in-patient.png"/>
                                 <p:outputLabel value="#{history.clinicCode}"/>
+                                </h:panelGrid>
                             </p:column>
 
                             <p:column headerText="Clinic Name" filterable="true" filterMatchMode="contains"

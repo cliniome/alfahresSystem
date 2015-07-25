@@ -58,6 +58,9 @@ public class FileHistory extends EntityEO {
     @Enumerated(EnumType.STRING)
     private FileStates state;
 
+    @Column(name="inpatient_col",nullable = false)
+    private boolean inpatient = false;
+
 	public void setContainerId(String containerId) {
 		this.containerId = containerId;
 	}
@@ -174,5 +177,13 @@ public class FileHistory extends EntityEO {
     {
         FileStateUtils utils = new FileStateUtils(getState());
         return utils.getReadableState();
+    }
+
+    public boolean isInpatient() {
+        return inpatient;
+    }
+
+    public void setInpatient(boolean inpatient) {
+        this.inpatient = inpatient;
     }
 }

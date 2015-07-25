@@ -28,7 +28,10 @@
                     <div class="well hero-unit">
                         <h1>Welcome, <h:outputText value="#{dashboardBean.account.firstName}"/> </h1>
                         <p>You can Manage AlFahres System including Users , Roles , Files , Cabinets....etc</p>
-                        <p><a class="btn btn-success btn-large" href="SubmitFiles.xhtml">New Files Request &raquo;</a></p>
+                        <h:panelGrid columns="2">
+                            <a class="btn btn-success btn-large" href="SubmitFiles.xhtml">New Files Request &raquo;</a>
+                            <a class="btn btn-success btn-large" href="NewInPatient.xhtml">New In-Patient Request &raquo;</a>
+                        </h:panelGrid>
                     </div>
 
                     <!-- Beginning of Admin Statistics Caption -->

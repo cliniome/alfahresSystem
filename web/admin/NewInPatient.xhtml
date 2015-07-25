@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<f:view>
+    <ui:composition template="../fragments/masterLayout.xhtml">
+
+        <ui:define name="mainContents">
+
+            <c:set target="#{cssBean}" property="currentPageName" value="NewInPatientRequests"/>
+
+            <h:panelGrid columns="1">
+
+
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <!-- Beginning of User Registeration -->
+                        <div class="span9">
+                            <div class="row-fluid">
+                                <div class="page-header">
+                                    <h1>In-Patient Request <small>New</small></h1>
+                                </div>
+                                <h:form id="parentContainer" class="form-horizontal" prependId="false">
+                                    <!--<p:growl id="growl" life="2000"  />-->
+                                    <fieldset>
+                                        <p:messages  showDetail="true" id="growl" closable="true" showSummary="false"/>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="fileNumber">File Number</label>
+                                            <div class="controls">
+                                                <h:inputText  required="true" requiredMessage="file Number is required"
+                                                              styleClass="input-xlarge" id="fileNumber" value="#{inpatientBean.fileNumber}"/>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label" for="patientName">Patient Name</label>
+                                            <div class="controls">
+                                                <h:inputText required="true" requiredMessage="Patient Name  is required"
+                                                             styleClass="input-xlarge" id="patientName" value="#{inpatientBean.patientName}"/>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label" for="patientNumber">Patient Number</label>
+                                            <div class="controls">
+                                                <h:inputText required="true" requiredMessage="Patient Number  is required"
+                                                             styleClass="input-xlarge" id="patientNumber" value="#{inpatientBean.patientNumber}"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="admitLocation">Admit. Location</label>
+                                            <div class="controls">
+                                                <h:inputText required="true" requiredMessage="Admission Location  is required"
+                                                             styleClass="input-xlarge" id="admitLocation" value="#{inpatientBean.admissionLocation}"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="admitDate">Admit. Date</label>
+                                            <div class="controls">
+                                                <p:calendar id="admitDate" requiredMessage="Admit. Date is required"
+                                                            required="true" showOn="button" value="#{inpatientBean.admissionDate}">
+                                                    <f:convertDateTime pattern="MM/dd/yy"/>
+
+                                                </p:calendar>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="admitTime">Admit. Time</label>
+                                            <div class="controls">
+                                                <p:calendar id="admitTime" required="true"
+                                                            requiredMessage="Admit. Time is required"
+                                                            showOn="button" pattern="HH:mm" timeOnly="true" value="#{inpatientBean.admissionTime}">
+                                                    <f:convertDateTime pattern="HH:mm"/>
+                                                </p:calendar>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="wardName">Ward Name</label>
+                                            <div class="controls">
+                                                <h:inputText required="true" requiredMessage="Ward Name  is required"
+                                                             styleClass="input-xlarge" id="wardName" value="#{inpatientBean.wardName}"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="wardNumber">Ward Number</label>
+                                            <div class="controls">
+                                                <h:inputText required="true" requiredMessage="Ward Number  is required"
+                                                             styleClass="input-xlarge" id="wardNumber" value="#{inpatientBean.wardNumber}"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="docName">Doctor Name</label>
+                                            <div class="controls">
+                                                <h:inputText required="true" requiredMessage="Doctor Name  is required"
+                                                             styleClass="input-xlarge" id="docName" value="#{inpatientBean.doctorName}"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="docCode">Doctor Code</label>
+                                            <div class="controls">
+                                                <h:inputText required="true" requiredMessage="Doctor Code is required"
+                                                             styleClass="input-xlarge" id="docCode" value="#{inpatientBean.doctorCode}"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-actions">
+                                            <p:commandButton ajax="false" update="growl" actionListener="#{inpatientBean.onSubmit}"
+                                                             styleClass="btn btn-success btn-large" value="Save Request"/>
+                                            <!--<a class="btn" href="ShowEmployees.xhtml">Cancel</a>-->
+                                            <p:commandLink immediate="true" action="LOGOUT"
+                                                           styleClass="btn" ajax="false">Cancel</p:commandLink>
+                                        </div>
+                                    </fieldset>
+                                </h:form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </h:panelGrid>
+
+        </ui:define>
+
+    </ui:composition>
+</f:view>
+</html>

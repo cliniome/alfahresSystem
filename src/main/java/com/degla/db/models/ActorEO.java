@@ -85,4 +85,11 @@ public abstract class ActorEO extends EntityEO {
     public void setRole(RoleEO role) {
         this.role = role;
     }
+
+
+	@Override
+	public String toString() {
+
+		return String.format("%s %s",this.getFirstName(),this.getLastName());
+	}
 }

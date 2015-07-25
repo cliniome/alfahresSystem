@@ -91,6 +91,8 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
     @Column(name="CsGroupCount",nullable = true)
     private String csGroupCount;
 
+    @Column(name="inpatient_Col",nullable = false)
+    private boolean inpatient = false;
 
     private transient boolean selected;
 
@@ -368,5 +370,13 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
 
 
         }else return Integer.MAX_VALUE;
+    }
+
+    public boolean isInpatient() {
+        return inpatient;
+    }
+
+    public void setInpatient(boolean inpatient) {
+        this.inpatient = inpatient;
     }
 }

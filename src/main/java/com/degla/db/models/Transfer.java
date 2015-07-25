@@ -40,6 +40,9 @@ public class Transfer extends EntityEO implements Serializable , Comparable<Tran
     @Column(name="appointment_time")
     private String appointmentTime;
 
+    @Column(name="inpatient_col",nullable = false)
+    private boolean inpatient=false;
+
     public String getFileNumber() {
         return fileNumber;
     }
@@ -165,6 +168,8 @@ public class Transfer extends EntityEO implements Serializable , Comparable<Tran
             history.setClinicName(this.getClinicName());
             history.setCreatedAt(new Date());
             history.setState(FileStates.TRANSFERRED);
+            history.setInpatient(this.isInpatient());
+
             return history;
 
         }catch (Exception s)
@@ -172,5 +177,13 @@ public class Transfer extends EntityEO implements Serializable , Comparable<Tran
             s.printStackTrace();
             return null;
         }
+    }
+
+    public boolean isInpatient() {
+        return inpatient;
+    }
+
+    public void setInpatient(boolean inpatient) {
+        this.inpatient = inpatient;
     }
 }

@@ -63,6 +63,7 @@ public class BasicController implements BasicRestfulOperations {
                     restFile.setClinicDocCode(file.getCurrentStatus().getClinicDocCode());
                     restFile.setClinicDocName(file.getCurrentStatus().getClinicDocName());
                     restFile.setClinicName(file.getCurrentStatus().getClinicName());
+                    restFile.setInpatient(file.getCurrentStatus().isInpatient());
 
 
                     availableFiles.add(restFile);
@@ -91,6 +92,7 @@ public class BasicController implements BasicRestfulOperations {
 
             if (requests != null) {
                 for (Request current : requests) {
+
                     RestfulRequest request = new RestfulRequest();
 
                     request.setAppointment_Date(current.getAppointment_Date());
@@ -112,6 +114,7 @@ public class BasicController implements BasicRestfulOperations {
                     request.setClinicDocName(current.getRequestingDocName());
                     request.setClinicName(current.getClinicName());
                     request.setState(FileStates.NEW.toString());
+                    request.setInpatient(current.isInpatient());
 
                     availableRequests.add(request);
                 }
@@ -229,6 +232,7 @@ public class BasicController implements BasicRestfulOperations {
 
         history.setCreatedAt(new Date(file.getOperationDate()));
         history.setPatientFile(patientFile);
+        history.setInpatient(file.isInpatient());
         history.setAppointment_Hijri_Date(file.getAppointmentDateH());
         history.setAppointment_Made_by(file.getAppointmentMadeBy());
         history.setBatchRequestNumber(file.getBatchRequestNumber());
