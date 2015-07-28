@@ -132,6 +132,25 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
     }
 
+    public PatientFile getFileWithNumberAndState(String fileNumber,FileStates state)
+    {
+        try
+        {
+            String queryString = "select f from PatientFile f where f.fileID=:file AND " +
+                    "f.currentStatus.state=:state";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("file",fileNumber);
+            currentQuery.setParameter("state",state);
+
+            return (PatientFile) currentQuery.getSingleResult();
+
+        }catch (Exception s)
+        {
+            return null;
+        }
+
+    }
+
 
     //TODO : the ID in the below query is not mapped correctly , please check it
     public PatientFile getSpecificFileNumberForCoordinator(String fileNumber,Employee coordinator)
@@ -204,6 +223,24 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         try
         {
             String queryString = "select f from PatientFile f where f.currentStatus.containerId=:query and " +
+                    "f.currentStatus.state IN (:states)";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("query",query);
+            currentQuery.setParameter("states",states);
+
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            return new ArrayList<PatientFile>();
+        }
+    }
+
+    public List<PatientFile> scanForIndividualFiles(String query,List<FileStates> states)
+    {
+        try
+        {
+            String queryString = "select f from PatientFile f where f.fileID=:query and " +
                     "f.currentStatus.state IN (:states)";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("query",query);

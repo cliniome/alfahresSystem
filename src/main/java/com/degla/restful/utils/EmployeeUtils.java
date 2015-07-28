@@ -27,11 +27,11 @@ public class EmployeeUtils {
         if(role.equalsIgnoreCase(RoleTypes.KEEPER.toString()))
         {
             states.add(FileStates.RECEPTIONIST_IN);
-            states.add(FileStates.COORDINATOR_OUT);
+            //states.add(FileStates.COORDINATOR_OUT);
         }
         else if (role.equalsIgnoreCase(RoleTypes.RECEPTIONIST.toString()))
         {
-            states.add(FileStates.CHECKED_OUT);
+            //states.add(FileStates.CHECKED_OUT);
             states.add(FileStates.COORDINATOR_OUT);
 
         }
@@ -39,6 +39,7 @@ public class EmployeeUtils {
         {
             states.add(FileStates.RECEPTIONIST_OUT);
             states.add(FileStates.CHECKED_OUT);
+            states.add(FileStates.TRANSFERRED);
         }
 
         return states;

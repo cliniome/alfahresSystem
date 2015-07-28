@@ -8,6 +8,7 @@ import com.degla.restful.utils.EmployeeUtils;
 import com.degla.restful.utils.RestGsonBuilder;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
+import com.degla.utils.BarcodeUtils;
 import com.degla.utils.EmployeeLazyModel;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpServer;
@@ -151,6 +152,55 @@ public class FilesService extends BasicRestful {
         }
     }
 
+    @Path("/sortFile")
+    @GET
+    @Produces("application/json")
+    public Response getSortFiles(@QueryParam("fileNumber") String fileNumber)
+    {
+        try
+        {
+            //get the employee
+            Employee emp = getAccount();
+
+            if(emp == null || !(emp.getRole().getName().equals(RoleTypes.KEEPER.toString())))
+            {
+                return Response.status(UNAUTHORIZED).build();
+
+            }else
+            {
+                SyncBatch batch = new SyncBatch();
+                batch.setCreatedAt(new Date().getTime());
+
+                List<RestfulFile> foundFiles = new ArrayList<RestfulFile>();
+                //get the file
+                PatientFile foundFile = systemService.getFilesService().
+                        getFileWithNumberAndState(fileNumber,FileStates.OUT_OF_CABIN);
+
+
+                if(foundFile == null)
+                {
+                    return Response.ok(new BooleanResult(false,"This file might not exist or it is not " +
+                            "prepared by keeper yet")).build();
+                }
+
+                if(foundFile != null)
+                {
+                    foundFiles.add(foundFile.toRestfulFile());
+                }
+
+                batch.setFiles(foundFiles);
+
+                return Response.ok(batch).build();
+
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
 
     @Path("/oneFile")
     @GET
@@ -252,9 +302,34 @@ public class FilesService extends BasicRestful {
 
             BasicController controller = new BasicController();
 
-            List<RestfulFile> files = controller.scanFiles(query,EmployeeUtils.getScannableStates(emp));
+            //Check for the passed in query
+            BarcodeUtils utils = new BarcodeUtils(query);
 
-            if(files == null || files.size() <=0) throw new Exception("There are no Files for the Moment.");
+            List<RestfulFile> files = null;
+
+            String message = "There are no Files for the Moment.";
+
+            if(utils.isNewFileStructure())
+            {
+                //That means the current file is individual file
+                files = controller.scanIndividualFiles(query,EmployeeUtils.getScannableStates(emp));
+            }else
+            {
+                //that means it is a trolley Barcode
+                if((emp.getRole().getName().equals(RoleTypes.COORDINATOR)) ||
+                        emp.getRole().getName().equals(RoleTypes.RECEPTIONIST))
+                {
+                    files = controller.scanFiles(query,EmployeeUtils.getScannableStates(emp));
+
+                }else
+                {
+                    files = new ArrayList<RestfulFile>();
+                    message ="You can't Scan a trolley Barcode , You don't have permission to do that";
+                }
+
+            }
+
+            if(files == null || files.size() <=0) throw new Exception(message);
 
             SyncBatch batch = new SyncBatch(files);
             batch.setCreatedAt(new Date().getTime());

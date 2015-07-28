@@ -68,6 +68,9 @@ public class Employee extends ActorEO implements UserDetails {
         return authorities;
     }
 
+
+
+
     public String getfullName()
     {
         return String.format("%s %s (%s)",this.getFirstName(),this.getLastName(),this.getUserName());

@@ -31,6 +31,57 @@ public class BasicController implements BasicRestfulOperations {
 
     }
 
+    public List<RestfulFile> scanIndividualFiles(String query, List<FileStates> states)
+    {
+        try
+        {
+            List<PatientFile> existingFiles = getSystemService().getFilesService().
+                    scanForIndividualFiles(query,states);
+
+            if(existingFiles != null && existingFiles.size() > 0)
+            {
+                List<RestfulFile> availableFiles = new ArrayList<RestfulFile>();
+
+                for(PatientFile file : existingFiles)
+                {
+                    RestfulFile restFile = new RestfulFile();
+                    restFile.setCabinetId(file.getArchiveCabinet().getCabinetID());
+                    restFile.setDescription(file.getDescription());
+                    restFile.setFileNumber(file.getFileID());
+                    restFile.setOperationDate(file.getCurrentStatus().getCreatedAt().getTime());
+                    restFile.setShelfId(file.getShelfId());
+                    restFile.setState(file.getCurrentStatus().getState().toString());
+                    restFile.setTemporaryCabinetId(file.getCurrentStatus().getContainerId());
+                    restFile.setPatientName(file.getPatientName());
+                    restFile.setPatientNumber(file.getPatientNumber());
+                    restFile.setAppointmentDate(file.getCurrentStatus().getAppointment_Hijri_Date());
+                    restFile.setAppointmentDateH(file.getCurrentStatus().getAppointment_Hijri_Date());
+                    restFile.setAppointmentMadeBy(file.getCurrentStatus().getAppointment_Made_by());
+                    restFile.setAppointmentTime(file.getCurrentStatus().getAppointment_Hijri_Date());
+                    restFile.setBatchRequestNumber(file.getCurrentStatus().getBatchRequestNumber());
+                    restFile.setAppointmentType(file.getCurrentStatus().getAppointmentType());
+                    restFile.setClinicCode(file.getCurrentStatus().getClinicCode());
+                    restFile.setClinicDocCode(file.getCurrentStatus().getClinicDocCode());
+                    restFile.setClinicDocName(file.getCurrentStatus().getClinicDocName());
+                    restFile.setClinicName(file.getCurrentStatus().getClinicName());
+                    restFile.setInpatient(file.getCurrentStatus().isInpatient());
+
+
+                    availableFiles.add(restFile);
+                }
+
+
+                return availableFiles;
+
+            }else throw new Exception("Empty files");
+
+        }catch (Exception s)
+        {
+
+            return new ArrayList<RestfulFile>();
+        }
+    }
+
     public List<RestfulFile> scanFiles(String query,List<FileStates> states)
     {
         try
