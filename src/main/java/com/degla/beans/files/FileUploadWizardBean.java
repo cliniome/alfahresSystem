@@ -126,7 +126,20 @@ public class FileUploadWizardBean implements Serializable {
 
                         //get the new File Number structure
                         BarcodeUtils barcodeUtils = new BarcodeUtils(req.getFileNumber());
-                        req.setFileNumber(barcodeUtils.getNewBarcodeStructure());
+
+                        String patientFileNumber = req.getFileNumber();
+
+                        if(!barcodeUtils.validateLength())
+                        {
+                            //that means the current request is not a valid request
+                            getFailedRequests().add(req);
+                            continue;
+                        }
+
+                        if(!barcodeUtils.isNewFileStructure())
+                            patientFileNumber = barcodeUtils.getNewBarcodeStructure();
+
+                        req.setFileNumber(patientFileNumber);
                         availableRequests.add(req);
                     }
 

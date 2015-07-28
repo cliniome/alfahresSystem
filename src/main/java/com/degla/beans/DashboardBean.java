@@ -6,8 +6,6 @@ import com.degla.db.models.PatientFile;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.WebUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -31,8 +29,6 @@ public class DashboardBean {
     private ActorEO account;
 
     private int currentPageNumber;
-
-
 
 
     @PostConstruct
@@ -74,6 +70,59 @@ public class DashboardBean {
         {
             s.printStackTrace();
             return new ArrayList<PatientFile>();
+        }
+    }
+
+
+    public long getTotalArchivedFiles()
+    {
+        try
+        {
+            return systemService.getFilesService().getTotalCheckedInFiles();
+
+        }catch(Exception s)
+        {
+            s.printStackTrace();
+            return -1;
+        }
+    }
+
+    public long getTotalTransferredFiles()
+    {
+        try
+        {
+            return systemService.getFilesService().getTotalTransferredFiles();
+
+        }catch(Exception s)
+        {
+            s.printStackTrace();
+            return -1;
+        }
+    }
+
+    public long getTotalDistributedFiles()
+    {
+        try
+        {
+            return systemService.getFilesService().getTotalDistributedFiles();
+
+        }catch(Exception s)
+        {
+            s.printStackTrace();
+            return -1;
+        }
+    }
+
+    public long getTotalCheckedOutFiles()
+    {
+        try
+        {
+            return systemService.getFilesService().getTotalCheckedOutFiles();
+
+        }catch(Exception s)
+        {
+            s.printStackTrace();
+            return -1;
         }
     }
 

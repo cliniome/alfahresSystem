@@ -15,28 +15,15 @@
             <h:form prependId="false">
             <h:panelGrid columns="1">
 
-                <p:panel header="Available Patient Files">
-
-                    <h:panelGrid columns="3" cellspacing="4" cellpadding="4">
-
-                        <p:outputLabel value="Filter Files"/>
-                        <p:selectOneMenu value="#{showFilesBean.chosenState}">
-                            <f:selectItems value="#{showFilesBean.items}"/>
-                        </p:selectOneMenu>
-
-                        <p:commandButton value="Filter" icon="fa-filter" actionListener="#{showFilesBean.filter}"
-                                         update="@form"/>
-
-                    </h:panelGrid>
-
-                </p:panel>
-
-                <p:separator/>
-
                 <h:panelGrid columns="1">
 
+                    <p:panel header="Missing Patient Files">
+
+                        <h3>Showing all Currently Missing Patient Files</h3>
+                        <p:separator/>
+
                     <p:dataTable var="patientFile" value="#{showFilesBean.patientFiles}"
-                                 paginator="true" rows="20" lazy="true">
+                                 paginator="true" rows="2" lazy="true">
 
 
                         <p:column headerText="File Number">
@@ -63,6 +50,8 @@
                         </p:column>
 
                     </p:dataTable>
+
+                    </p:panel>
 
                 </h:panelGrid>
 

@@ -75,20 +75,27 @@ public class InPatientRequestsBean implements Serializable {
 
             BarcodeUtils utils = new BarcodeUtils(this.getFileNumber());
 
-            boolean requestExists = (systemService.getRequestsManager().getSingleRequest(utils.getNewBarcodeStructure()) != null);
+            String patientFileNumber = this.getFileNumber();
+
+            if(!utils.isNewFileStructure())
+                patientFileNumber = utils.getNewBarcodeStructure();
+
+
+
+            boolean requestExists = (systemService.getRequestsManager().getSingleRequest(patientFileNumber) != null);
 
             if(requestExists)
             {
                 //it must be added as a transfer request instead
                 WebUtils.addMessage(String.format("Request Number : %s already exists , It is already requested by Out-Patient Clinics " +
-                        "It can't be requested by Out-Patient Clinics , Just Does not make sense !",utils.getNewBarcodeStructure()));
+                        "It can't be requested by Out-Patient Clinics , Just Does not make sense !",patientFileNumber));
                 //Clear the request Number
                 this.setFileNumber("");
 
                 return;
             }
 
-            inpatient.setFileNumber(utils.getNewBarcodeStructure());
+            inpatient.setFileNumber(patientFileNumber);
             inpatient.setPatientName(this.getPatientName());
             inpatient.setPatientNumber(this.getPatientNumber());
             inpatient.setFileCurrentLocation(this.getAdmissionLocation());

@@ -21,9 +21,11 @@ public class BarcodeUtils implements Serializable {
     public static final String NEW_TROLLEY_IDENTIFIER = "02";
 
     public static final String SYMBOL = "-";
-    public static final String TROLLEY_REGEX = NEW_TROLLEY_IDENTIFIER + "-"+"[0-9]{6,8}$";
-    public static final String SHELF_REGEX = NEW_SHELF_IDENTIFIER +"-"+"[0-9]{6,8}$";
-    public static final String FILE_REGEX = NEW_FILE_IDENTIFIER +"-" +"[0-9]{6,8}$";
+    public static final String TRADITIONAL_FILE_NUMBER = "[0-9]{8}$";
+
+    public static final String TROLLEY_REGEX = NEW_TROLLEY_IDENTIFIER + "-"+"[0-9]{8}$";
+    public static final String SHELF_REGEX = NEW_SHELF_IDENTIFIER +"-"+"[0-9]{8}$";
+    public static final String FILE_REGEX = NEW_FILE_IDENTIFIER +"-" +"[0-9]{8}$";
 
     private static Map<String,String> patterns = null;
 
@@ -39,6 +41,15 @@ public class BarcodeUtils implements Serializable {
         if(barcodeNumber != null && barcodeNumber.length() > 0)
             return String.format("%s-%s",NEW_FILE_IDENTIFIER,barcodeNumber);
         else throw new BarcodeFormatException("Barcode Number shouldn't be null");
+    }
+
+    public boolean validateLength()
+    {
+        Pattern pattern = Pattern.compile(TRADITIONAL_FILE_NUMBER);
+        if(this.barcodeNumber != null && pattern.matcher(barcodeNumber).matches())
+            return true;
+        else return false;
+
     }
 
     private boolean isA(String identifier)

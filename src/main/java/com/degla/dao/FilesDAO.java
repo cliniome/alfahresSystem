@@ -297,6 +297,39 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             return (Long)currentQuery.getSingleResult();
 
     }
+
+    public long getTotalCheckedOutFiles()
+    {
+        String query = "select count(f) from PatientFile f where f.currentStatus.state=:state";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state",FileStates.CHECKED_OUT);
+        return (Long)currentQuery.getSingleResult();
+    }
+
+    public long getTotalCheckedInFiles()
+    {
+        String query = "select count(f) from PatientFile f where f.currentStatus.state=:state";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state",FileStates.CHECKED_IN);
+        return (Long)currentQuery.getSingleResult();
+    }
+
+    public long getTotalTransferredFiles()
+    {
+        String query = "select count(f) from PatientFile f where f.currentStatus.state=:state";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state",FileStates.TRANSFERRED);
+        return (Long)currentQuery.getSingleResult();
+    }
+
+    public long getTotalDistributedFiles()
+    {
+        String query = "select count(f) from PatientFile f where f.currentStatus.state=:state";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state",FileStates.DISTRIBUTED);
+        return (Long)currentQuery.getSingleResult();
+    }
+
     public List<PatientFile> getMissingFiles()
     {
         try

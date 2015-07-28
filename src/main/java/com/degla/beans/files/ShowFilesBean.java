@@ -10,7 +10,9 @@ import com.degla.utils.GenericLazyDataModel;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import java.io.Serializable;
@@ -21,12 +23,12 @@ import java.util.List;
  * Created by snouto on 19/06/15.
  */
 @ManagedBean(name="showFilesBean")
-@SessionScoped
+@RequestScoped
 public class ShowFilesBean implements Serializable {
 
 
     private SystemService systemService;
-    private String chosenState;
+    private String chosenState = FileStates.MISSING.toString();
     private List<SelectItem> items;
     private GenericLazyDataModel<PatientFile> patientFiles;
 
@@ -38,6 +40,7 @@ public class ShowFilesBean implements Serializable {
             systemService = SpringSystemBridge.services();
             setItems(new ArrayList<SelectItem>());
             FilesDAO filesDAO = systemService.getFilesService();
+            filesDAO.setQueryState(FileStates.MISSING);
             patientFiles = new GenericLazyDataModel<PatientFile>(filesDAO);
 
             //Load selectable items

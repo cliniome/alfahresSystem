@@ -73,6 +73,9 @@
                                     <div class="controls">
                                         <h:selectOneMenu required="true" requiredMessage="Role is required"
                                                          value="#{registrationBean.updateableEmployee.role}" id="role">
+
+                                            <p:ajax event="change" update="clinicsRegion"/>
+
                                             <f:selectItems  value="#{registrationBean.roles}"
                                                             var="role" itemLabel="#{role.displayName}"  itemValue="#{role}"/>
                                             <f:converter converterId="com.degla.converters.RoleConverter"/>
@@ -88,42 +91,44 @@
 
 
                                 <div class="control-group" >
-                                    <p:outputLabel rendered="#{registrationBean.returnUpdateableCoordinator()}"
-                                                   styleClass="control-label" for="clinics">Clinics</p:outputLabel>
-                                    <div class="controls">
-                                        <p:dataTable rendered="#{registrationBean.returnUpdateableCoordinator()}"
-                                                     id="clinics" value="#{registrationBean.updateableEmployee.clinics}"
-                                                     var="clinic">
-                                            <f:facet name="header">
-                                                <p:toolbar >
-                                                    <p:toolbarGroup align="left">
-                                                        <p:commandButton immediate="true" actionListener="#{registrationBean.openSelectClinicDialog}"
-                                                                         value="Add Clinic">
+                                    <h:panelGrid columns="1" id="clinicsRegion">
+                                        <p:outputLabel rendered="#{registrationBean.returnUpdateableCoordinator()}"
+                                                       styleClass="control-label" for="clinics">Clinics</p:outputLabel>
+                                        <div class="controls">
+                                            <p:dataTable rendered="#{registrationBean.returnUpdateableCoordinator()}"
+                                                         id="clinics" value="#{registrationBean.updateableEmployee.clinics}"
+                                                         var="clinic">
+                                                <f:facet name="header">
+                                                    <p:toolbar >
+                                                        <p:toolbarGroup align="left">
+                                                            <p:commandButton immediate="true" actionListener="#{registrationBean.openSelectClinicDialog}"
+                                                                             value="Add Clinic">
 
-                                                            <p:ajax event="dialogReturn" listener="#{registrationBean.onUpdateableEmployeeClinicChosen}"
-                                                                    update="clinics"/>
+                                                                <p:ajax event="dialogReturn" listener="#{registrationBean.onUpdateableEmployeeClinicChosen}"
+                                                                        update="clinics"/>
+                                                            </p:commandButton>
+                                                        </p:toolbarGroup>
+                                                    </p:toolbar>
+                                                </f:facet>
+
+                                                <p:column headerText="Clinic Name">
+                                                    <p:outputLabel value="#{clinic.clinicName}"></p:outputLabel>
+                                                </p:column>
+
+                                                <p:column headerText="Clinic Code">
+                                                    <p:outputLabel value="#{clinic.clinicCode}"/>
+                                                </p:column>
+                                                <p:column headerText="Options...">
+                                                    <h:panelGrid columns="2">
+                                                        <p:commandButton value="Delete Clinic" immediate="true" ajax="false"
+                                                                         actionListener="#{registrationBean.onDeleteUpdateableEmployeeClinic(clinic)}">
+
                                                         </p:commandButton>
-                                                    </p:toolbarGroup>
-                                                </p:toolbar>
-                                            </f:facet>
-
-                                            <p:column headerText="Clinic Name">
-                                                <p:outputLabel value="#{clinic.clinicName}"></p:outputLabel>
-                                            </p:column>
-
-                                            <p:column headerText="Clinic Code">
-                                                <p:outputLabel value="#{clinic.clinicCode}"/>
-                                            </p:column>
-                                            <p:column headerText="Options...">
-                                                <h:panelGrid columns="2">
-                                                    <p:commandButton value="Delete Clinic" immediate="true" ajax="false"
-                                                                     actionListener="#{registrationBean.onDeleteUpdateableEmployeeClinic(clinic)}">
-
-                                                    </p:commandButton>
-                                                </h:panelGrid>
-                                            </p:column>
-                                        </p:dataTable>
-                                    </div>
+                                                    </h:panelGrid>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </div>
+                                    </h:panelGrid>
                                 </div>
 
 

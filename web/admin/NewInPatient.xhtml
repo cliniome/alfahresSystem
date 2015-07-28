@@ -34,7 +34,10 @@
                                             <label class="control-label" for="fileNumber">File Number</label>
                                             <div class="controls">
                                                 <h:inputText  required="true" requiredMessage="file Number is required"
-                                                              styleClass="input-xlarge" id="fileNumber" value="#{inpatientBean.fileNumber}"/>
+                                                              validatorMessage="File Number should be exactly 8 digits long"
+                                                              styleClass="input-xlarge" id="fileNumber" value="#{inpatientBean.fileNumber}">
+                                                    <f:validateLength minimum="8" maximum="8"/>
+                                                </h:inputText>
                                             </div>
                                         </div>
                                         <div class="control-group">
