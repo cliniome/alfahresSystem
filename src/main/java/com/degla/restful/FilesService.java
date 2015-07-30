@@ -174,7 +174,7 @@ public class FilesService extends BasicRestful {
                 List<RestfulFile> foundFiles = new ArrayList<RestfulFile>();
                 //get the file
                 PatientFile foundFile = systemService.getFilesService().
-                        getFileWithNumberAndState(fileNumber,FileStates.OUT_OF_CABIN);
+                        getFileWithNumberAndState(fileNumber, FileStates.OUT_OF_CABIN);
 
 
                 if(foundFile == null)
@@ -189,6 +189,44 @@ public class FilesService extends BasicRestful {
                 }
 
                 batch.setFiles(foundFiles);
+
+                return Response.ok(batch).build();
+
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @Path("/fileDetails")
+    @GET
+    @Produces("application/json")
+    public Response fileDetails(@QueryParam("fileNumber") String fileNumber)
+    {
+        try
+        {
+            //get the employee
+            Employee emp = getAccount();
+
+            if(emp == null)
+            {
+                return Response.status(UNAUTHORIZED).build();
+            }else
+            {
+                FileBatchDetails batch = null;
+
+                //get the file
+                PatientFile foundFile = systemService.getFilesService().getFileWithNumber(fileNumber);
+
+                if(foundFile != null)
+                {
+                    batch = new FileBatchDetails(foundFile.toRestfulFile(),foundFile.getCurrentStatus().getOwner().getfullName());
+                }
+
+                if(batch == null) throw new Exception("File not found");
 
                 return Response.ok(batch).build();
 
