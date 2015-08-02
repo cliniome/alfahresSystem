@@ -189,6 +189,7 @@ public class FilesService extends BasicRestful {
                 }
 
                 batch.setFiles(foundFiles);
+                batch.setState(true);
 
                 return Response.ok(batch).build();
 
@@ -260,11 +261,17 @@ public class FilesService extends BasicRestful {
 
                 List<RestfulFile> foundFiles = new ArrayList<RestfulFile>();
                 //get the file
-                PatientFile foundFile = systemService.getFilesService().getFileWithNumber(fileNumber);
-                if(foundFile != null)
+                List<PatientFile> files = systemService.getFilesService().scanForFiles(fileNumber
+                        , EmployeeUtils.getScannableStates(emp));
+
+                if(files == null || files.isEmpty())
+                    throw new Exception("Files not Found");
+
+                for(PatientFile file : files)
                 {
-                    foundFiles.add(foundFile.toRestfulFile());
+                    foundFiles.add(file.toRestfulFile());
                 }
+
 
                 batch.setFiles(foundFiles);
 
@@ -354,8 +361,8 @@ public class FilesService extends BasicRestful {
             }else
             {
                 //that means it is a trolley Barcode
-                if((emp.getRole().getName().equals(RoleTypes.COORDINATOR)) ||
-                        emp.getRole().getName().equals(RoleTypes.RECEPTIONIST))
+                if((emp.getRole().getName().equals(RoleTypes.COORDINATOR.toString())) ||
+                        emp.getRole().getName().equals(RoleTypes.RECEPTIONIST.toString()))
                 {
                     files = controller.scanFiles(query,EmployeeUtils.getScannableStates(emp));
 
