@@ -261,8 +261,8 @@ public class FilesService extends BasicRestful {
 
                 List<RestfulFile> foundFiles = new ArrayList<RestfulFile>();
                 //get the file
-                List<PatientFile> files = systemService.getFilesService().scanForFiles(fileNumber
-                        , EmployeeUtils.getScannableStates(emp));
+                List<PatientFile> files = systemService.getFilesService().scanForIndividualFiles(fileNumber,
+                        EmployeeUtils.getScannableStates(emp));
 
                 if(files == null || files.isEmpty())
                     throw new Exception("Files not Found");

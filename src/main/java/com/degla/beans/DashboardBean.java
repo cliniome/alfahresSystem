@@ -2,6 +2,7 @@ package com.degla.beans;
 
 import com.degla.db.models.ActorEO;
 import com.degla.db.models.Employee;
+import com.degla.db.models.FileStates;
 import com.degla.db.models.PatientFile;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
@@ -53,6 +54,42 @@ public class DashboardBean {
         {
             s.printStackTrace();
             return -1;
+        }
+    }
+
+    public long getTotalReceivedByCoordinator()
+    {
+        try
+        {
+
+            Long inSortingfiles = systemService.getFilesService().getFilesCountForState(FileStates.COORDINATOR_IN);
+
+            if(inSortingfiles == null) return 0L;
+            else
+                return inSortingfiles.longValue();
+
+        }catch (Exception s)
+        {
+            return 0L;
+        }
+    }
+
+
+    public long getTotalFilesUnderSorting()
+    {
+        try
+        {
+
+            Long inSortingfiles = systemService.getFilesService().getFilesCountForState(FileStates.OUT_OF_CABIN);
+
+            if(inSortingfiles == null) return 0L;
+            else
+                return inSortingfiles.longValue();
+
+        }catch (Exception s)
+        {
+
+            return 0L;
         }
     }
 

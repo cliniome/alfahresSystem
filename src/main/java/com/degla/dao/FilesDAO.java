@@ -289,7 +289,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             return null;
         }
     }
-    public Integer getFilesCountForState(FileStates state)
+    public Long getFilesCountForState(FileStates state)
     {
         try
         {
@@ -297,7 +297,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             Query currentQuery = getManager().createQuery(query);
             currentQuery.setParameter("state",state);
 
-            return (Integer)currentQuery.getSingleResult();
+            return (Long)currentQuery.getSingleResult();
 
         }catch(Exception s)
         {
