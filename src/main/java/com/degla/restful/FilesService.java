@@ -450,6 +450,90 @@ public class FilesService extends BasicRestful {
         }
     }
 
+    /**
+     * This function will be called by coordinator to get Distributed files in his expandable ListView
+     * @return
+     */
+    @Path("/getDistributedFiles")
+    @POST
+    @Produces("application/json")
+    public Response getDistributedFiles()
+    {
+
+        try
+        {
+            //get the current Employee account
+            Employee currentEmp = getAccount();
+
+            if(currentEmp == null ||
+                    !currentEmp.getRole().getName()
+                            .equalsIgnoreCase(RoleTypes.COORDINATOR.toString()))
+
+                return Response.status(UNAUTHORIZED).build();
+
+            if(systemService == null)
+                systemService = SpringSystemBridge.services();
+
+            //List<PatientFile> availableFiles = systemService.getFilesService().collectFiles(currentEmp);
+
+            List<PatientFile> availableFiles = systemService.getFilesService().getFilesByStateAndEmployee(
+                    FileStates.COORDINATOR_IN,currentEmp);
+
+
+            if(availableFiles != null && availableFiles.size() > 0)
+            {
+                CollectionBatch batch  = new CollectionBatch();
+
+                List<RestfulClinic> clinics = new ArrayList<RestfulClinic>();
+
+
+                for(PatientFile file : availableFiles)
+                {
+
+                    boolean hasMultipleClinics = systemService.getTransferManager().hasTransfer(file.getFileID());
+                    RestfulClinic currentClinic = getRestfulClinicByCode(file.getCurrentStatus().getClinicCode(),clinics);
+
+                    if(currentClinic == null)
+                    {
+                        RestfulClinic clinic = new RestfulClinic();
+                        clinic.setClinicCode(file.getCurrentStatus().getClinicCode());
+                        clinic.setClinicName(file.getCurrentStatus().getClinicName());
+                        RestfulFile restfile = file.toRestfulFile();
+                        restfile.setMultipleClinics(hasMultipleClinics);
+                        clinic.getFiles().add(restfile);
+                        //now add it to the current clinics list
+                        clinics.add(clinic);
+                    }else
+                    {
+                        RestfulFile currenteFile = file.toRestfulFile();
+                        currenteFile.setMultipleClinics(hasMultipleClinics);
+                        //add the current file to the current clinic
+                        currentClinic.getFiles().add(currenteFile);
+                    }
+                }
+
+                //once , this is done , now add it to the collection batch
+                batch.setCreatedAt(new Date().getTime());
+                batch.setClinics(clinics);
+
+
+                //now return the response
+                return Response.ok(batch).build();
+
+
+            }else
+            {
+                return  Response.ok(new BooleanResult(false,"There are no Files to collect For the Moment.")).build();
+            }
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return Response.status(UNAUTHORIZED).build();
+        }
+    }
+
 
     /**
      * This function will be called by coordinator to collect files in his expandable ListView
