@@ -87,23 +87,31 @@ public class SyncService extends BasicRestful implements Serializable {
                                     //assign that file to him
 
                                     owner = coordinators.get(0); //get the first one
+
+                                    FileHistory transferrableHistory = tobeTransferredTo.toFileHistory();
+                                    transferrableHistory.setOwner(owner);
+
+                                    PatientFile patientFile = controller.getSystemService().getFilesService().getFileWithNumber(file.getFileNumber());
+                                    transferrableHistory.setPatientFile(patientFile);
+
+                                    //now add that history to the current patient file and update it
+                                    patientFile.setCurrentStatus(transferrableHistory);
+
+                                    //now update that patient file
+                                    boolean result = controller.getSystemService().getFilesService().updateEntity(patientFile);
+                                    result &= controller.getSystemService().getTransferManager().removeEntity(tobeTransferredTo);
+
+                                    if(!result)
+                                        failedBatches.getFiles().add(file);
+                                }else
+                                {
+                                    //There are no coordinators in the current system
+                                    //add that to the failed Batches
+                                    failedBatches.getFiles().add(file);
+                                    continue;
                                 }
 
-                                FileHistory transferrableHistory = tobeTransferredTo.toFileHistory();
-                                transferrableHistory.setOwner(owner);
 
-                                PatientFile patientFile = controller.getSystemService().getFilesService().getFileWithNumber(file.getFileNumber());
-                                transferrableHistory.setPatientFile(patientFile);
-
-                                //now add that history to the current patient file and update it
-                                patientFile.setCurrentStatus(transferrableHistory);
-
-                                //now update that patient file
-                                boolean result = controller.getSystemService().getFilesService().updateEntity(patientFile);
-                                result &= controller.getSystemService().getTransferManager().removeEntity(tobeTransferredTo);
-
-                                if(!result)
-                                    failedBatches.getFiles().add(file);
 
 
                             }else

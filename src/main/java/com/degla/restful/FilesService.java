@@ -282,6 +282,7 @@ public class FilesService extends BasicRestful {
         }catch (Exception s)
         {
             s.printStackTrace();
+
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
