@@ -160,7 +160,7 @@ public class InPatientRequestsBean implements Serializable {
             //randomly pick one in this list
             Random rand = new Random();
 
-            int rand_keeper_id = rand.nextInt(keepers_size+1); // to include the last Employee in the randomization process
+            int rand_keeper_id = rand.nextInt(keepers_size); // to include the last Employee in the randomization process
 
             Employee chosenEmployee = keepers.get(rand_keeper_id);
 
