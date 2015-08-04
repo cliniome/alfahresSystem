@@ -41,6 +41,26 @@ public class RequestsDAO extends  AbstractDAO<Request> {
     }
 
 
+    public boolean requestExists(String fileNumber)
+    {
+        try
+        {
+            String queryString = "select count(r) from Request r where r.fileNumber = :file";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("file",fileNumber);
+
+            long count = (Long)currentQuery.getSingleResult();
+
+            return ((count > 0) ? true: false);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return false;
+        }
+    }
+
+
 
     public Request getSingleRequest(String fileNumber)
     {

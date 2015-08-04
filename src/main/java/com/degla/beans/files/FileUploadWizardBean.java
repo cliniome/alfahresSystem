@@ -161,7 +161,10 @@ public class FileUploadWizardBean implements Serializable {
 
             for(Request current:availableRequests)
             {
-                if(!this.tempListContains(current,temporaryList))
+
+                if(!this.tempListContains(current,temporaryList) &&
+                        !this.checkFileExists(current))
+
                     temporaryList.add(current);
                 else
                 {
@@ -239,6 +242,20 @@ public class FileUploadWizardBean implements Serializable {
                 WebUtils.addMessage(s.getMessage());
             }else
                 WebUtils.addMessage("There was a problem inserting new requests, Contact System Administrator");
+        }
+    }
+
+    private boolean checkFileExists(Request current) {
+
+        try
+        {
+            if(current == null) return false;
+
+            return systemService.getRequestsManager().requestExists(current.getFileNumber());
+
+        }catch (Exception s)
+        {
+            return false;
         }
     }
 
