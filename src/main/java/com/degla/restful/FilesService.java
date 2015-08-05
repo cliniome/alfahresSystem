@@ -17,10 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import sun.misc.BASE64Encoder;
 import static javax.ws.rs.core.Response.Status.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import javax.persistence.Basic;
 import javax.persistence.EntityNotFoundException;
 import javax.ws.rs.*;
@@ -704,11 +701,15 @@ public class FilesService extends BasicRestful {
 
             List<RestfulRequest> availableRequests = controller.getNewRequests(currentUserName);
 
+
+
             if(availableRequests == null)
-
                 return Response.noContent().build();
-
-            else return Response.ok(gson.toJson(availableRequests)).build();
+            else
+            {
+                //Sort them according
+                return Response.ok(gson.toJson(availableRequests)).build();
+            }
 
         }else
             return Response.status(UNAUTHORIZED).build();

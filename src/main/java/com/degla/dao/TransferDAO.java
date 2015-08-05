@@ -37,6 +37,31 @@ public class TransferDAO extends AbstractDAO<Transfer> {
         }
     }
 
+    public boolean hasTransferBasedonClinicCode(String fileNumber,String clinicCode,String hijri,String time)
+    {
+        try
+        {
+            String queryString = "select count(t) from Transfer t where t.fileNumber = :fileNumber and t.clinicCode = :code " +
+                    " and t.appointment_Hijri_Date =:hijriDate and t.appointmentTime = :time";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("fileNumber",fileNumber);
+            currentQuery.setParameter("code",clinicCode);
+            currentQuery.setParameter("hijriDate",hijri);
+            currentQuery.setParameter("time",time);
+
+            long count = (Long)currentQuery.getSingleResult();
+
+            if(count > 0) return true;else return false;
+
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return false;
+        }
+    }
+
     public List<Transfer> getTransfers(String fileNumber)
     {
         try

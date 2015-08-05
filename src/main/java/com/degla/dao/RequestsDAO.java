@@ -40,6 +40,29 @@ public class RequestsDAO extends  AbstractDAO<Request> {
         }
     }
 
+    public boolean requestExistsBasedOnAllInfo(Request request)
+    {
+        try
+        {
+            String queryString = "select count(r) from Request r where r.fileNumber = :file and r.clinicCode=:code and " +
+                    "r.appointment_date_h =:date and r.appointment_time = :time";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("file",request.getFileNumber());
+            currentQuery.setParameter("code",request.getClinicCode());
+            currentQuery.setParameter("date",request.getAppointment_date_h());
+            currentQuery.setParameter("time",request.getAppointment_time());
+
+            long count = (Long)currentQuery.getSingleResult();
+
+            return ((count > 0) ? true: false);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return false;
+        }
+    }
+
 
     public boolean requestExists(String fileNumber)
     {

@@ -75,6 +75,7 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
     @Column(name="requestingDocName",nullable = true)
     private String requestingDocName;
 
+    @Index(name = "ClinicCodeIDx")
     @Column(name="ClinicCode")
     private String clinicCode;
 

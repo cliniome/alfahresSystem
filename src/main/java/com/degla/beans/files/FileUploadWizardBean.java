@@ -80,6 +80,9 @@ public class FileUploadWizardBean implements Serializable {
 
     public void onConfirmAndSubmit()
     {
+
+        String message = "There are no New Requests";
+
         try
         {
             PatientFileReader fileReader = new PatientFileReader();
@@ -162,15 +165,58 @@ public class FileUploadWizardBean implements Serializable {
             for(Request current:availableRequests)
             {
 
-                if(!this.tempListContains(current,temporaryList) &&
-                        !this.checkFileExists(current))
+
+                if(!this.tempListContains(current,temporaryList))
+                {
+                    temporaryList.add(current);
+                }else
+                {
+                    boolean transfer_exists  = systemService.getTransferManager().hasTransferBasedonClinicCode(current.getFileNumber(),
+                            current.getClinicCode(),current.getAppointment_date_h(),current.getAppointment_time());
+                    if(!transfer_exists)
+                        transfers.add(current.clone().toTransferObject());
+                }
+
+                /*boolean existingInRequests = this.checkFileExists(current);
+
+                if(existingInRequests) continue;
+
+                if(!this.tempListContains(current,temporaryList))
 
                     temporaryList.add(current);
+
                 else
                 {
-                    //add it to the duplicates list
-                    transfers.add(current.clone().toTransferObject());
-                }
+                       //add it to the duplicates list
+                       boolean existsInTransfer = systemService.getTransferManager().hasTransferBasedonClinicCode(current.getFileNumber(),current.getClinicCode(),
+                               current.getAppointment_date_h(),current.getAppointment_time());
+
+
+                    if(existingInRequests) return;
+                    else if(!existsInTransfer && !existingInRequests )transfers.add(current.clone().toTransferObject());
+                }*/
+
+               /* boolean exact_flag_request = systemService.getRequestsManager().requestExistsBasedOnAllInfo(current);
+                boolean exact_flag_transfer = systemService.getTransferManager().hasTransferBasedonClinicCode(current.getFileNumber(),
+                        current.getClinicCode(),current.getAppointment_date_h(),current.getAppointment_time());
+                boolean partial_request = systemService.getRequestsManager().requestExists(current.getFileNumber());
+
+
+                if(exact_flag_request) continue;
+                else if (partial_request)
+                {
+                    if(exact_flag_transfer)
+                    {
+                        continue;
+                    }else
+                    {
+                        transfers.add(current.clone().toTransferObject());
+                    }
+
+                }else
+                {
+                    temporaryList.add(current);
+                }*/
             }
 
 
@@ -199,7 +245,7 @@ public class FileUploadWizardBean implements Serializable {
                                 //create a new clinic for it
                                 Clinic newClinic = new Clinic(currentRequest.getClinicName(),clinicCode);
 
-                                //add the clinic to the data base
+                                //add the clinic tomessage the data base
                                 systemService.getClinicManager().addEntity(newClinic);
 
                             }
@@ -218,21 +264,33 @@ public class FileUploadWizardBean implements Serializable {
                     }
                 }
 
-                //check to see if the transfers already contains data
-                if(transfers != null && transfers.size() > 0)
-                {
-                    for(Transfer currentTransfer : transfers)
-                    {
-                        systemService.getTransferManager().addEntity(currentTransfer);
-                    }
-                }
+
 
                 if(result)
-                    WebUtils.addMessage("Requests have been submitted successfully");
+                {
+                    message = "Requests have been submitted Successfully";
+                }
+
+
             }else
             {
-                WebUtils.addMessage("There was a problem inserting new requests, Contact System Administrator");
+                //WebUtils.addMessage("There are no New Requests or transfers in the Database");
             }
+
+            //check to see if the transfers already contains data
+            if(transfers != null && transfers.size() > 0)
+            {
+                for(Transfer currentTransfer : transfers)
+                {
+                    systemService.getTransferManager().addEntity(currentTransfer);
+                }
+            }else
+                message +=" With No Transfers";
+
+
+            WebUtils.addMessage(message);
+
+
 
         }catch(Exception s)
         {
@@ -251,7 +309,7 @@ public class FileUploadWizardBean implements Serializable {
         {
             if(current == null) return false;
 
-            return systemService.getRequestsManager().requestExists(current.getFileNumber());
+            return systemService.getRequestsManager().requestExistsBasedOnAllInfo(current);
 
         }catch (Exception s)
         {
