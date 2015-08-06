@@ -67,7 +67,7 @@ public class SyncService extends BasicRestful implements Serializable {
                             List<Transfer> transferList = controller.getSystemService().getTransferManager()
                                     .getTransfers(file.getFileNumber());
 
-                            if(transferList != null)
+                            if(transferList != null && transferList.size() > 0)
                             {
                                 controller.updateFile(file,currentEmployee);
                                 //Sort them according to the appointment time
@@ -75,18 +75,11 @@ public class SyncService extends BasicRestful implements Serializable {
                                 //get the first Transfer
                                 Transfer tobeTransferredTo = transferList.get(0);
 
-                                //Get the coordinator that has the current clinic assigned to him
+                               /* //Get the coordinator that has the current clinic assigned to him
                                 List<Employee> coordinators = controller.getSystemService()
-                                        .getEmployeeService().getEmployeesForClinicCode(tobeTransferredTo.getClinicCode());
+                                        .getEmployeeService().getEmployeesForClinicCode(tobeTransferredTo.getClinicCode());*/
 
-                                Employee owner = currentEmployee;
-
-                                if(coordinators != null && coordinators.size() > 0)
-                                {
-                                    //that means there is a coordinator administering the current clinic
-                                    //assign that file to him
-
-                                    owner = coordinators.get(0); //get the first one
+                                    Employee owner = currentEmployee;
 
                                     FileHistory transferrableHistory = tobeTransferredTo.toFileHistory();
                                     transferrableHistory.setOwner(owner);
@@ -103,13 +96,7 @@ public class SyncService extends BasicRestful implements Serializable {
 
                                     if(!result)
                                         failedBatches.getFiles().add(file);
-                                }else
-                                {
-                                    //There are no coordinators in the current system
-                                    //add that to the failed Batches
-                                    failedBatches.getFiles().add(file);
-                                    continue;
-                                }
+
 
 
 

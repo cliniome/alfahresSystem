@@ -238,6 +238,59 @@ public class FilesService extends BasicRestful {
     }
 
 
+
+    @Path("/receiveFile")
+    @GET
+    @Produces("application/json")
+    public Response receiveFiles(@QueryParam("fileNumber") String fileNumber)
+    {
+        try
+        {
+            //get the employee
+            Employee emp = getAccount();
+
+            if(emp == null)
+            {
+                return Response.status(UNAUTHORIZED).build();
+            }else
+            {
+               if(emp.getRole().getName().toLowerCase().equals(RoleTypes.RECEPTIONIST.toString().toLowerCase()))
+               {
+                   SyncBatch batch = new SyncBatch();
+                   batch.setCreatedAt(new Date().getTime());
+
+                   List<RestfulFile> foundFiles = new ArrayList<RestfulFile>();
+                   //get the file
+                   List<PatientFile> files = systemService.getFilesService().receiveReceptionistFiles(fileNumber);
+
+                   if(files == null || files.isEmpty())
+                       throw new Exception("Files not Found");
+
+                   for(PatientFile file : files)
+                   {
+                       foundFiles.add(file.toRestfulFile());
+                   }
+
+
+                   batch.setFiles(foundFiles);
+
+                   return Response.ok(batch).build();
+               }else
+               {
+                   return Response.status(UNAUTHORIZED).build();
+               }
+
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+
     @Path("/oneFile")
     @GET
     @Produces("application/json")
@@ -474,7 +527,7 @@ public class FilesService extends BasicRestful {
             //List<PatientFile> availableFiles = systemService.getFilesService().collectFiles(currentEmp);
 
             List<PatientFile> availableFiles = systemService.getFilesService().getFilesByStateAndEmployee(
-                    FileStates.COORDINATOR_IN,currentEmp);
+                    FileStates.COORDINATOR_IN, currentEmp);
 
 
             if(availableFiles != null && availableFiles.size() > 0)

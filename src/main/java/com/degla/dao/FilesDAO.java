@@ -227,6 +227,26 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         }
     }
 
+    public List<PatientFile> receiveReceptionistFiles(String query)
+    {
+        try
+        {
+            String queryString = "select f from PatientFile f where (f.fileID=:query and " +
+                    "f.currentStatus.state =:state) or (f.fileID = :query and f.currentStatus.state =:anotherstate and f.currentStatus.inpatient=:inpatient)";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("query",query);
+            currentQuery.setParameter("state",FileStates.COORDINATOR_OUT);
+            currentQuery.setParameter("anotherstate",FileStates.CHECKED_OUT);
+            currentQuery.setParameter("inpatient",true);
+
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            return new ArrayList<PatientFile>();
+        }
+    }
+
     public List<PatientFile> scanForIndividualFiles(String query,List<FileStates> states)
     {
         try

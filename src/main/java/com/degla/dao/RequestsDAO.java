@@ -45,12 +45,13 @@ public class RequestsDAO extends  AbstractDAO<Request> {
         try
         {
             String queryString = "select count(r) from Request r where r.fileNumber = :file and r.clinicCode=:code and " +
-                    "r.appointment_date_h =:date and r.appointment_time = :time";
+                    "r.appointment_date_h =:date and r.appointment_time = :time and r.batchRequestNumber =:batch";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("file",request.getFileNumber());
             currentQuery.setParameter("code",request.getClinicCode());
             currentQuery.setParameter("date",request.getAppointment_date_h());
             currentQuery.setParameter("time",request.getAppointment_time());
+            currentQuery.setParameter("batch",request.getBatchRequestNumber());
 
             long count = (Long)currentQuery.getSingleResult();
 

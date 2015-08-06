@@ -165,58 +165,51 @@ public class FileUploadWizardBean implements Serializable {
             for(Request current:availableRequests)
             {
 
+                /*
+                  1. Check for the exactness of the current request , if it is an exact match , don't add it at all to the collection and just continue
+                  2. if it is not exact match , that means it is partial matching , so it might be a transfer
+                  3. check for the exactness of the transfer , if it is not an exact transfer so add it to the transfer collection if it does not exist otherwise,continue
 
-                if(!this.tempListContains(current,temporaryList))
+                 */
+                boolean exact_request_exists = this.checkRequestExactness(current) || this.tempListContains(current,temporaryList);
+
+                if(exact_request_exists) continue;
+                else
+                {
+                    //it could be a partial match
+                    boolean partial_request = this.checkFileExists(current);
+
+                    if(partial_request)
+                    {
+                        //that means this is a transfer
+                        boolean transfer_exists = systemService.getTransferManager().hasTransferBasedonClinicCode(current.getFileNumber(),
+                                current.getClinicCode(),current.getAppointment_date_h(),current.getAppointment_time()) ||
+                                this.transferListContains(current.clone().toTransferObject(),transfers);
+
+                        if(!transfer_exists)
+                            transfers.add(current.clone().toTransferObject());
+                    }else
+                    {
+                        //that means it is definitely a new request
+                        if(!this.tempListContains(current,temporaryList))
+                            temporaryList.add(current);
+                    }
+                }
+
+                /*if(!this.tempListContains(current,temporaryList) && !this.checkFileExists(current))
                 {
                     temporaryList.add(current);
                 }else
                 {
                     boolean transfer_exists  = systemService.getTransferManager().hasTransferBasedonClinicCode(current.getFileNumber(),
-                            current.getClinicCode(),current.getAppointment_date_h(),current.getAppointment_time());
+                            current.getClinicCode(),current.getAppointment_date_h(),current.getAppointment_time()) ||
+                            this.transferListContains(current.clone().toTransferObject(),transfers);
+
                     if(!transfer_exists)
                         transfers.add(current.clone().toTransferObject());
-                }
-
-                /*boolean existingInRequests = this.checkFileExists(current);
-
-                if(existingInRequests) continue;
-
-                if(!this.tempListContains(current,temporaryList))
-
-                    temporaryList.add(current);
-
-                else
-                {
-                       //add it to the duplicates list
-                       boolean existsInTransfer = systemService.getTransferManager().hasTransferBasedonClinicCode(current.getFileNumber(),current.getClinicCode(),
-                               current.getAppointment_date_h(),current.getAppointment_time());
-
-
-                    if(existingInRequests) return;
-                    else if(!existsInTransfer && !existingInRequests )transfers.add(current.clone().toTransferObject());
                 }*/
 
-               /* boolean exact_flag_request = systemService.getRequestsManager().requestExistsBasedOnAllInfo(current);
-                boolean exact_flag_transfer = systemService.getTransferManager().hasTransferBasedonClinicCode(current.getFileNumber(),
-                        current.getClinicCode(),current.getAppointment_date_h(),current.getAppointment_time());
-                boolean partial_request = systemService.getRequestsManager().requestExists(current.getFileNumber());
 
-
-                if(exact_flag_request) continue;
-                else if (partial_request)
-                {
-                    if(exact_flag_transfer)
-                    {
-                        continue;
-                    }else
-                    {
-                        transfers.add(current.clone().toTransferObject());
-                    }
-
-                }else
-                {
-                    temporaryList.add(current);
-                }*/
             }
 
 
@@ -303,8 +296,8 @@ public class FileUploadWizardBean implements Serializable {
         }
     }
 
-    private boolean checkFileExists(Request current) {
-
+    private boolean checkRequestExactness(Request current)
+    {
         try
         {
             if(current == null) return false;
@@ -315,6 +308,37 @@ public class FileUploadWizardBean implements Serializable {
         {
             return false;
         }
+    }
+
+    private boolean checkFileExists(Request current) {
+
+        try
+        {
+            if(current == null) return false;
+
+            return systemService.getRequestsManager().requestExists(current.getFileNumber());
+
+        }catch (Exception s)
+        {
+            return false;
+        }
+    }
+
+    private boolean transferListContains(Transfer transfer,List<Transfer> availableTransfers)
+    {
+        if(availableTransfers == null || availableTransfers.size() <= 0 ) return false;
+        boolean result = false;
+
+        for(Transfer current : availableTransfers)
+        {
+            if(current.getFileNumber().equals(transfer.getFileNumber()))
+            {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
     }
 
     private boolean tempListContains(Request current, List<Request> availableRequests) {
