@@ -1,6 +1,7 @@
 package com.degla.utils;
 
 import com.degla.db.models.Employee;
+import com.degla.db.models.PatientFile;
 import com.degla.db.models.Request;
 import com.degla.db.models.RoleTypes;
 import com.degla.system.SystemService;
@@ -68,6 +69,14 @@ public class ExcelFileBuilder {
 
                 for(int i =0 ; i < assignedRequests.size();i++)
                 {
+                    Request req = assignedRequests.get(i);
+
+                    //Check to see if that request exists in the patient Files , if yes , that means it was built before
+                    PatientFile file = systemService.getFilesService().getFileWithNumber(req.getFileNumber());
+
+                    if(file != null)
+                        continue;
+
                     Row currentRow = workSheet.createRow(i+1);
 
                     //File Number Cell
