@@ -2,7 +2,6 @@ package com.degla.beans.files;
 
 import com.degla.db.models.*;
 import com.degla.exceptions.BarcodeFormatException;
-import com.degla.exceptions.RequestException;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.BarcodeUtils;
@@ -11,16 +10,12 @@ import com.degla.utils.xml.BatchRequestDetails;
 import com.degla.utils.xml.PatientFileReader;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.FlowEvent;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
-import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import java.io.*;
 import java.util.*;
@@ -171,13 +166,21 @@ public class FileUploadWizardBean implements Serializable {
                   3. check for the exactness of the transfer , if it is not an exact transfer so add it to the transfer collection if it does not exist otherwise,continue
 
                  */
-                boolean exact_request_exists = this.checkRequestExactness(current) || this.tempListContains(current,temporaryList);
+
+
+                /*
+                    1. Check in the requests table ,if the same request number exists for the same clinic code in the same date,
+                    so basically , that means a duplicate request , drop it , otherwise , check if it is for a different clinic code , so it is definitely a transfer
+                    2. check if that transfer exactly was inserted before or not., if it was inserted before , drop it otherwise add it as a transfer
+
+                 */
+                boolean exact_request_exists = this.checkRequestExactness(current) || this.templistContainsExactly(current, temporaryList);
 
                 if(exact_request_exists) continue;
                 else
                 {
                     //it could be a partial match
-                    boolean partial_request = this.checkFileExists(current);
+                    boolean partial_request = this.existsPartiallyinDB(current) || this.existsPartiallyInMemory(current,temporaryList);
 
                     if(partial_request)
                     {
@@ -188,15 +191,17 @@ public class FileUploadWizardBean implements Serializable {
 
                         if(!transfer_exists)
                             transfers.add(current.clone().toTransferObject());
+
+
                     }else
                     {
                         //that means it is definitely a new request
-                        if(!this.tempListContains(current,temporaryList))
+                        if(!this.templistContainsExactly(current, temporaryList))
                             temporaryList.add(current);
                     }
                 }
 
-                /*if(!this.tempListContains(current,temporaryList) && !this.checkFileExists(current))
+                /*if(!this.templistContainsExactly(current,temporaryList) && !this.existsPartiallyinDB(current))
                 {
                     temporaryList.add(current);
                 }else
@@ -296,13 +301,30 @@ public class FileUploadWizardBean implements Serializable {
         }
     }
 
+    private boolean existsPartiallyInMemory(Request current, List<Request> temporaryList) {
+
+        boolean result= false;
+
+        for(Request req : temporaryList)
+        {
+            if(req.getFileNumber().equals(current.getFileNumber()))
+            {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+
+    }
+
     private boolean checkRequestExactness(Request current)
     {
         try
         {
             if(current == null) return false;
 
-            return systemService.getRequestsManager().requestExistsBasedOnAllInfo(current);
+            return systemService.getRequestsManager().requestExistsExactlyInDB(current);
 
         }catch (Exception s)
         {
@@ -310,7 +332,7 @@ public class FileUploadWizardBean implements Serializable {
         }
     }
 
-    private boolean checkFileExists(Request current) {
+    private boolean existsPartiallyinDB(Request current) {
 
         try
         {
@@ -331,9 +353,17 @@ public class FileUploadWizardBean implements Serializable {
 
         for(Transfer current : availableTransfers)
         {
-            if(current.getFileNumber().equals(transfer.getFileNumber()))
+            try
             {
-                result = true;
+                if(current.exactMatch(transfer))
+                {
+                    result = true;
+                    break;
+                }
+
+            }catch (Exception s)
+            {
+                s.printStackTrace();
                 break;
             }
         }
@@ -341,7 +371,7 @@ public class FileUploadWizardBean implements Serializable {
         return result;
     }
 
-    private boolean tempListContains(Request current, List<Request> availableRequests) {
+    private boolean templistContainsExactly(Request current, List<Request> availableRequests) {
 
         if(availableRequests == null || availableRequests.size()<=0) return false;
 
@@ -349,10 +379,18 @@ public class FileUploadWizardBean implements Serializable {
 
         for(Request req : availableRequests)
         {
-            if(req.getFileNumber().equals(current.getFileNumber()))
+            try
             {
-                result = true;
-                break;
+                if(current.isExact(req))
+                {
+                    result = true;
+                    break;
+                }
+
+            }catch (Exception s)
+            {
+                s.printStackTrace();
+                continue;
             }
         }
 
@@ -429,22 +467,35 @@ public class FileUploadWizardBean implements Serializable {
 
             FileOutputStream outputStream = new FileOutputStream(new File(fileFullPath));
 
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF8"));
 
-            int read = 0;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream,"UTF8"));
+
+
+            /*int read = 0;
             byte[] bytes = new byte[1024];
 
             while ((read = inputstream.read(bytes)) != -1) {
                 outputStream.write(bytes, 0, read);
             }
+*/
 
-            inputstream.close();
-            outputStream.flush();
-            outputStream.close();
+            String line = null;
+
+            while((line=reader.readLine()) != null)
+            {
+                line = line.trim().replaceAll("\u00A0"," ");
+                writer.write(line);
+            }
+
+           writer.flush();
+            reader.close();
+            writer.close();
 
 
 
             //Here is our Preprocessing step after uploading the file successfully
-            this.preprocessFile(fileFullPath);
+           // this.preprocessFile(fileFullPath);
 
             return fileFullPath;
 
@@ -468,7 +519,8 @@ public class FileUploadWizardBean implements Serializable {
                 //now begin the reading process
                 StringBuffer fileContents = new StringBuffer();
 
-                BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+               BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+
 
                 String line = null;
 

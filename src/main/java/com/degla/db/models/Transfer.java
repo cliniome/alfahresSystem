@@ -138,6 +138,15 @@ public class Transfer extends EntityEO implements Serializable , Comparable<Tran
 
     }
 
+    public boolean exactMatch(Transfer other) throws Exception
+    {
+        if(other.getAppointment_Hijri_Date() == null || other.getAppointmentTime() == null || other.getClinicCode() == null) throw new Exception("Transfer is incomplete");
+        boolean result = other.getFileNumber().equals(this.getFileNumber()) && other.getAppointment_Hijri_Date().trim().equals(this.getAppointment_Hijri_Date().trim())
+                && other.getClinicCode().trim().equals(this.getClinicCode().trim());
+
+        return result;
+    }
+
     public int getHourofAppointment()
     {
         String appHour = this.getAppointmentTime();

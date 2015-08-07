@@ -40,7 +40,7 @@ public class RequestsDAO extends  AbstractDAO<Request> {
         }
     }
 
-    public boolean requestExistsBasedOnAllInfo(Request request)
+    public boolean requestExistsExactlyInDB(Request request)
     {
         try
         {

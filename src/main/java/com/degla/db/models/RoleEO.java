@@ -23,10 +23,7 @@ import org.springframework.security.core.GrantedAuthority;
 public class RoleEO extends EntityEO implements GrantedAuthority , Serializable {
 
 
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
-    public static final String ROLE_RECEPTIONIST = "ROLE_RECEPTIONIST";
-    public static final String ROLE_KEEPER = "ROLE_KEEPER";
-    public static final String ROLE_COORDINATOR = "ROLE_COORDINATOR";
+
 
     /**
      * The Role Name

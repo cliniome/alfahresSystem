@@ -123,6 +123,18 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
         }
     }
 
+
+    public boolean isExact(Request other) throws Exception
+    {
+        if(other == null) throw new Exception("Request can't be null");
+        if(other.getAppointment_Date() == null || other.getClinicCode() == null) throw new Exception("Request is incomplete in either Appointment Date or Clinic Code");
+
+        boolean result = other.getAppointment_Date().equals(this.getAppointment_Date()) && other.getFileNumber().equals(this.getFileNumber()) && other.getClinicCode().trim()
+                .equals(this.getClinicCode());
+
+        return result;
+    }
+
     public Request clone() {
 
         Request newRequest = new Request();

@@ -15,6 +15,7 @@ public class RestAuthenticationSuccessHandler implements AuthenticationSuccessHa
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
 
+
         System.out.println("In Authentication Handler");
     }
 }

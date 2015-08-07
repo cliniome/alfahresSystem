@@ -37,20 +37,26 @@ http://www.springframework.org/schema/jee
 
     <!-- pattern="/rest/**"-->
 
-    <sec:http pattern="/rest/files/**"
+    <sec:http pattern="/rest/files/**" security-context-repository-ref="noSessionContextRepository"
               authentication-manager-ref="restfulAuthenticationManager" entry-point-ref="restServicesEntryPoint"
               create-session="stateless">
         <sec:custom-filter ref="restServicesFilter"
                            before="PRE_AUTH_FILTER" />
-
-
     </sec:http>
+
+
+    <bean id="noSessionContextRepository" class='org.springframework.security.web.context.HttpSessionSecurityContextRepository'>
+        <property name='allowSessionCreation' value='false' />
+    </bean>
+
 
     <sec:http pattern="/rest/employee/**"
               authentication-manager-ref="restfulAuthenticationManager" entry-point-ref="restServicesEntryPoint"
               create-session="stateless">
         <sec:custom-filter ref="restServicesFilter"
                            before="PRE_AUTH_FILTER" />
+
+
 
     </sec:http>
 
@@ -59,7 +65,7 @@ http://www.springframework.org/schema/jee
     </sec:http>
 
 
-    <sec:http  auto-config="true" use-expressions="true"
+    <sec:http  auto-config="true" use-expressions="true" security-context-repository-ref="noSessionContextRepository"
                create-session="always" access-denied-page="/web/NotAuthorized.xhtml">
          <!--<sec:intercept-url pattern="/web/dashboard/**" access="hasRole('ROLE_DOCTOR')"/>-->
         <sec:intercept-url pattern="/web/admin/**"  access="hasRole('ADMIN')"/>
