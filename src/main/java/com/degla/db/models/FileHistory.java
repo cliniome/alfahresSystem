@@ -58,6 +58,8 @@ public class FileHistory extends EntityEO {
     @Enumerated(EnumType.STRING)
     private FileStates state;
 
+
+
     @Column(name="inpatient_col",nullable = false)
     private boolean inpatient = false;
 

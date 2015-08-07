@@ -3,10 +3,13 @@ package com.degla.db.models;
 import com.degla.restful.models.FileModelStates;
 import com.degla.restful.models.RestfulFile;
 import com.degla.utils.FileStateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Index;
 
 import javax.persistence.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -78,8 +81,6 @@ public class PatientFile extends EntityEO {
     public String getDescription() {
 		return this.description;
 	}
-
-
 
 
     /**

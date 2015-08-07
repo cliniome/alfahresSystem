@@ -133,6 +133,52 @@ public class BasicController implements BasicRestfulOperations {
     }
 
 
+    public List<RestfulRequest> selectRequestsWithDate(String username , String date)
+    {
+        try {
+            List<RestfulRequest> availableRequests = new ArrayList<RestfulRequest>();
+
+            List<Request> requests = getSystemService().getRequestsManager().selectRequestsByDate(username,date);
+
+            if (requests != null) {
+                for (Request current : requests) {
+
+                    RestfulRequest request = new RestfulRequest();
+
+                    request.setAppointment_Date(current.getAppointment_Date());
+                    request.setAppointment_Type(current.getAppointment_Type());
+                    request.setFileNumber(current.getFileNumber());
+                    request.setPatientName(current.getPatientName());
+                    request.setPatientNumber(current.getPatientNumber());
+                    request.setUserName(current.getUserName());
+                    request.setAppointment_Date(current.getAppointment_Date());
+                    request.setAppointment_Type(current.getCf_appointment_type());
+                    request.setAppointmentDate(current.getAppointment_Date());
+                    request.setAppointmentDateH(current.getAppointment_date_h());
+                    request.setAppointmentMadeBy(current.getAppointment_made_by());
+                    request.setAppointmentTime(current.getAppointment_time());
+                    request.setAppointmentType(current.getCf_appointment_type());
+                    request.setBatchRequestNumber(current.getBatchRequestNumber());
+                    request.setClinicCode(current.getClinicCode());
+                    request.setClinicDocCode(current.getClinic_Doc_Code());
+                    request.setClinicDocName(current.getRequestingDocName());
+                    request.setClinicName(current.getClinicName());
+                    request.setState(FileStates.NEW.toString());
+                    request.setInpatient(current.isInpatient());
+
+                    availableRequests.add(request);
+                }
+
+                return availableRequests;
+            } else return null;
+
+        } catch (Exception s) {
+            s.printStackTrace();
+            return null;
+        }
+    }
+
+
     @Override
     public List<RestfulRequest> getNewRequests(String userName) {
 

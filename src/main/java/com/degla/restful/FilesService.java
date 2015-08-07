@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import sun.misc.BASE64Encoder;
 import static javax.ws.rs.core.Response.Status.*;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.persistence.Basic;
 import javax.persistence.EntityNotFoundException;
@@ -767,6 +768,35 @@ public class FilesService extends BasicRestful {
         }else
             return Response.status(UNAUTHORIZED).build();
    }
+
+    @Path("/selectDate")
+    @GET
+    @Produces("application/json")
+    public Response NewRequestsWithDate(@QueryParam("date") String chosenDate)
+    {
+        BasicController controller = new BasicController();
+
+        Employee emp = getAccount();
+
+        if(emp != null)
+        {
+            String currentUserName = emp.getUserName();
+            //Check the date object
+            Gson gson = RestGsonBuilder.createGson();
+
+            List<RestfulRequest> availableRequests = controller.selectRequestsWithDate(currentUserName,chosenDate);
+
+            if(availableRequests == null)
+                return Response.noContent().build();
+            else
+            {
+                //Sort them according
+                return Response.ok(gson.toJson(availableRequests)).build();
+            }
+
+        }else
+            return Response.status(UNAUTHORIZED).build();
+    }
 
 
 

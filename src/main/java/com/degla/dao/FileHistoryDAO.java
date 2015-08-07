@@ -30,12 +30,13 @@ public class FileHistoryDAO extends AbstractDAO<FileHistory> {
     {
         try
         {
-            String queryString = "select h from FileHistory h where h.batchRequestNumber=:batch AND " +
+            String queryString = "select h from FileHistory h where " +
                     "h.patientFile.fileID=:number ORDER BY h.createdAt desc";
 
             Query currentQuery = getManager().createQuery(queryString);
-            currentQuery.setParameter("batch",file.getCurrentStatus().getBatchRequestNumber());
             currentQuery.setParameter("number",file.getFileID());
+
+            currentQuery.setMaxResults(30); // Set the maximum file history details to return
 
             return currentQuery.getResultList();
 

@@ -2,10 +2,14 @@ package com.degla.db.models;
 
 import com.degla.restful.models.RestfulRequest;
 import com.degla.utils.AnnotatingModel;
+import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.annotations.Index;
 import static javax.persistence.CascadeType.*;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -98,12 +102,15 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
     private transient boolean selected;
 
 
+
     public Transfer toTransferObject()
     {
         try
         {
             Transfer currentTransfer = new Transfer();
             currentTransfer.setAppointment_Hijri_Date(this.getAppointment_date_h());
+            SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy");
+            currentTransfer.setAppointment_Date_G(formatter.parse(this.getAppointment_Date()));
             currentTransfer.setAppointment_Made_by(this.getAppointment_made_by());
             currentTransfer.setAppointmentType(this.getAppointment_Type());
             currentTransfer.setBatchRequestNumber(this.getBatchRequestNumber());
@@ -114,6 +121,16 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
             currentTransfer.setCreatedAt(new Date());
             currentTransfer.setFileNumber(this.getFileNumber());
             currentTransfer.setAppointmentTime(this.getAppointment_time());
+            currentTransfer.setPatientName(this.getPatientName());
+            currentTransfer.setPatientNumber(this.getPatientNumber());
+
+            currentTransfer.setCf_appointment_type(this.getCf_appointment_type());
+            currentTransfer.setCsGroupCount(this.getCsGroupCount());
+            currentTransfer.setFileCurrentLocation(this.getFileCurrentLocation());
+            currentTransfer.setRmc_ord(this.getRmc_ord());
+            currentTransfer.setT_schedule_ruleNo(this.getT_schedule_ruleNo());
+            currentTransfer.setT_upd_user(this.getT_upd_user());
+            currentTransfer.setUserName(this.getUserName());
             return currentTransfer;
 
         }catch (Exception s)

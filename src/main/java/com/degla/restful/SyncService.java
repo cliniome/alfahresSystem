@@ -9,6 +9,8 @@ import com.degla.restful.models.RestfulFile;
 import com.degla.restful.models.SyncBatch;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
+import com.degla.utils.FileRouter;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -21,6 +23,7 @@ import javax.ws.rs.core.Response;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,33 +61,37 @@ public class SyncService extends BasicRestful implements Serializable {
                     {
                         boolean hasTransfer = controller.getSystemService().getTransferManager().hasTransfer(file.getFileNumber());
 
+                        //that means the syncing comes from a coordinator and the file has transfer
+                        //so transfer that file
+                        List<Transfer> transferList = controller.getSystemService().getTransferManager()
+                                .getTransfers(file.getFileNumber());
+
+                        PatientFile patientFile = controller.getSystemService().getFilesService().getFileWithNumber(file.getFileNumber());
+
+                        //Sort them according to the appointment time
+                        Collections.sort(transferList);
+                        //get the first Transfer
+
+                        Employee owner = currentEmployee;
+
                         if(hasTransfer &&  file.getState().equals(FileStates.COORDINATOR_OUT.toString())
                                 &&
                                 currentEmployee.getRole().getName().equals(RoleTypes.COORDINATOR.toString()))
                         {
-                            //that means the syncing comes from a coordinator and the file has transfer
-                            //so transfer that file
-                            List<Transfer> transferList = controller.getSystemService().getTransferManager()
-                                    .getTransfers(file.getFileNumber());
 
                             if(transferList != null && transferList.size() > 0)
                             {
-                                controller.updateFile(file,currentEmployee);
-                                //Sort them according to the appointment time
-                                Collections.sort(transferList);
-                                //get the first Transfer
+                                controller.updateFile(file, currentEmployee);
+
                                 Transfer tobeTransferredTo = transferList.get(0);
 
-                               /* //Get the coordinator that has the current clinic assigned to him
-                                List<Employee> coordinators = controller.getSystemService()
-                                        .getEmployeeService().getEmployeesForClinicCode(tobeTransferredTo.getClinicCode());*/
-
-                                    Employee owner = currentEmployee;
-
+                                //Check if the current transfer is in the same day
+                                if(this.transferInTheSameDay(new Date(),tobeTransferredTo.getAppointment_Date_G()))
+                                {
                                     FileHistory transferrableHistory = tobeTransferredTo.toFileHistory();
                                     transferrableHistory.setOwner(owner);
 
-                                    PatientFile patientFile = controller.getSystemService().getFilesService().getFileWithNumber(file.getFileNumber());
+
                                     transferrableHistory.setPatientFile(patientFile);
 
                                     //now add that history to the current patient file and update it
@@ -97,8 +104,11 @@ public class SyncService extends BasicRestful implements Serializable {
                                     if(!result)
                                         failedBatches.getFiles().add(file);
 
+                                }
 
-
+                               /* //Get the coordinator that has the current clinic assigned to him
+                                List<Employee> coordinators = controller.getSystemService()
+                                        .getEmployeeService().getEmployeesForClinicCode(tobeTransferredTo.getClinicCode());*/
 
 
                             }else
@@ -109,6 +119,36 @@ public class SyncService extends BasicRestful implements Serializable {
 
                             //continue in the looping
                             continue;
+                        }else if(hasTransfer && file.getState().equals(FileStates.CHECKED_IN.toString()))
+                        {
+                            //first update the current file
+                            controller.updateFile(file, currentEmployee);
+
+                            //The current Transfer
+                            Transfer tobeTransferredTo = transferList.get(0);
+
+                            if(!this.transferInTheSameDay(new Date(),tobeTransferredTo.getAppointment_Date_G()))
+                            {
+                                //That means it is properly a new request, so add it
+                                Request transferRequest = tobeTransferredTo.toRequestObject();
+
+                                //Route the current request
+                                List<Request> tempRequests = new ArrayList<Request>();
+                                tempRequests.add(transferRequest);
+
+                                FileRouter router = new FileRouter();
+                                router.routeFiles(tempRequests);
+
+                                //after that , try to add the current request into the database
+                                boolean result = controller.getSystemService().getRequestsManager().addEntity(transferRequest);
+                                result &= controller.getSystemService().getTransferManager().removeEntity(tobeTransferredTo);
+
+                                if(!result)
+                                    failedBatches.getFiles().add(file);
+                            }
+
+
+
                         }
 
                         boolean result = controller.updateFile(file,currentEmployee);
@@ -141,7 +181,10 @@ public class SyncService extends BasicRestful implements Serializable {
         }
     }
 
+    private boolean transferInTheSameDay(Date date, Date appointment_date_g) {
 
+        return DateUtils.isSameDay(date,appointment_date_g);
+    }
 
 
 }

@@ -11,8 +11,6 @@ import com.degla.utils.GenericLazyDataModel;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import java.io.Serializable;
@@ -30,7 +28,7 @@ public class ShowFilesBean implements Serializable {
     private SystemService systemService;
     private String chosenState = FileStates.MISSING.toString();
     private List<SelectItem> items;
-    private GenericLazyDataModel<PatientFile> patientFiles;
+    private List<PatientFile> patientFiles;
 
     @PostConstruct
     public void onInit()
@@ -41,7 +39,9 @@ public class ShowFilesBean implements Serializable {
             setItems(new ArrayList<SelectItem>());
             FilesDAO filesDAO = systemService.getFilesService();
             filesDAO.setQueryState(FileStates.MISSING);
-            patientFiles = new GenericLazyDataModel<PatientFile>(filesDAO);
+            setPatientFiles(new ArrayList<PatientFile>());
+
+            patientFiles = systemService.getFilesService().getMissingFiles();
 
             //Load selectable items
             this.loadSelectableItems();
@@ -62,7 +62,7 @@ public class ShowFilesBean implements Serializable {
                 FileStates currentState = FileStates.valueOf(chosenState);
                 FilesDAO filesManager  = systemService.getFilesService();
                 filesManager.setQueryState(currentState);
-                patientFiles = new GenericLazyDataModel<PatientFile>(filesManager);
+                setPatientFiles(new ArrayList<PatientFile>());
             }
 
         }catch (Exception s)
@@ -106,11 +106,14 @@ public class ShowFilesBean implements Serializable {
         this.items = items;
     }
 
-    public GenericLazyDataModel<PatientFile> getPatientFiles() {
+
+
+
+    public List<PatientFile> getPatientFiles() {
         return patientFiles;
     }
 
-    public void setPatientFiles(GenericLazyDataModel<PatientFile> patientFiles) {
+    public void setPatientFiles(List<PatientFile> patientFiles) {
         this.patientFiles = patientFiles;
     }
 }

@@ -140,6 +140,28 @@ public class RequestsDAO extends  AbstractDAO<Request> {
 
     }
 
+    public List<Request> selectRequestsByDate(String username , String date)
+    {
+        try
+        {
+            String queryString = "select r from Request r where r.assignedTo.userName=:username and " +
+                    "r.assignedTo.active=:state and r.appointment_Date = :date";
+
+            Query currentQuery = getManager().createQuery(queryString);
+
+            currentQuery.setParameter("username",username);
+            currentQuery.setParameter("state",true);
+            currentQuery.setParameter("date",date);
+
+            return currentQuery.getResultList();
+
+
+        }catch(Exception s)
+        {
+            return null;
+        }
+    }
+
     public List<Request> getNewRequestsFor(String username)
     {
         try

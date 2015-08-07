@@ -25,16 +25,35 @@ public class TransferDAO extends AbstractDAO<Transfer> {
     {
         try
         {
-            List<Transfer> transfers = this.getTransfers(fileNumber);
+            long transfersCount = this.getTransfersCount(fileNumber);
 
-            if(transfers == null || transfers.size() <=0) return false;
-            else return true;
+            if(transfersCount > 0) return true;
+            else return false;
 
         }catch (Exception s)
         {
             s.printStackTrace();
             return false;
         }
+    }
+
+    private long getTransfersCount(String fileNumber) {
+
+
+        try
+        {
+            String queryString = "select count(t.fileNumber) from Transfer t where t.fileNumber = :fileNumber";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("fileNumber",fileNumber);
+            return (Long)currentQuery.getSingleResult();
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return 0;
+        }
+
     }
 
     public boolean hasTransferBasedonClinicCode(String fileNumber,String clinicCode,String hijri,String time)
@@ -66,9 +85,10 @@ public class TransferDAO extends AbstractDAO<Transfer> {
     {
         try
         {
-            String queryString = "select t from Transfer t where t.fileNumber = :fileNumber";
+            String queryString = "select t from Transfer t where t.fileNumber = :fileNumber order by t.appointment_Date_G ASC ";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("fileNumber",fileNumber);
+            currentQuery.setMaxResults(5);
             return currentQuery.getResultList();
 
 
