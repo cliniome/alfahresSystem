@@ -1,13 +1,17 @@
 package com.degla.controllers;
 
+import com.degla.beans.files.DatePatterns;
 import com.degla.db.models.*;
 import com.degla.exceptions.RecordNotFoundException;
 import com.degla.exceptions.WorkflowOutOfBoundException;
 import com.degla.restful.models.*;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
+import org.apache.commons.lang3.time.DateUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -132,28 +136,46 @@ public class BasicController implements BasicRestfulOperations {
         }
     }
 
+    private Date getEndOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DATE);
+        calendar.set(year, month, day, 23, 59, 59);
+        return calendar.getTime();
+    }
+
 
     public List<RestfulRequest> selectRequestsWithDate(String username , String date)
     {
         try {
+
+            SimpleDateFormat formatter = new SimpleDateFormat();
+            Date chosenDate = DateUtils.parseDate(date, DatePatterns.datePatterns());
             List<RestfulRequest> availableRequests = new ArrayList<RestfulRequest>();
 
-            List<Request> requests = getSystemService().getRequestsManager().selectRequestsByDate(username,date);
+
+
+            List<Request> requests = getSystemService().getRequestsManager().selectRequestsByDate(username,chosenDate);
 
             if (requests != null) {
+
+
                 for (Request current : requests) {
 
                     RestfulRequest request = new RestfulRequest();
 
-                    request.setAppointment_Date(current.getAppointment_Date());
+
+
+                    request.setAppointment_Date(formatter.format(current.getAppointment_Date()));
                     request.setAppointment_Type(current.getAppointment_Type());
                     request.setFileNumber(current.getFileNumber());
                     request.setPatientName(current.getPatientName());
                     request.setPatientNumber(current.getPatientNumber());
                     request.setUserName(current.getUserName());
-                    request.setAppointment_Date(current.getAppointment_Date());
+
                     request.setAppointment_Type(current.getCf_appointment_type());
-                    request.setAppointmentDate(current.getAppointment_Date());
+
                     request.setAppointmentDateH(current.getAppointment_date_h());
                     request.setAppointmentMadeBy(current.getAppointment_made_by());
                     request.setAppointmentTime(current.getAppointment_time());
@@ -188,19 +210,19 @@ public class BasicController implements BasicRestfulOperations {
             List<Request> requests = getSystemService().getRequestsManager().getNewRequestsFor(userName);
 
             if (requests != null) {
+                SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy");
+
                 for (Request current : requests) {
 
                     RestfulRequest request = new RestfulRequest();
 
-                    request.setAppointment_Date(current.getAppointment_Date());
+                    request.setAppointment_Date(formatter.format(current.getAppointment_Date()));
                     request.setAppointment_Type(current.getAppointment_Type());
                     request.setFileNumber(current.getFileNumber());
                     request.setPatientName(current.getPatientName());
                     request.setPatientNumber(current.getPatientNumber());
                     request.setUserName(current.getUserName());
-                    request.setAppointment_Date(current.getAppointment_Date());
                     request.setAppointment_Type(current.getCf_appointment_type());
-                    request.setAppointmentDate(current.getAppointment_Date());
                     request.setAppointmentDateH(current.getAppointment_date_h());
                     request.setAppointmentMadeBy(current.getAppointment_made_by());
                     request.setAppointmentTime(current.getAppointment_time());

@@ -16,6 +16,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -99,7 +100,8 @@ public class InPatientRequestsBean implements Serializable {
             inpatient.setPatientName(this.getPatientName());
             inpatient.setPatientNumber(this.getPatientNumber());
             inpatient.setFileCurrentLocation(this.getAdmissionLocation());
-            inpatient.setAppointment_Date(this.getAdmissionDate());
+            SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy");
+            inpatient.setAppointment_Date(formatter.parse(this.getAdmissionDate()));
             inpatient.setAppointment_time(this.getAdmissionTime());
             inpatient.setClinicName(this.getWardName());
             inpatient.setClinicCode(this.getWardNumber());

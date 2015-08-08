@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -140,18 +142,32 @@ public class RequestsDAO extends  AbstractDAO<Request> {
 
     }
 
-    public List<Request> selectRequestsByDate(String username , String date)
+    private Date getEndOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DATE);
+        calendar.set(year, month, day, 23, 59, 59);
+        return calendar.getTime();
+    }
+
+
+    public List<Request> selectRequestsByDate(String username , Date date)
     {
         try
         {
+            Date endofDay = getEndOfDay(date);
+
             String queryString = "select r from Request r where r.assignedTo.userName=:username and " +
-                    "r.assignedTo.active=:state and r.appointment_Date = :date";
+                    "r.assignedTo.active=:state and r.appointment_Date >= :date and r.appointment_Date <= :endofDay";
 
             Query currentQuery = getManager().createQuery(queryString);
 
             currentQuery.setParameter("username",username);
             currentQuery.setParameter("state",true);
             currentQuery.setParameter("date",date);
+            currentQuery.setParameter("endofDay",endofDay);
 
             return currentQuery.getResultList();
 

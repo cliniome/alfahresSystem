@@ -199,8 +199,8 @@ public class Transfer extends EntityEO implements Serializable , Comparable<Tran
     public Request toRequestObject()
     {
         Request request = new Request();
-        SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy");
-        request.setAppointment_Date(formatter.format(this.getAppointment_Date_G()));
+
+        request.setAppointment_Date(this.getAppointment_Date_G());
         request.setAppointment_date_h(this.getAppointment_Hijri_Date());
         request.setAppointment_made_by(this.getAppointment_Made_by());
         request.setAppointment_time(this.getAppointmentTime());

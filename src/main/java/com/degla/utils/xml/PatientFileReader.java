@@ -89,7 +89,7 @@ public class PatientFileReader {
         mappedFields.put("PAT_NAME","patientName");
         mappedFields.put("RMC_NO","fileNumber");
         mappedFields.put("T_PAT_NO","patientNumber");
-        mappedFields.put("T_APPT_DATE","appointment_Date");
+        mappedFields.put("T_APPT_DATE","appointmentDateG");
         mappedFields.put("T_APPT_TYPE","appointment_Type");
         mappedFields.put("APPT_MADE_BY","appointment_made_by");
         mappedFields.put("APPT_DATE_H","appointment_date_h");

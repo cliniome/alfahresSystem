@@ -2,6 +2,7 @@ package com.degla.db.models;
 
 import com.degla.restful.models.RestfulRequest;
 import com.degla.utils.AnnotatingModel;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.annotations.Index;
 import static javax.persistence.CascadeType.*;
@@ -57,7 +58,7 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
     private String t_schedule_ruleNo;
 
     @Column(name="appointment_Date")
-    private String appointment_Date;
+    private Date appointment_Date;
 
     @Column(name="t_upd_user",nullable = true)
     private String t_upd_user;
@@ -101,6 +102,8 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
 
     private transient boolean selected;
 
+    private transient String appointmentDateG;
+
 
 
     public Transfer toTransferObject()
@@ -109,8 +112,8 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
         {
             Transfer currentTransfer = new Transfer();
             currentTransfer.setAppointment_Hijri_Date(this.getAppointment_date_h());
-            SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy");
-            currentTransfer.setAppointment_Date_G(formatter.parse(this.getAppointment_Date()));
+
+            currentTransfer.setAppointment_Date_G(this.getAppointment_Date());
             currentTransfer.setAppointment_Made_by(this.getAppointment_made_by());
             currentTransfer.setAppointmentType(this.getAppointment_Type());
             currentTransfer.setBatchRequestNumber(this.getBatchRequestNumber());
@@ -174,8 +177,23 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
         newRequest.setClinicName(this.getClinicName());
         newRequest.setRmc_ord(this.getRmc_ord());
         newRequest.setAppointment_time(this.getAppointment_time());
+        newRequest.getAppointment_Date().setHours(newRequest.getHourofAppointment());
+
         newRequest.setT_schedule_ruleNo(this.getT_schedule_ruleNo());
         newRequest.setT_upd_user(this.getT_upd_user());
+
+        try
+        {
+
+            String[] patterns = {"d-MMM-yy","dd-MMM-yy","dd-MMM-yyyy","d-MMM-yyyy"};
+
+            newRequest.setAppointment_Date(DateUtils.parseDate(this.getAppointmentDateG(),patterns));
+
+
+        }catch (Exception s)
+        {
+
+        }
 
         return newRequest;
     }
@@ -206,13 +224,7 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
         this.appointment_Type = appointment_Type;
     }
 
-    public String getAppointment_Date() {
-        return appointment_Date;
-    }
 
-    public void setAppointment_Date(String appointment_Date) {
-        this.appointment_Date = appointment_Date;
-    }
 
     public String getUserName() {
         return userName;
@@ -383,7 +395,7 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
 
 
         //Order them in ascending order
-        return this.getHourofAppointment() - request.getHourofAppointment();
+        return request.getHourofAppointment() - this.getHourofAppointment();
 
     }
 
@@ -408,5 +420,36 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
 
     public void setInpatient(boolean inpatient) {
         this.inpatient = inpatient;
+    }
+
+    public Date getAppointment_Date() {
+        return appointment_Date;
+    }
+
+    public void setAppointment_Date(Date appointment_Date) {
+        this.appointment_Date = appointment_Date;
+    }
+
+    public String getAppointmentDateG() {
+        return appointmentDateG;
+    }
+
+    public void setAppointmentDateG(String appointmentDateG) {
+
+        this.appointmentDateG = appointmentDateG;
+
+        if(appointmentDateG != null && !appointmentDateG.isEmpty())
+        {
+            String[] patterns = {"d-MMM-yy","dd-MMM-yy","dd-MMM-yyyy","d-MMM-yyyy"};
+            try
+            {
+                this.setAppointment_Date(DateUtils.parseDate(appointmentDateG,patterns));
+
+            }catch (Exception s)
+            {
+                s.printStackTrace();
+
+            }
+        }
     }
 }
