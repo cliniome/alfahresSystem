@@ -68,8 +68,6 @@
                                             <div class="controls">
                                                 <p:calendar id="admitDate" requiredMessage="Admit. Date is required"
                                                             required="true" showOn="button" value="#{inpatientBean.admissionDate}">
-                                                    <f:convertDateTime pattern="d-MMM-yy"/>
-
                                                 </p:calendar>
                                             </div>
                                         </div>
@@ -80,7 +78,7 @@
                                                 <p:calendar id="admitTime" required="true"
                                                             requiredMessage="Admit. Time is required"
                                                             showOn="button" pattern="HH:mm" timeOnly="true" value="#{inpatientBean.admissionTime}">
-                                                    <f:convertDateTime pattern="HH:mm"/>
+
                                                 </p:calendar>
                                             </div>
                                         </div>

@@ -136,14 +136,7 @@ public class BasicController implements BasicRestfulOperations {
         }
     }
 
-    private Date getEndOfDay(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DATE);
-        calendar.set(year, month, day, 23, 59, 59);
-        return calendar.getTime();
-    }
+
 
 
     public List<RestfulRequest> selectRequestsWithDate(String username , String date)
@@ -151,7 +144,7 @@ public class BasicController implements BasicRestfulOperations {
         try {
 
             SimpleDateFormat formatter = new SimpleDateFormat();
-            Date chosenDate = DateUtils.parseDate(date, DatePatterns.datePatterns());
+            Date chosenDate = DateUtils.parseDate(date, SpringSystemBridge.services().getDatePatternsBean().getDatePatterns().toArray(new String[]{}));
             List<RestfulRequest> availableRequests = new ArrayList<RestfulRequest>();
 
 

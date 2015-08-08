@@ -8,6 +8,7 @@ import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.BarcodeUtils;
 import com.degla.utils.WebUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -17,6 +18,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -32,8 +34,8 @@ public class InPatientRequestsBean implements Serializable {
     private String patientName;
     private String patientNumber;
     private String admissionLocation;
-    private String admissionDate;
-    private String admissionTime;
+    private Date admissionDate;
+    private Date admissionTime;
     private String wardName;
     private String wardNumber;
     private String doctorName;
@@ -57,6 +59,9 @@ public class InPatientRequestsBean implements Serializable {
             s.printStackTrace();
         }
     }
+
+
+
 
 
     public void onSubmit(ActionEvent event)
@@ -88,8 +93,7 @@ public class InPatientRequestsBean implements Serializable {
             if(requestExists)
             {
                 //it must be added as a transfer request instead
-                WebUtils.addMessage(String.format("Request Number : %s already exists , It is already requested by Out-Patient Clinics " +
-                        "It can't be requested by Out-Patient Clinics , Just Does not make sense !",patientFileNumber));
+                WebUtils.addMessage(String.format("Request Number : %s already exists , It is already requested! ",patientFileNumber));
                 //Clear the request Number
                 this.setFileNumber("");
 
@@ -100,9 +104,27 @@ public class InPatientRequestsBean implements Serializable {
             inpatient.setPatientName(this.getPatientName());
             inpatient.setPatientNumber(this.getPatientNumber());
             inpatient.setFileCurrentLocation(this.getAdmissionLocation());
-            SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy");
-            inpatient.setAppointment_Date(formatter.parse(this.getAdmissionDate()));
-            inpatient.setAppointment_time(this.getAdmissionTime());
+            //Parse the date
+            /*Date appointmentDate = DateUtils.parseDate(this.getAdmissionDate(),systemService.getDatePatternsBean().getDatePatterns().toArray(new String[]{}));
+            Calendar calc = Calendar.getInstance();
+            calc.setTime(appointmentDate);
+            calc.add(Calendar.HOUR,this.getHour());
+            calc.add(Calendar.MINUTE,this.getMinute());
+            inpatient.setAppointment_Date(calc.getTime());*/
+            /*inpatient.setAppointment_time(this.getAdmissionTime());*/
+
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+            String time = formatter.format(this.getAdmissionTime());
+            inpatient.setAppointment_time(time);
+
+            Calendar calc = Calendar.getInstance();
+            calc.setTime(this.getAdmissionTime());
+            int hour = calc.get(Calendar.HOUR);
+            int minute = calc.get(Calendar.MINUTE);
+            calc.setTime(this.getAdmissionDate());
+            calc.add(Calendar.HOUR,hour);
+            calc.add(Calendar.MINUTE,minute);
+            inpatient.setAppointment_Date(calc.getTime());
             inpatient.setClinicName(this.getWardName());
             inpatient.setClinicCode(this.getWardNumber());
             inpatient.setRequestingDocName(this.getDoctorName());
@@ -142,8 +164,7 @@ public class InPatientRequestsBean implements Serializable {
 
     private void clear() {
 
-        this.setAdmissionDate("");
-        this.setAdmissionTime("");
+
         this.setAdmissionLocation("");
         this.setDoctorCode("");
         this.setDoctorName("");
@@ -207,14 +228,6 @@ public class InPatientRequestsBean implements Serializable {
     }
 
 
-    public String getAdmissionTime() {
-        return admissionTime;
-    }
-
-    public void setAdmissionTime(String admissionTime) {
-        this.admissionTime = admissionTime;
-    }
-
     public String getWardName() {
         return wardName;
     }
@@ -255,11 +268,20 @@ public class InPatientRequestsBean implements Serializable {
         this.dashboardBean = dashboardBean;
     }
 
-    public String getAdmissionDate() {
+
+    public Date getAdmissionDate() {
         return admissionDate;
     }
 
-    public void setAdmissionDate(String admissionDate) {
+    public void setAdmissionDate(Date admissionDate) {
         this.admissionDate = admissionDate;
+    }
+
+    public Date getAdmissionTime() {
+        return admissionTime;
+    }
+
+    public void setAdmissionTime(Date admissionTime) {
+        this.admissionTime = admissionTime;
     }
 }

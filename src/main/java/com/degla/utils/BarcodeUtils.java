@@ -19,13 +19,14 @@ public class BarcodeUtils implements Serializable {
     public static final String NEW_FILE_IDENTIFIER="01";
     public static final String NEW_SHELF_IDENTIFIER="00";
     public static final String NEW_TROLLEY_IDENTIFIER = "02";
-
-    public static final String SYMBOL = "-";
     public static final String TRADITIONAL_FILE_NUMBER = "[0-9]{8}$";
-
-    public static final String TROLLEY_REGEX = NEW_TROLLEY_IDENTIFIER + "-"+"[0-9]{8}$";
-    public static final String SHELF_REGEX = NEW_SHELF_IDENTIFIER +"-"+"[0-9]{8}$";
-    public static final String FILE_REGEX = NEW_FILE_IDENTIFIER +"-" +"[0-9]{8}$";
+    public static final String TROLLEY_OBJECTID = "02";
+    public static final String SHELF_OBJECTID ="00";
+    public static final String FILE_OBJECTID = "01";
+    public static final String SYMBOL = "-";
+    public static final String TROLLEY_REGEX = TROLLEY_OBJECTID + "-"+"[0-9]{6,8}$";
+    public static final String SHELF_REGEX = SHELF_OBJECTID +"-"+"[0-9]{6,8}$";
+    public static final String FILE_REGEX = FILE_OBJECTID +"-" +"[0-9]{6,8}$";
 
     private static Map<String,String> patterns = null;
 
@@ -50,6 +51,63 @@ public class BarcodeUtils implements Serializable {
             return true;
         else return false;
 
+    }
+
+
+    public boolean isMedicalFile()
+    {
+        return this.isA(FILE_OBJECTID);
+    }
+
+    public boolean isShelf()
+    {
+        return this.isA(SHELF_OBJECTID);
+    }
+
+    public String getColumnNo()
+    {
+        if(isMedicalFile())
+        {
+            String[] splitted = this.barcodeNumber.split(SYMBOL);
+
+            if(splitted.length <  2) return "";
+
+            String fileNo = splitted[1];
+
+            return String.valueOf(fileNo.charAt(5));
+
+        }else return "";
+    }
+
+
+    public String getCabinID()
+    {
+        if(isMedicalFile())
+        {
+            String[] splitted = this.barcodeNumber.split(SYMBOL);
+
+            if(splitted.length < 2) return "";
+
+            //01-55555452
+            String fileNo = splitted[1];
+
+            String cabinNo = fileNo.substring(6,fileNo.length());
+            if(cabinNo != null && cabinNo.length() > 0)
+            {
+                return  cabinNo;
+                /*String reverse = "";
+
+                for(int i = cabinNo.length()-1;i>=0;i--)
+                {
+                    reverse += cabinNo.charAt(i);
+                }
+
+                return reverse;*/
+
+            }else return "";
+//            return fileNo.substring(6,fileNo.length());
+
+        }else return "";
     }
 
     private boolean isA(String identifier)

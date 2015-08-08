@@ -5,12 +5,13 @@ import com.degla.db.models.PatientFile;
 import com.degla.db.models.Request;
 import com.degla.db.models.RoleTypes;
 import com.degla.system.SystemService;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -61,11 +62,31 @@ public class ExcelFileBuilder {
                 List<Request> assignedRequests = systemService.getRequestsManager()
                         .getNewRequestsFor(keeper.getUsername());
 
+
+                Collections.sort(assignedRequests, new Comparator<Request>() {
+                    @Override
+                    public int compare(Request first, Request second) {
+
+                        BarcodeUtils firstUtils = new BarcodeUtils(first.getFileNumber());
+                        BarcodeUtils secondUtils = new BarcodeUtils(second.getFileNumber());
+                        int firstCabinId = Integer.parseInt(firstUtils.getCabinID()+firstUtils.getColumnNo());
+                        int secondCabinId = Integer.parseInt(secondUtils.getCabinID()+secondUtils.getColumnNo());
+
+                        if(firstCabinId > secondCabinId)
+                            return 1;
+                        else if (firstCabinId == secondCabinId) return 0;
+                        else return -1;
+
+                    }
+                });
+
                 if(assignedRequests == null || assignedRequests.size() <=0)
                 {
                     wb.removeSheetAt(counter);
                     continue;
                 }
+
+                SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy");
 
                 for(int i =0 ; i < assignedRequests.size();i++)
                 {
@@ -85,6 +106,10 @@ public class ExcelFileBuilder {
                     //Patient Number Cell
                     Cell patientNumberCell = currentRow.createCell(1);
                     patientNumberCell.setCellValue(assignedRequests.get(i).getPatientNumber());
+                    //Appointment Date
+                    Cell dateCell = currentRow.createCell(2);
+                    dateCell.setCellValue(formatter.format(assignedRequests.get(i).getAppointment_Date()));
+
                 }
 
 
@@ -110,6 +135,10 @@ public class ExcelFileBuilder {
             fileNumber.setCellValue("File Number");
             Cell patientNumber = headerRow.createCell(1);
             patientNumber.setCellValue("Patient Number");
+
+            //Date Object
+            Cell date = headerRow.createCell(2);
+            date.setCellValue("Appointment_Date");
 
         }catch (Exception s)
         {

@@ -250,14 +250,25 @@ public class FileUploadWizardBean implements Serializable {
 
                         }catch (Exception s)
                         {
-
+                            System.out.println("During Saving the Clinic " + currentRequest.getFileNumber());
+                            s.printStackTrace();
                         }
 
-                        boolean stepResult = systemService.getRequestsManager().addEntity(currentRequest);
-                        result = result && stepResult;
+                       try
+                       {
+                           boolean stepResult = systemService.getRequestsManager().addEntity(currentRequest);
+                           result = result && stepResult;
+
+                       }catch (Exception s)
+                       {
+                           System.out.print("During saving the Request " + currentRequest.getFileNumber());
+                           s.printStackTrace();
+                       }
 
                     }catch (Exception s)
                     {
+                        System.out.println("Problem Saving Request " + currentRequest.getFileNumber());
+                        s.printStackTrace();
                         continue;
                     }
                 }
@@ -280,7 +291,14 @@ public class FileUploadWizardBean implements Serializable {
             {
                 for(Transfer currentTransfer : transfers)
                 {
-                    systemService.getTransferManager().addEntity(currentTransfer);
+                    try
+                    {
+                        systemService.getTransferManager().addEntity(currentTransfer);
+
+                    }catch (Exception s)
+                    {
+                        s.printStackTrace();
+                    }
                 }
             }else
                 message +=" With No Transfers";
@@ -297,7 +315,7 @@ public class FileUploadWizardBean implements Serializable {
             {
                 WebUtils.addMessage(s.getMessage());
             }else
-                WebUtils.addMessage("There was a problem inserting new requests, Contact System Administrator");
+                WebUtils.addMessage(s.getMessage());
         }
     }
 

@@ -169,6 +169,9 @@ public abstract class AbstractDAO<T>{
         return currentQuery.getResultList();
     }
 
+
+
+
     public long getMaxResults()
     {
         String query = "select count(t) from " + getEntityName() + " t";

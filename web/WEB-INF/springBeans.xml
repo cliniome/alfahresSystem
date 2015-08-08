@@ -36,6 +36,25 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd">
     </bean>
 
 
+    <bean id="datePatternsBean" class="com.degla.utils.DatePatternsBean">
+        <property name="datePatterns">
+            <list>
+                <value>d-MMM-yy</value>
+                <value>dd-MMM-yy</value>
+                <value>d-MM-yyyy</value>
+                <value>dd-MM-yyyy</value>
+                <value>d-MM-yy</value>
+                <value>dd-MM-yy</value>
+                <value>d/M/yy</value>
+                <value>M/d/yy</value>
+                <value>dd/MM/yy</value>
+                <value>d/M/yyyy</value>
+                <value>EEE MMM d HH:mm:ss zzz yyyy</value>
+            </list>
+        </property>
+    </bean>
+
+
 
     <bean id="restServicesEntryPoint"
           class="com.degla.restful.security.RestAuthenticationEntryPoint" />

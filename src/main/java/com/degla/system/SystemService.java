@@ -3,6 +3,7 @@ package com.degla.system;
 import com.degla.api.Authenticator;
 import com.degla.dao.*;
 import com.degla.security.LoginService;
+import com.degla.utils.DatePatternsBean;
 import com.degla.utils.FileRouter;
 import com.degla.utils.SystemSettings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class SystemService {
     private FileHistoryDAO fileHistoryDAO;
     @Autowired
     private TransferDAO transferManager;
+
+    @Autowired
+    private DatePatternsBean datePatternsBean;
 
 
 
@@ -140,5 +144,13 @@ public class SystemService {
 
     public void setTransferManager(TransferDAO transferManager) {
         this.transferManager = transferManager;
+    }
+
+    public DatePatternsBean getDatePatternsBean() {
+        return datePatternsBean;
+    }
+
+    public void setDatePatternsBean(DatePatternsBean datePatternsBean) {
+        this.datePatternsBean = datePatternsBean;
     }
 }

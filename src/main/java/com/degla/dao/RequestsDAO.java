@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -196,6 +197,60 @@ public class RequestsDAO extends  AbstractDAO<Request> {
         }catch(Exception s)
         {
             return null;
+        }
+    }
+
+    private Date getStartOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DATE);
+        calendar.set(year, month, day, 0, 0, 0);
+        return calendar.getTime();
+    }
+
+
+
+
+    public List<Request> getPaginatedResultsByDate(int start , int end , Date chosenDate)
+    {
+        try {
+            Date endofDay = getEndOfDay(chosenDate);
+            Date startOfDay = getStartOfDay(chosenDate);
+            String queryString = "select t from Request t where t.appointment_Date >= :date and t.appointment_Date <= :endofDay";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setFirstResult(start);
+            currentQuery.setMaxResults(end);
+            currentQuery.setParameter("date",startOfDay);
+            currentQuery.setParameter("endofDay",endofDay);
+            return currentQuery.getResultList();
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<Request>();
+        }
+    }
+
+
+    public long getMaxResultsByDate(Date chosenDate)
+    {
+        try {
+            Date endofDay = getEndOfDay(chosenDate);
+            Date startOfDay = getStartOfDay(chosenDate);
+            String queryString = "select count(t) from Request t where t.appointment_Date >= :date and t.appointment_Date <= :endofDay";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("date",startOfDay);
+            currentQuery.setParameter("endofDay",endofDay);
+            return (Long)currentQuery.getSingleResult();
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return 0L;
         }
     }
 

@@ -1,6 +1,7 @@
 package com.degla.db.models;
 
 import com.degla.restful.models.RestfulRequest;
+import com.degla.system.SpringSystemBridge;
 import com.degla.utils.AnnotatingModel;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -185,7 +186,7 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
         try
         {
 
-            String[] patterns = {"d-MMM-yy","dd-MMM-yy","dd-MMM-yyyy","d-MMM-yyyy"};
+            String[] patterns = SpringSystemBridge.services().getDatePatternsBean().getDatePatterns().toArray(new String[]{});
 
             newRequest.setAppointment_Date(DateUtils.parseDate(this.getAppointmentDateG(),patterns));
 
@@ -440,9 +441,10 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
 
         if(appointmentDateG != null && !appointmentDateG.isEmpty())
         {
-            String[] patterns = {"d-MMM-yy","dd-MMM-yy","dd-MMM-yyyy","d-MMM-yyyy"};
+
             try
             {
+                String[] patterns = SpringSystemBridge.services().getDatePatternsBean().getDatePatterns().toArray(new String[]{});
                 this.setAppointment_Date(DateUtils.parseDate(appointmentDateG,patterns));
 
             }catch (Exception s)
