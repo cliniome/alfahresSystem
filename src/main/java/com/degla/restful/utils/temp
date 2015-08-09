@@ -1,0 +1,107 @@
+try
+                    {
+                        boolean hasTransfer = controller.getSystemService().getTransferManager().hasTransfer(file.getFileNumber());
+
+                        //that means the syncing comes from a coordinator and the file has transfer
+                        //so transfer that file
+                        List<Transfer> transferList = controller.getSystemService().getTransferManager()
+                                .getTransfers(file.getFileNumber());
+
+                        PatientFile patientFile = controller.getSystemService().getFilesService().getFileWithNumber(file.getFileNumber());
+
+                        //Sort them according to the appointment time
+                        Collections.sort(transferList);
+                        //get the first Transfer
+
+                        Employee owner = currentEmployee;
+
+                        if(hasTransfer &&  file.getState().equals(FileStates.COORDINATOR_OUT.toString())
+                                &&
+                                currentEmployee.getRole().getName().equals(RoleTypes.COORDINATOR.toString()))
+                        {
+
+                            if(transferList != null && transferList.size() > 0)
+                            {
+                                controller.updateFile(file, currentEmployee);
+
+                                Transfer tobeTransferredTo = transferList.get(0);
+
+                                //Check if the current transfer is in the same day
+                                //this.transferInTheSameDay(new Date(),tobeTransferredTo.getAppointment_Date_G())
+                                if(AlfahresDateUtils.DatesInTheSameDay(new Date(),tobeTransferredTo.getAppointment_Date_G()))
+                                {
+                                    FileHistory transferrableHistory = tobeTransferredTo.toFileHistory();
+                                    transferrableHistory.setOwner(owner);
+
+
+                                    transferrableHistory.setPatientFile(patientFile);
+
+                                    //now add that history to the current patient file and update it
+                                    patientFile.setCurrentStatus(transferrableHistory);
+
+                                    //now update that patient file
+                                    boolean result = controller.getSystemService().getFilesService().updateEntity(patientFile);
+                                    result &= controller.getSystemService().getTransferManager().removeEntity(tobeTransferredTo);
+
+                                    if(!result)
+                                        failedBatches.getFiles().add(file);
+
+                                }
+
+                               /* //Get the coordinator that has the current clinic assigned to him
+                                List<Employee> coordinators = controller.getSystemService()
+                                        .getEmployeeService().getEmployeesForClinicCode(tobeTransferredTo.getClinicCode());*/
+
+
+                            }else
+                            {
+                                failedBatches.getFiles().add(file);
+                            }
+
+
+                            //continue in the looping
+                            continue;
+                        }else if(hasTransfer && file.getState().equals(FileStates.CHECKED_IN.toString()))
+                        {
+                            //first update the current file
+                            controller.updateFile(file, currentEmployee);
+
+                            //The current Transfer
+                            Transfer tobeTransferredTo = transferList.get(0);
+
+                            if(!this.transferInTheSameDay(new Date(),tobeTransferredTo.getAppointment_Date_G()))
+                            {
+                                //That means it is properly a new request, so add it
+                                Request transferRequest = tobeTransferredTo.toRequestObject();
+
+                                //Route the current request
+                                List<Request> tempRequests = new ArrayList<Request>();
+                                tempRequests.add(transferRequest);
+
+                                FileRouter router = new FileRouter();
+                                router.routeFiles(tempRequests);
+
+                                //after that , try to add the current request into the database
+                                boolean result = controller.getSystemService().getRequestsManager().addEntity(transferRequest);
+                                result &= controller.getSystemService().getTransferManager().removeEntity(tobeTransferredTo);
+
+                                if(!result)
+                                    failedBatches.getFiles().add(file);
+                            }
+
+
+
+                        }
+
+                        boolean result = controller.updateFile(file,currentEmployee);
+
+                        if(!result)
+                            failedBatches.getFiles().add(file);
+
+                    }catch (RecordNotFoundException e)
+                    {
+                        failedBatches.getFiles().add(file);
+                    }catch (WorkflowOutOfBoundException e)
+                    {
+                        failedBatches.getFiles().add(file);
+                    }

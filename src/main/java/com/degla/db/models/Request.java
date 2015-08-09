@@ -59,6 +59,7 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
     private String t_schedule_ruleNo;
 
     @Column(name="appointment_Date")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date appointment_Date;
 
     @Column(name="t_upd_user",nullable = true)
@@ -396,7 +397,7 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
 
 
         //Order them in ascending order
-        return request.getHourofAppointment() - this.getHourofAppointment();
+        return this.getAppointment_Date().compareTo(request.getAppointment_Date());
 
     }
 

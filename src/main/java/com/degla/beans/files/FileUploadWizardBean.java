@@ -138,6 +138,32 @@ public class FileUploadWizardBean implements Serializable {
                             patientFileNumber = barcodeUtils.getNewBarcodeStructure();
 
                         req.setFileNumber(patientFileNumber);
+
+                        //Try to append the hours into the original request appointment date
+                        try
+                        {
+                            if(req.getAppointment_time() != null && !req.getAppointment_time().isEmpty())
+                            {
+                                if(req.getAppointment_time().contains(":"))
+                                {
+                                    String[] splittedHours = req.getAppointment_time().split(":");
+                                    int hour = Integer.parseInt(splittedHours[0]);
+                                    int minute = Integer.parseInt(splittedHours[1]);
+
+                                    Calendar calc = Calendar.getInstance();
+                                    calc.setTime(req.getAppointment_Date());
+                                    calc.set(Calendar.HOUR,hour);
+                                    calc.set(Calendar.MINUTE,minute);
+                                    req.setAppointment_Date(calc.getTime());
+                                }
+
+                            }
+
+                        }catch (Exception s)
+                        {
+                            s.printStackTrace();
+
+                        }
                         availableRequests.add(req);
                     }
 

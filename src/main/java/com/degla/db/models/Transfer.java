@@ -28,6 +28,7 @@ public class Transfer extends EntityEO implements Serializable , Comparable<Tran
     private String appointment_Hijri_Date;
 
     @Column(name="appointment_date_g",nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date appointment_Date_G;
 
     @Column(name="Appointment_Made_by",nullable = true)
@@ -167,7 +168,7 @@ public class Transfer extends EntityEO implements Serializable , Comparable<Tran
     @Override
     public int compareTo(Transfer transfer) {
 
-       return this.getHourofAppointment() - transfer.getHourofAppointment();
+       return this.getAppointment_Date_G().compareTo(transfer.getAppointment_Date_G());
 
     }
 

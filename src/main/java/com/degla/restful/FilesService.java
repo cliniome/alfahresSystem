@@ -541,7 +541,9 @@ public class FilesService extends BasicRestful {
                 for(PatientFile file : availableFiles)
                 {
 
-                    boolean hasMultipleClinics = systemService.getTransferManager().hasTransfer(file.getFileID());
+                    boolean hasMultipleClinics = systemService.getTransferManager().hasTransferInTheSameDay(file.getFileID(),
+                            file.getCurrentStatus().getAppointment_Date_G());
+
                     RestfulClinic currentClinic = getRestfulClinicByCode(file.getCurrentStatus().getClinicCode(),clinics);
 
                     if(currentClinic == null)
@@ -621,7 +623,9 @@ public class FilesService extends BasicRestful {
                 for(PatientFile file : availableFiles)
                 {
 
-                    boolean hasMultipleClinics = systemService.getTransferManager().hasTransfer(file.getFileID());
+                    boolean hasMultipleClinics = systemService.getTransferManager().
+                            hasTransferInTheSameDay(file.getFileID(),file.getCurrentStatus().getAppointment_Date_G());
+
                     RestfulClinic currentClinic = getRestfulClinicByCode(file.getCurrentStatus().getClinicCode(),clinics);
 
                     if(currentClinic == null)

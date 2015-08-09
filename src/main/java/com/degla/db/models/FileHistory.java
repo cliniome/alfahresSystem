@@ -58,6 +58,10 @@ public class FileHistory extends EntityEO {
     @Enumerated(EnumType.STRING)
     private FileStates state;
 
+    @Column(name="appointment_Date_G",nullable =false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date appointment_Date_G;
+
 
 
     @Column(name="inpatient_col",nullable = false)
@@ -187,5 +191,13 @@ public class FileHistory extends EntityEO {
 
     public void setInpatient(boolean inpatient) {
         this.inpatient = inpatient;
+    }
+
+    public Date getAppointment_Date_G() {
+        return appointment_Date_G;
+    }
+
+    public void setAppointment_Date_G(Date appointment_Date_G) {
+        this.appointment_Date_G = appointment_Date_G;
     }
 }

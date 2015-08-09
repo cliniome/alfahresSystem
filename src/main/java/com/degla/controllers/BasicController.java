@@ -149,7 +149,7 @@ public class BasicController implements BasicRestfulOperations {
 
 
 
-            List<Request> requests = getSystemService().getRequestsManager().selectRequestsByDate(username,chosenDate);
+            List<Request> requests = getSystemService().getRequestsManager().selectRequestsByDate(username, chosenDate);
 
             if (requests != null) {
 
@@ -250,7 +250,7 @@ public class BasicController implements BasicRestfulOperations {
         {
             //First check to see if the request is found
             Request foundRequest = getSystemService().getRequestsManager().getRequestByBatchNumber(
-                    file.getFileNumber(),file.getBatchRequestNumber());
+                    file.getFileNumber(), file.getBatchRequestNumber());
 
             if(foundRequest != null)
             {
@@ -285,7 +285,7 @@ public class BasicController implements BasicRestfulOperations {
                 newPatientFile.setShelfId(file.getShelfId());
                 newPatientFile.setPatientName(foundRequest.getPatientName());
                 newPatientFile.setPatientNumber(foundRequest.getPatientNumber());
-                this.addNewFileHistory(newPatientFile, file, emp);
+                this.addNewFileHistory(newPatientFile, file, emp,foundRequest);
 
                 boolean result = getSystemService().getFilesService().addEntity(newPatientFile);
 
@@ -325,6 +325,48 @@ public class BasicController implements BasicRestfulOperations {
     }
 
 
+    /**
+     * This method will try to add a completely new File History to a recent Patient File
+     * @param patientFile
+     * @param file
+     * @param emp
+     * @param request
+     * @throws Exception
+     */
+    private void addNewFileHistory(PatientFile patientFile,RestfulFile file , Employee emp , Request request)
+            throws Exception
+    {
+        FileHistory history = new FileHistory();
+        history.setContainerId(file.getTemporaryCabinetId());
+        history.setOwner(emp);
+        FileStates state = FileStates.valueOf(file.getState().toString());
+        history.setState(state);
+        //I have deactivated this feature because it allows for mixing different time periods
+        //coming from the browser to the server which both might not be in sync, please look at
+        //the YouTrack Task, for a bug related to improper display of Patient File's FileHistories
+        /*if(file.getOperationDate() == null)
+            file.setOperationDate(new Date().getTime());*/
+
+        //Always set the time of operation to the server side Received Date to solve
+        //the above problem
+        file.setOperationDate(new Date().getTime());
+
+        history.setCreatedAt(new Date(file.getOperationDate()));
+        history.setPatientFile(patientFile);
+        history.setInpatient(file.isInpatient());
+        history.setAppointment_Hijri_Date(file.getAppointmentDateH());
+        history.setAppointment_Made_by(file.getAppointmentMadeBy());
+        history.setBatchRequestNumber(file.getBatchRequestNumber());
+        history.setAppointmentType(file.getAppointmentType());
+        history.setClinicCode(file.getClinicCode());
+        history.setClinicDocCode(file.getClinicDocCode());
+        history.setClinicDocName(file.getClinicDocName());
+        history.setClinicName(file.getClinicName());
+        history.setAppointment_Date_G(request.getAppointment_Date());
+        patientFile.setCurrentStatus(history);
+    }
+
+
     private void addNewFileHistory(PatientFile patientFile, RestfulFile file, Employee emp) {
 
         FileHistory history = new FileHistory();
@@ -353,6 +395,7 @@ public class BasicController implements BasicRestfulOperations {
         history.setClinicDocCode(file.getClinicDocCode());
         history.setClinicDocName(file.getClinicDocName());
         history.setClinicName(file.getClinicName());
+        history.setAppointment_Date_G(patientFile.getCurrentStatus().getAppointment_Date_G());
         patientFile.setCurrentStatus(history);
     }
 
