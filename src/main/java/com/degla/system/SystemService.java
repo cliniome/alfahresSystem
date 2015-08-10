@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
  * Created by snouto on 03/05/2015.
  */
 @Component
+@Scope("prototype")
 public class SystemService {
 
     @Autowired

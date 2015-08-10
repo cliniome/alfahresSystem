@@ -11,6 +11,7 @@ import java.util.List;
  * Created by snouto on 08/05/2015.
  */
 @Component("archiveCabinetDAO")
+@Scope("prototype")
 public class ArchiveCabinetDAO extends AbstractDAO<ArchiveCabinet> {
 
     public List<ArchiveCabinet> getAllCabinets() throws Exception

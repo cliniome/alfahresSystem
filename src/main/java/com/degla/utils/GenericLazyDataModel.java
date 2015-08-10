@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.degla.dao.AbstractDAO;
+import com.degla.db.models.Request;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
@@ -131,6 +132,9 @@ public class GenericLazyDataModel<T extends AnnotatingModel> extends LazyDataMod
             //this.setRowCount(dataSize);
 
 
+            //Now try to sort them
+            Collections.sort(data,new LazyRequestSorter());
+
 
             //paginate
             if(dataSize > pageSize) {
@@ -142,6 +146,8 @@ public class GenericLazyDataModel<T extends AnnotatingModel> extends LazyDataMod
                 }
             }
             else {
+
+
                 return data;
             }
 

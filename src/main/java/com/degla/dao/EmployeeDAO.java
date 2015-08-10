@@ -15,6 +15,7 @@ import java.util.List;
  * Created by snouto on 02/05/2015.
  */
 @Component("employeeDAO")
+@Scope("prototype")
 public class EmployeeDAO extends AbstractDAO<Employee> {
 
 

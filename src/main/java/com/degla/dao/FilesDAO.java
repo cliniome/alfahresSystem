@@ -304,7 +304,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
     {
         try
         {
-            String query = "select count(f) from PatientFile f where f.currentStatus.state=:state";
+            String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state";
             Query currentQuery = getManager().createQuery(query);
             currentQuery.setParameter("state",state);
 
@@ -339,7 +339,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
     public long getTotalMissingFiles()
     {
 
-            String query = "select count(f) from PatientFile f where f.currentStatus.state=:missing";
+            String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:missing";
             Query currentQuery = getManager().createQuery(query);
             currentQuery.setParameter("missing",FileStates.MISSING);
             return (Long)currentQuery.getSingleResult();
@@ -348,7 +348,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
     public long getTotalCheckedOutFiles()
     {
-        String query = "select count(f) from PatientFile f where f.currentStatus.state=:state";
+        String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state";
         Query currentQuery = getManager().createQuery(query);
         currentQuery.setParameter("state",FileStates.CHECKED_OUT);
         return (Long)currentQuery.getSingleResult();
@@ -356,7 +356,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
     public long getTotalCheckedInFiles()
     {
-        String query = "select count(f) from PatientFile f where f.currentStatus.state=:state";
+        String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state";
         Query currentQuery = getManager().createQuery(query);
         currentQuery.setParameter("state",FileStates.CHECKED_IN);
         return (Long)currentQuery.getSingleResult();
@@ -364,7 +364,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
     public long getTotalTransferredFiles()
     {
-        String query = "select count(f) from PatientFile f where f.currentStatus.state=:state";
+        String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state";
         Query currentQuery = getManager().createQuery(query);
         currentQuery.setParameter("state",FileStates.TRANSFERRED);
         return (Long)currentQuery.getSingleResult();
@@ -372,7 +372,8 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
     public long getTotalDistributedFiles()
     {
-        String query = "select count(f) from PatientFile f where f.currentStatus.state=:state";
+        String query = "select count(distinct f.fileID) " +
+                "from PatientFile f where f.currentStatus.state=:state";
         Query currentQuery = getManager().createQuery(query);
         currentQuery.setParameter("state",FileStates.DISTRIBUTED);
         return (Long)currentQuery.getSingleResult();

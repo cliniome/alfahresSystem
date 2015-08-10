@@ -2,6 +2,7 @@ package com.degla.dao;
 
 import com.degla.db.models.Transfer;
 import com.degla.restful.utils.AlfahresDateUtils;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Query;
@@ -14,6 +15,7 @@ import java.util.List;
  * Created by snouto on 20/06/15.
  */
 @Component("transferDAO")
+@Scope("prototype")
 public class TransferDAO extends AbstractDAO<Transfer> {
     @Override
     public String getEntityName() {
