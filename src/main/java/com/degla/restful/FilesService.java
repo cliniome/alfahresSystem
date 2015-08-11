@@ -12,6 +12,7 @@ import com.degla.utils.BarcodeUtils;
 import com.degla.utils.EmployeeLazyModel;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpServer;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import sun.misc.BASE64Encoder;
@@ -31,6 +32,7 @@ import javax.ws.rs.core.SecurityContext;
  */
 // The Java class will be hosted at the URI path "/helloworld"
 @Path("/files")
+@Scope("prototype")
 public class FilesService extends BasicRestful {
 
     private SystemService systemService;

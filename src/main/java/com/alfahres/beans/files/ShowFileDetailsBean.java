@@ -1,4 +1,4 @@
-package com.degla.beans.files;
+package com.alfahres.beans.files;
 
 import com.degla.db.models.FileHistory;
 import com.degla.db.models.PatientFile;
@@ -7,7 +7,6 @@ import com.degla.system.SystemService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.util.Collections;
@@ -17,8 +16,6 @@ import java.util.List;
 /**
  * Created by snouto on 10/06/15.
  */
-@ManagedBean(name="fileDetailsBean")
-@ViewScoped
 public class ShowFileDetailsBean {
 
     private PatientFile file;

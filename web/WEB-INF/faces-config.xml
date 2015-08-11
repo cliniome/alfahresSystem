@@ -25,6 +25,8 @@
         org.primefaces.application.DialogViewHandler
     </view-handler>
 
+
+
 </application>
     <navigation-rule>
         <from-view-id>/login.xhtml</from-view-id>
@@ -110,6 +112,152 @@
 
         </navigation-case>
     </navigation-rule>
+
+
+    <managed-bean>
+        <managed-bean-name>cabinetBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.CabinetManagementBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>dashboardBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.DashboardBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>loginBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.LoginBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>registrationBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.RegistrationBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+
+    <managed-bean>
+        <managed-bean-name>requestsBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.RequestsBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>roleBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.RoleManagementBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>searchRequestsBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.SearchRequestsBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+
+    <managed-bean>
+        <managed-bean-name>showEmployeeBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.ShowEmployeeBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>editSavedRequestBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.requests.EditSavedRequestsBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>inpatientBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.requests.InPatientRequestsBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>dashboardBean</property-name>
+            <value>#{dashboardBean}</value>
+        </managed-property>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>redistributeRequestsBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.requests.RedistributeRequestsBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>changeFileStatusBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.files.ChangeFileStatusBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>editRequestBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.files.EditRequestDetailsBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+        <managed-property>
+            <property-name>failedRequestsBean</property-name>
+            <value>#{failedRequestsBean}</value>
+        </managed-property>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>failedRequestsBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.files.FailedRequestsBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>fileManagementBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.files.FileManagementBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>fileWizard</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.files.FileUploadWizardBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+        <managed-property>
+            <property-name>failedRequestsBean</property-name>
+            <value>#{failedRequestsBean}</value>
+        </managed-property>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>fileDetailsBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.files.ShowFileDetailsBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+    </managed-bean>
+
+
+    <managed-bean>
+        <managed-bean-name>showFilesBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.files.ShowFilesBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>cssBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.css.AlfahresCssBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+
+
+    <managed-bean>
+        <managed-bean-name>addClinic</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.clinics.AddClinicBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>clinicManagementBean</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.clinics.ClinicManagementBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+
 
 
 

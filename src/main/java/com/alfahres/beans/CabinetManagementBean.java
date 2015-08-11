@@ -1,4 +1,4 @@
-package com.degla.beans;
+package com.alfahres.beans;
 
 import com.degla.db.models.ArchiveCabinet;
 import com.degla.system.SpringSystemBridge;
@@ -9,7 +9,6 @@ import com.degla.utils.WebUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.util.Date;
@@ -17,8 +16,6 @@ import java.util.Date;
 /**
  * Created by snouto on 10/05/2015.
  */
-@ManagedBean(name="cabinetBean")
-@SessionScoped
 public class CabinetManagementBean {
 
     private SystemService systemService;

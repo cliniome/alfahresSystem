@@ -1,4 +1,4 @@
-package com.degla.beans.css;
+package com.alfahres.beans.css;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -7,8 +7,6 @@ import java.io.Serializable;
 /**
  * Created by snouto on 15/05/15.
  */
-@ManagedBean(name="cssBean")
-@RequestScoped
 public class AlfahresCssBean implements Serializable {
 
     private String currentPageName;

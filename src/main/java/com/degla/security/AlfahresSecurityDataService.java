@@ -1,6 +1,5 @@
 package com.degla.security;
-import com.degla.api.Authenticator;
-import com.degla.beans.LoginBean;
+import com.alfahres.beans.LoginBean;
 import com.degla.db.models.Employee;
 import com.degla.system.SystemService;
 import org.springframework.beans.BeansException;

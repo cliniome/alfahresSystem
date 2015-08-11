@@ -12,6 +12,7 @@ import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.FileRouter;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -31,6 +32,7 @@ import java.util.List;
  * Created by snouto on 22/05/15.
  */
 @Path("/sync")
+@Scope("prototype")
 public class SyncService extends BasicRestful implements Serializable {
 
 
@@ -38,7 +40,7 @@ public class SyncService extends BasicRestful implements Serializable {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Response sync(SyncBatch batch)
+    public synchronized Response sync(SyncBatch batch)
     {
         SyncBatch failedBatches = new SyncBatch();
         failedBatches.setMessage("Files failed to be synchronized");

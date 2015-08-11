@@ -1,16 +1,14 @@
-package com.degla.beans.requests;
+package com.alfahres.beans.requests;
 
 import com.degla.db.models.Employee;
 import com.degla.db.models.Request;
 import com.degla.db.models.RoleTypes;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
-import com.degla.utils.BarcodeUtils;
 import com.degla.utils.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -21,8 +19,6 @@ import java.util.List;
  * Created by snouto on 18/06/15.
  */
 
-@ManagedBean(name="editSavedRequestBean")
-@ViewScoped
 public class EditSavedRequestsBean implements Serializable {
 
 

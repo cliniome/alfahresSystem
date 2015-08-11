@@ -1,6 +1,7 @@
 package com.degla.restful;
 
 import com.degla.restful.models.BooleanResult;
+import org.springframework.context.annotation.Scope;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -11,6 +12,7 @@ import javax.ws.rs.core.Response;
  * Created by snouto on 20/05/15.
  */
 @Path("/health")
+@Scope("prototype")
 public class HealthService {
 
 

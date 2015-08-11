@@ -1,39 +1,28 @@
-package com.degla.beans;
+package com.alfahres.beans;
 
 import com.degla.db.models.Request;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.ExcelFileBuilder;
 import com.degla.utils.GenericLazyDataModel;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-import sun.misc.OSEnvironment;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by snouto on 20/05/15.
  */
-@ManagedBean(name="requestsBean")
-@ViewScoped
 public class RequestsBean implements Serializable {
 
 
@@ -45,7 +34,6 @@ public class RequestsBean implements Serializable {
 
     public static final int MAX_RESULTS = 20;
 
-    @ManagedProperty("#{dashboardBean}")
     private DashboardBean dashboardBean;
 
 

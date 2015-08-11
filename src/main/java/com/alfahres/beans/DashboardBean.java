@@ -1,4 +1,4 @@
-package com.degla.beans;
+package com.alfahres.beans;
 
 import com.degla.db.models.ActorEO;
 import com.degla.db.models.Employee;
@@ -18,9 +18,6 @@ import java.util.List;
 /**
  * Created by snouto on 03/05/2015.
  */
-@ManagedBean(name="dashboardBean")
-@SessionScoped
-/*@Controller("dashboardBean")*/
 public class DashboardBean {
 
 

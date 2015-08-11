@@ -122,6 +122,9 @@ public class GenericLazyDataModel<T extends AnnotatingModel> extends LazyDataMod
                 }
             }
 
+            //Now try to sort them
+            Collections.sort(data,new LazyRequestSorter());
+
             //sort
             if(sortField != null) {
                 Collections.sort(data, new LazySorter(sortField, sortOrder));
@@ -132,8 +135,7 @@ public class GenericLazyDataModel<T extends AnnotatingModel> extends LazyDataMod
             //this.setRowCount(dataSize);
 
 
-            //Now try to sort them
-            Collections.sort(data,new LazyRequestSorter());
+
 
 
             //paginate

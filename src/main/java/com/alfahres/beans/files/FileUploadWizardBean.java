@@ -1,4 +1,4 @@
-package com.degla.beans.files;
+package com.alfahres.beans.files;
 
 import com.degla.db.models.*;
 import com.degla.exceptions.BarcodeFormatException;
@@ -24,8 +24,6 @@ import java.util.regex.Pattern;
 /**
  * Created by snouto on 15/05/15.
  */
-@ManagedBean(name="fileWizard")
-@ViewScoped
 public class FileUploadWizardBean implements Serializable {
 
     private String patientNumber;
@@ -44,7 +42,6 @@ public class FileUploadWizardBean implements Serializable {
     private List<Request> failedRequests;
 
 
-    @ManagedProperty(name="failedRequestsBean",value = "#{failedRequestsBean}")
     private FailedRequestsBean failedRequestsBean;
 
 
@@ -139,10 +136,19 @@ public class FileUploadWizardBean implements Serializable {
 
                         req.setFileNumber(patientFileNumber);
 
+
+                       /* if(req.getAppointment_Date() != null && req.getFileNumber().equals("01-00710004"))
+                        {
+                            //make the request date to the start of the day
+                            Date reqDate = req.getAppointment_Date();
+                            reqDate = AlfahresDateUtils.getStartOfDay(reqDate);
+                            req.setAppointment_Date(reqDate);
+                        }*/
+
                         //Try to append the hours into the original request appointment date
                         try
                         {
-                            if(req.getAppointment_time() != null && !req.getAppointment_time().isEmpty())
+                           /* if(req.getAppointment_time() != null && !req.getAppointment_time().isEmpty())
                             {
                                 if(req.getAppointment_time().contains(":"))
                                 {
@@ -157,7 +163,7 @@ public class FileUploadWizardBean implements Serializable {
                                     req.setAppointment_Date(calc.getTime());
                                 }
 
-                            }
+                            }*/
 
                         }catch (Exception s)
                         {

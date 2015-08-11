@@ -1,4 +1,4 @@
-package com.degla.beans.files;
+package com.alfahres.beans.files;
 
 import com.degla.db.models.PatientFile;
 import com.degla.system.SpringSystemBridge;
@@ -8,15 +8,12 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by snouto on 10/06/15.
  */
-@ManagedBean(name="fileManagementBean")
-@ViewScoped
 public class FileManagementBean {
 
     public static final int FILENUMBER = 1;

@@ -1,4 +1,4 @@
-package com.degla.beans.files;
+package com.alfahres.beans.files;
 
 /**
  * Created by snouto on 08/08/15.

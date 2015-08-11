@@ -1,31 +1,23 @@
-package com.degla.beans;
+package com.alfahres.beans;
 
-import com.degla.dao.EmployeeDAO;
 import com.degla.db.models.Employee;
 import com.degla.db.models.RoleEO;
 import com.degla.db.models.RoleTypes;
-import com.degla.security.LoginService;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.persistence.EntityManager;
-import java.util.List;
 
 /**
  * Created by snouto on 02/05/2015.
  */
-@ManagedBean(name="loginBean")
-@ApplicationScoped
-/*@Controller*/
 public class LoginBean {
 
     public static final String SUCCESS="success";
@@ -35,7 +27,7 @@ public class LoginBean {
     private String username;
     private String password;
 
-    @Autowired
+
     protected SystemService systemService;
 
 
@@ -46,7 +38,7 @@ public class LoginBean {
        try
        {
            systemService = SpringSystemBridge.services();
-           RoleEO role = new RoleEO(RoleTypes.ADMIN.toString(),RoleTypes.ADMIN.toString(),"Admin Role");
+           /*RoleEO role = new RoleEO(RoleTypes.ADMIN.toString(),RoleTypes.ADMIN.toString(),"Admin Role");
            //systemService.getRoleService().addEntity(role);
            Employee emp = new Employee();
            emp.setEmpID("123456");
@@ -54,7 +46,7 @@ public class LoginBean {
            emp.setUserName("snouto");
            emp.setRole(role);
            emp.setFirstName("Mohamed");
-           emp.setLastName("Ibrahim");
+           emp.setLastName("Ibrahim");*/
            //systemService.getEmployeeService().addEntity(emp);
 
        }catch (Exception s)

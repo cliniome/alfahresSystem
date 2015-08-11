@@ -4,6 +4,7 @@ import com.degla.controllers.EmployeeController;
 import com.degla.db.models.Employee;
 import com.degla.restful.models.BooleanResult;
 import com.degla.restful.models.RestfulEmployee;
+import org.springframework.context.annotation.Scope;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.Response;
  * Created by snouto on 20/05/15.
  */
 @Path("/employee")
+@Scope("prototype")
 public class EmployeeService extends BasicRestful {
 
 

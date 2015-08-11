@@ -1,4 +1,4 @@
-package com.degla.beans;
+package com.alfahres.beans;
 
 import com.degla.db.models.Employee;
 import com.degla.system.SpringSystemBridge;
@@ -7,7 +7,6 @@ import com.degla.utils.GenericLazyDataModel;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -15,8 +14,6 @@ import javax.faces.event.ActionEvent;
 /**
  * Created by snouto on 08/05/2015.
  */
-@ManagedBean(name="showEmployeeBean")
-@ViewScoped
 public class ShowEmployeeBean {
 
     public static String SHOWEMPLOYEE = "UPDATEEMPLOYEENOW";

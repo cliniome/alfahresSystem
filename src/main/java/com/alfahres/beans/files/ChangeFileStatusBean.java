@@ -1,7 +1,6 @@
-package com.degla.beans.files;
+package com.alfahres.beans.files;
 
 import com.degla.db.models.*;
-import com.degla.restful.models.FileModelStates;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.FileStateUtils;
@@ -9,7 +8,6 @@ import com.degla.utils.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -22,8 +20,6 @@ import java.util.List;
 /**
  * Created by snouto on 10/07/15.
  */
-@ManagedBean(name = "changeFileStatusBean")
-@ViewScoped
 public class ChangeFileStatusBean implements Serializable{
 
     private PatientFile file;
@@ -90,6 +86,7 @@ public class ChangeFileStatusBean implements Serializable{
             newStatus.setClinicName(currentStatus.getClinicName());
             newStatus.setContainerId(currentStatus.getContainerId());
             newStatus.setCreatedAt(new Date());
+            newStatus.setAppointment_Date_G(currentStatus.getAppointment_Date_G());
             newStatus.setOwner(this.getAssignedEmployee());
             newStatus.setPatientFile(this.file);
             FileStates chosenState = getStates().getState(this.getStatus());

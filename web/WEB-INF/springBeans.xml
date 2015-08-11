@@ -57,10 +57,10 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
 
     <bean id="restServicesEntryPoint"
-          class="com.degla.restful.security.RestAuthenticationEntryPoint" />
+          class="com.degla.restful.security.RestAuthenticationEntryPoint" scope="prototype" />
 
     <bean id="restServicesFilter"
-          class="com.degla.restful.security.RestAuthenticationFilter">
+          class="com.degla.restful.security.RestAuthenticationFilter" scope="prototype">
         <property name="postOnly" value="false" />
         <property name="authenticationManager" ref="authenticationManager" />
         <property name="authenticationSuccessHandler" ref="restServicesSuccessHandler" />
@@ -70,10 +70,10 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
 
     <bean id="restServicesSuccessHandler"
-          class="com.degla.restful.security.RestAuthenticationSuccessHandler" />
+          class="com.degla.restful.security.RestAuthenticationSuccessHandler" scope="prototype" />
 
 
-    <bean id="restfulDataService" class="com.degla.restful.security.RestfulSecurityDataService"/>
+    <bean id="restfulDataService" class="com.degla.restful.security.RestfulSecurityDataService" scope="prototype"/>
 
 
     </beans>

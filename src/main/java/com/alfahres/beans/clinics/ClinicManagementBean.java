@@ -1,4 +1,4 @@
-package com.degla.beans.clinics;
+package com.alfahres.beans.clinics;
 
 import com.degla.db.models.Clinic;
 import com.degla.system.SpringSystemBridge;
@@ -9,15 +9,11 @@ import com.degla.utils.WebUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.context.FacesContext;
 
 /**
  * Created by snouto on 05/06/15.
  */
-@ManagedBean(name="clinicManagementBean")
-@SessionScoped
 public class ClinicManagementBean {
 
 

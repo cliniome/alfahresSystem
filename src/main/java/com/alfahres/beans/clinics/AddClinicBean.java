@@ -1,4 +1,4 @@
-package com.degla.beans.clinics;
+package com.alfahres.beans.clinics;
 
 import com.degla.db.models.Clinic;
 import com.degla.system.SpringSystemBridge;
@@ -12,8 +12,6 @@ import javax.faces.bean.ViewScoped;
 /**
  * Created by snouto on 05/06/15.
  */
-@ManagedBean(name = "addClinic")
-@ViewScoped
 public class AddClinicBean {
 
 

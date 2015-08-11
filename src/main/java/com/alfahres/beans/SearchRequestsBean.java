@@ -1,4 +1,4 @@
-package com.degla.beans;
+package com.alfahres.beans;
 
 import com.degla.db.models.Employee;
 import com.degla.db.models.Request;
@@ -10,14 +10,11 @@ import com.degla.utils.WebUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import java.awt.event.ActionEvent;
 import java.util.List;
 
 /**
  * Created by snouto on 20/05/15.
  */
-@ManagedBean(name="searchRequestsBean")
-@ViewScoped
 public class SearchRequestsBean {
 
     private String searchQuery;

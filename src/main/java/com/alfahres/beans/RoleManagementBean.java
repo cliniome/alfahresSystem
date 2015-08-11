@@ -1,4 +1,4 @@
-package com.degla.beans;
+package com.alfahres.beans;
 
 import com.degla.db.models.RoleEO;
 import com.degla.system.SpringSystemBridge;
@@ -13,8 +13,6 @@ import javax.faces.event.ActionEvent;
 /**
  * Created by snouto on 10/05/2015.
  */
-@ManagedBean(name="roleBean")
-@ViewScoped
 public class RoleManagementBean {
 
     private String description;

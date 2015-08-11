@@ -1,4 +1,4 @@
-package com.degla.beans.files;
+package com.alfahres.beans.files;
 
 import com.degla.db.models.Request;
 import com.degla.utils.WebUtils;
@@ -14,8 +14,6 @@ import java.util.List;
 /**
  * Created by snouto on 17/06/15.
  */
-@ManagedBean(name="failedRequestsBean")
-@SessionScoped
 public class FailedRequestsBean implements Serializable {
 
 

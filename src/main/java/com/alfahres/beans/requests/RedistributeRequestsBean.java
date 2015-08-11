@@ -1,4 +1,4 @@
-package com.degla.beans.requests;
+package com.alfahres.beans.requests;
 
 import com.degla.db.models.Employee;
 import com.degla.db.models.Request;
@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * Created by snouto on 21/07/15.
  */
-@ManagedBean(name="redistributeRequestsBean")
-@SessionScoped
 public class RedistributeRequestsBean implements Serializable {
 
 

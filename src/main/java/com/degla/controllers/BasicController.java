@@ -1,6 +1,5 @@
 package com.degla.controllers;
 
-import com.degla.beans.files.DatePatterns;
 import com.degla.db.models.*;
 import com.degla.exceptions.RecordNotFoundException;
 import com.degla.exceptions.WorkflowOutOfBoundException;
@@ -11,7 +10,6 @@ import org.apache.commons.lang3.time.DateUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 

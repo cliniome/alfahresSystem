@@ -1,6 +1,6 @@
 package com.degla.utils.xml;
 
-import com.degla.beans.files.FileUploadWizardBean;
+import com.alfahres.beans.files.FileUploadWizardBean;
 import com.degla.db.models.Request;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

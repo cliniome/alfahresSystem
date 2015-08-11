@@ -1,5 +1,6 @@
 package com.degla.restful.security;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 /**
  * Created by snouto on 18/05/2015.
  */
+@Scope("prototype")
 public final class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
 

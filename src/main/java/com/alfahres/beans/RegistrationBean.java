@@ -1,4 +1,4 @@
-package com.degla.beans;
+package com.alfahres.beans;
 
 
 import com.degla.db.models.Clinic;
@@ -13,12 +13,9 @@ import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.event.ValueChangeEvent;
 import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +25,6 @@ import java.util.Map;
 /**
  * Created by snouto on 08/05/2015.
  */
-@ManagedBean(name="registrationBean")
-@ViewScoped
 public class RegistrationBean {
 
     public static String SHOWEMPLOYEE = "UPDATEEMPLOYEENOW";

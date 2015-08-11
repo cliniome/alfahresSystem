@@ -1,9 +1,8 @@
 package com.degla.security;
 
-import com.degla.beans.DashboardBean;
+import com.alfahres.beans.DashboardBean;
 import com.degla.db.models.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

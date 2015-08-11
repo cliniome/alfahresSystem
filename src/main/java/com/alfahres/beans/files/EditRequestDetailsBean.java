@@ -1,4 +1,4 @@
-package com.degla.beans.files;
+package com.alfahres.beans.files;
 
 import com.degla.db.models.Request;
 import com.degla.system.SpringSystemBridge;
@@ -10,10 +10,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,8 +20,6 @@ import java.util.List;
 /**
  * Created by snouto on 17/06/15.
  */
-@ManagedBean(name="editRequestBean")
-@ViewScoped
 public class EditRequestDetailsBean implements Serializable {
 
     private List<Request> failedRequests;
@@ -35,8 +31,6 @@ public class EditRequestDetailsBean implements Serializable {
     private String patientName;
     private String patientNumber;
 
-
-    @ManagedProperty(name="failedRequestsBean",value = "#{failedRequestsBean}")
     private FailedRequestsBean failedRequestsBean;
 
     @PostConstruct

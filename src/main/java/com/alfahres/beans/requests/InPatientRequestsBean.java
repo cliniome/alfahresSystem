@@ -1,6 +1,6 @@
-package com.degla.beans.requests;
+package com.alfahres.beans.requests;
 
-import com.degla.beans.DashboardBean;
+import com.alfahres.beans.DashboardBean;
 import com.degla.db.models.Employee;
 import com.degla.db.models.Request;
 import com.degla.db.models.RoleTypes;
@@ -8,13 +8,11 @@ import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.BarcodeUtils;
 import com.degla.utils.WebUtils;
-import org.apache.commons.lang3.time.DateUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -26,8 +24,6 @@ import java.util.Random;
 /**
  * Created by snouto on 25/07/15.
  */
-@ManagedBean(name="inpatientBean")
-@RequestScoped
 public class InPatientRequestsBean implements Serializable {
 
     private String fileNumber;
@@ -43,7 +39,6 @@ public class InPatientRequestsBean implements Serializable {
     private SystemService systemService;
 
 
-    @ManagedProperty(value="#{dashboardBean}")
     private DashboardBean dashboardBean;
 
 

@@ -1,4 +1,4 @@
-package com.degla.beans.files;
+package com.alfahres.beans.files;
 
 import com.degla.dao.FilesDAO;
 import com.degla.db.models.FileStates;
@@ -6,7 +6,6 @@ import com.degla.db.models.PatientFile;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.FileStateUtils;
-import com.degla.utils.GenericLazyDataModel;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -20,8 +19,6 @@ import java.util.List;
 /**
  * Created by snouto on 19/06/15.
  */
-@ManagedBean(name="showFilesBean")
-@RequestScoped
 public class ShowFilesBean implements Serializable {
 
 
