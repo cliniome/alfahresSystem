@@ -28,7 +28,7 @@
         </div>
         <div class="span3">
             <h3>In-Sorting Files</h3>
-            <p><a href="#" class="badge badge-inverse">#{dashboardBean.totalFilesUnderSorting}</a></p>
+            <p><a href="ShowFiles.xhtml?state=OUT_OF_CABIN" class="badge badge-inverse">#{dashboardBean.totalFilesUnderSorting}</a></p>
         </div>
 
     </div>
@@ -36,20 +36,20 @@
     <div class="row-fluid">
         <div class="span3">
             <h3>Checked Out Files</h3>
-            <p><a href="#" class="badge badge-inverse">#{dashboardBean.totalCheckedOutFiles}</a></p>
+            <p><a href="ShowFiles.xhtml?state=CHECKED_OUT" class="badge badge-inverse">#{dashboardBean.totalCheckedOutFiles}</a></p>
         </div>
         <div class="span3">
             <h3>At Coordinator</h3>
-            <p><a href="#" class="badge badge-inverse">#{dashboardBean.totalReceivedByCoordinator}</a></p>
+            <p><a href="ShowFiles.xhtml?state=COORDINATOR_IN" class="badge badge-inverse">#{dashboardBean.totalReceivedByCoordinator}</a></p>
         </div>
         <div class="span3">
             <h3>At Clinics</h3>
-            <p><a href="#" class="badge badge-inverse">#{dashboardBean.totalDistributedFiles}</a></p>
+            <p><a href="ShowFiles.xhtml?state=DISTRIBUTED" class="badge badge-inverse">#{dashboardBean.totalDistributedFiles}</a></p>
         </div>
 
         <div class="span3">
             <h3>Missing Files</h3>
-            <p><a href="ShowFiles.xhtml" class="badge badge-inverse">#{dashboardBean.totalMissingFiles}</a></p>
+            <p><a href="ShowFiles.xhtml?state=MISSING" class="badge badge-inverse">#{dashboardBean.totalMissingFiles}</a></p>
         </div>
     </div>
 

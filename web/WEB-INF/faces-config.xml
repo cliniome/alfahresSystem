@@ -228,14 +228,24 @@
     <managed-bean>
         <managed-bean-name>fileDetailsBean</managed-bean-name>
         <managed-bean-class>com.alfahres.beans.files.ShowFileDetailsBean</managed-bean-class>
-        <managed-bean-scope>view</managed-bean-scope>
+        <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
 
 
     <managed-bean>
         <managed-bean-name>showFilesBean</managed-bean-name>
         <managed-bean-class>com.alfahres.beans.files.ShowFilesBean</managed-bean-class>
-        <managed-bean-scope>request</managed-bean-scope>
+        <managed-bean-scope>view</managed-bean-scope>
+        <managed-property>
+            <property-name>viewHelper</property-name>
+            <value>#{viewHelper}</value>
+        </managed-property>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>viewHelper</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.files.ViewHelperBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
 
     <managed-bean>

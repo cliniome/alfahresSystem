@@ -30,8 +30,16 @@ public class FileHistoryDAO extends AbstractDAO<FileHistory> {
     {
         try
         {
+            /*
+            select e from Message e
+where e.msgFrom IN (select distinct m.msgFrom
+                      from Message m
+                      WHERE m.msgTo = ?
+                      AND m.msgCheck = 0");
+             */
             String queryString = "select h from FileHistory h where " +
-                    "h.patientFile.fileID=:number ORDER BY h.createdAt desc";
+                    "h.patientFile.fileID=:number and h.createdAt IN (select distinct (e.createdAt) from FileHistory  e where e.patientFile.fileID = :number) " +
+                    "ORDER BY h.createdAt desc";
 
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("number",file.getFileID());

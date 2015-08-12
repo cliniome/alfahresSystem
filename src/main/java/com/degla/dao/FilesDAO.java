@@ -379,6 +379,25 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         return (Long)currentQuery.getSingleResult();
     }
 
+
+    public List<PatientFile> getFilesWithFileStates(FileStates state)
+    {
+        try
+        {
+            String query = "select f from PatientFile f where f.currentStatus.state=:state ORDER BY f.currentStatus.createdAt DESC";
+
+            Query currentQuery = getManager().createQuery(query);
+            currentQuery.setParameter("state", state);
+            currentQuery.setMaxResults(100);
+            return currentQuery.getResultList();
+
+        }catch(Exception s)
+        {
+            s.printStackTrace();
+            return null;
+        }
+    }
+
     public List<PatientFile> getMissingFiles()
     {
         try

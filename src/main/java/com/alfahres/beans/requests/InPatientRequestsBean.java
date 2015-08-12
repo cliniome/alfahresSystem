@@ -1,9 +1,7 @@
 package com.alfahres.beans.requests;
 
 import com.alfahres.beans.DashboardBean;
-import com.degla.db.models.Employee;
-import com.degla.db.models.Request;
-import com.degla.db.models.RoleTypes;
+import com.degla.db.models.*;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.BarcodeUtils;
@@ -82,10 +80,7 @@ public class InPatientRequestsBean implements Serializable {
                 patientFileNumber = utils.getNewBarcodeStructure();
 
 
-
-            boolean requestExists = (systemService.getRequestsManager().getSingleRequest(patientFileNumber) != null);
-
-            if(requestExists)
+            /*if(requestExists)
             {
                 //it must be added as a transfer request instead
                 WebUtils.addMessage(String.format("Request Number : %s already exists , It is already requested! ",patientFileNumber));
@@ -93,7 +88,7 @@ public class InPatientRequestsBean implements Serializable {
                 this.setFileNumber("");
 
                 return;
-            }
+            }*/
 
             inpatient.setFileNumber(patientFileNumber);
             inpatient.setPatientName(this.getPatientName());
@@ -131,8 +126,41 @@ public class InPatientRequestsBean implements Serializable {
             int batchRequestNumber = random.nextInt(999999);
             inpatient.setBatchRequestNumber(String.valueOf(batchRequestNumber));
 
-            //this request is inpatient
             inpatient.setInpatient(true);
+
+            PatientFile exists = systemService.getFilesService().getFileWithNumber(inpatient.getFileNumber());
+            boolean requestExists = (systemService.getRequestsManager().getSingleRequest(patientFileNumber) != null);
+
+            if(exists != null)
+            {
+                if(exists.getCurrentStatus() != null && exists.getCurrentStatus().getState() != FileStates.CHECKED_IN)
+                {
+                   boolean transferrable = systemService.getTransferManager().addEntity(inpatient.toTransferObject());
+
+                    if(transferrable)
+                    {
+                        WebUtils.addMessage(String.format("Request : %s has been transferred successfully because the same file already under processing by another clinic " +
+                                "on Date : %s",inpatient.getFileNumber(),exists.getCurrentStatus().getAppointment_Date_G()));
+                        return;
+                    }
+
+                }
+            }
+
+            if(requestExists)
+            {
+                //add that as a transfer
+                boolean result = systemService.getTransferManager().addEntity(inpatient.toTransferObject());
+
+                if(result)
+                {
+                    WebUtils.addMessage(String.format("Request : %s has been added as a transfer because it is under processing by another clinic",inpatient.getFileNumber()));
+                    return;
+                }
+            }
+
+            //this request is inpatient
+
             //try to assign it to a given keeper employee randomly
             this.randomlyAssignInpatientRequest(inpatient,keepers);
             //now try to insert the current request

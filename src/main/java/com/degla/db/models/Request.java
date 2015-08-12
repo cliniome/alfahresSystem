@@ -106,6 +106,8 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
 
     private transient String appointmentDateG;
 
+    private transient String failureReason;
+
 
 
     public Transfer toTransferObject()
@@ -136,6 +138,7 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
             currentTransfer.setT_schedule_ruleNo(this.getT_schedule_ruleNo());
             currentTransfer.setT_upd_user(this.getT_upd_user());
             currentTransfer.setUserName(this.getUserName());
+            currentTransfer.setInpatient(this.isInpatient());
             return currentTransfer;
 
         }catch (Exception s)
@@ -454,5 +457,13 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
 
             }
         }
+    }
+
+    public String getFailureReason() {
+        return failureReason;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
     }
 }

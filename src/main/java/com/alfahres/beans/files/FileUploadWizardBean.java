@@ -170,6 +170,24 @@ public class FileUploadWizardBean implements Serializable {
                             s.printStackTrace();
 
                         }
+
+                        //check to see if that request number exists already in patient Files
+                        //If it does not exists no problem.
+                        //if it exists please check to see if its current state is not CHECKED_IN , SO ignore that file otherwise accept
+                        PatientFile exists = systemService.getFilesService().getFileWithNumber(req.getFileNumber());
+
+                        if(exists != null)
+                        {
+                            //check to see if that patient file is already archived
+                            if(exists.getCurrentStatus() != null && exists.getCurrentStatus().getState() != FileStates.CHECKED_IN)
+                            {
+                                //add that as a transfer request
+                                systemService.getTransferManager().addEntity(req.toTransferObject());
+                                continue;
+                            }
+                        }
+
+
                         availableRequests.add(req);
                     }
 

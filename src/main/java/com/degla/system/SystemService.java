@@ -50,7 +50,7 @@ public class SystemService {
 
 
 
-    public EmployeeDAO getEmployeeService() {
+    public synchronized EmployeeDAO getEmployeeService() {
         return employeeService;
     }
 
@@ -58,7 +58,7 @@ public class SystemService {
         this.employeeService = employeeService;
     }
 
-    public FilesDAO getFilesService() {
+    public synchronized FilesDAO getFilesService() {
         return filesService;
     }
 
@@ -66,7 +66,7 @@ public class SystemService {
         this.filesService = filesService;
     }
 
-    public Authenticator getAuthenticatorService() {
+    public synchronized Authenticator getAuthenticatorService() {
         return authenticatorService;
     }
 
@@ -74,7 +74,7 @@ public class SystemService {
         this.authenticatorService = authenticatorService;
     }
 
-    public ArchiveCabinetDAO getCabinetsService() {
+    public synchronized ArchiveCabinetDAO getCabinetsService() {
         return cabinetsService;
     }
 
@@ -82,7 +82,7 @@ public class SystemService {
         this.cabinetsService = cabinetsService;
     }
 
-    public LoginService getLoginService() {
+    public synchronized LoginService getLoginService() {
         return loginService;
     }
 
@@ -90,7 +90,7 @@ public class SystemService {
         this.loginService = loginService;
     }
 
-    public RoleDAO getRoleService() {
+    public synchronized RoleDAO getRoleService() {
         return roleService;
     }
 
@@ -106,7 +106,7 @@ public class SystemService {
         this.systemSettings = systemSettings;
     }
 
-    public RequestsDAO getRequestsManager() {
+    public synchronized RequestsDAO getRequestsManager() {
         return requestsManager;
     }
 
@@ -114,7 +114,7 @@ public class SystemService {
         this.requestsManager = requestsManager;
     }
 
-    public FileRouter getFileRouter() {
+    public synchronized FileRouter getFileRouter() {
         return fileRouter;
     }
 
@@ -123,7 +123,7 @@ public class SystemService {
     }
 
 
-    public ClinicDAO getClinicManager() {
+    public synchronized ClinicDAO getClinicManager() {
         return clinicManager;
     }
 
@@ -131,7 +131,7 @@ public class SystemService {
         this.clinicManager = clinicManager;
     }
 
-    public FileHistoryDAO getFileHistoryDAO() {
+    public synchronized FileHistoryDAO getFileHistoryDAO() {
         return fileHistoryDAO;
     }
 
@@ -139,7 +139,7 @@ public class SystemService {
         this.fileHistoryDAO = fileHistoryDAO;
     }
 
-    public TransferDAO getTransferManager() {
+    public synchronized TransferDAO getTransferManager() {
         return transferManager;
     }
 

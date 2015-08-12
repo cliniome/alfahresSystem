@@ -18,14 +18,15 @@
 
             <c:set target="#{cssBean}" property="currentPageName" value="missingFiles"/>
 
+
             <h:form prependId="false">
             <h:panelGrid columns="1">
 
                 <h:panelGrid columns="1">
 
-                    <p:panel header="Missing Patient Files">
+                    <p:panel header="Viewing Patient Files">
 
-                        <h3>Showing all Currently Missing Patient Files</h3>
+                        <h3>Showing all Currently "#{showFilesBean.displayMessage}" Patient Files</h3>
                         <p:separator/>
 
                     <p:dataTable var="patientFile" value="#{showFilesBean.patientFiles}"
@@ -39,14 +40,14 @@
                             <p:outputLabel value="#{patientFile.patientNumber}"/>
                         </p:column>
 
-                        <p:column headerText="Batch Number">
-                            <p:outputLabel value="#{patientFile.currentStatus.batchRequestNumber}"/>
+                        <p:column headerText="Operation Date">
+                            <p:outputLabel value="#{patientFile.currentStatus.createdAt}"/>
                         </p:column>
 
                         <p:column headerText="State">
                             <p:outputLabel value="#{patientFile.currentStatus.readableState}"/>
                         </p:column>
-                        <p:column headerText="Last Seen By">
+                        <p:column headerText="Action By...">
                             <p:outputLabel styleClass="label label-danger"
                                            value="#{patientFile.currentStatus.owner.getfullName()}"/>
                         </p:column>
@@ -56,6 +57,8 @@
                         </p:column>
 
                     </p:dataTable>
+
+
 
                     </p:panel>
 

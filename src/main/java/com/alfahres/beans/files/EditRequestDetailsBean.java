@@ -1,5 +1,7 @@
 package com.alfahres.beans.files;
 
+import com.degla.db.models.FileStates;
+import com.degla.db.models.PatientFile;
 import com.degla.db.models.Request;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
@@ -134,6 +136,25 @@ public class EditRequestDetailsBean implements Serializable {
 
                 //now get the request
                 Request request = tempRequests.get(0);
+
+                PatientFile exists = systemService.getFilesService().getFileWithNumber(request.getFileNumber());
+
+                if(exists != null)
+                {
+                    if(exists.getCurrentStatus() != null && exists.getCurrentStatus().getState() != FileStates.CHECKED_IN)
+                    {
+                        boolean transferrable = systemService.getTransferManager().addEntity(request.toTransferObject());
+
+                        if(transferrable)
+                        {
+                            WebUtils.addMessage(String.format("Request : %s , has been added as a transfer for appointment : %s , because it is still under processing " +
+                                    "by another clinic on Date : %s",request.getFileNumber(),request.getAppointment_Date(),exists.getCurrentStatus().getAppointment_Date_G()));
+                            return;
+                        }
+
+
+                    }
+                }
 
                 //now save it
                 boolean result = systemService.getRequestsManager().addEntity(request);
