@@ -45,7 +45,7 @@ public class TransferDAO extends AbstractDAO<Transfer> {
     {
         try
         {
-            long transfersCountByDate = this.getTransfersCountByDate(fileNumber,date);
+            long transfersCountByDate = this.getTransfersCountByDate(fileNumber, date);
 
             if(transfersCountByDate > 0) return true;
             else return false;
@@ -61,6 +61,7 @@ public class TransferDAO extends AbstractDAO<Transfer> {
     {
         try
         {
+
             Date startDate = AlfahresDateUtils.getStartOfDay(date);
             Date endDate = AlfahresDateUtils.getEndOfDay(date);
 
@@ -86,9 +87,15 @@ public class TransferDAO extends AbstractDAO<Transfer> {
 
         try
         {
-            String queryString = "select count(t.fileNumber) from Transfer t where t.fileNumber = :fileNumber";
+            Date todayDate = new Date();
+            Date startDate = AlfahresDateUtils.getStartOfDay(todayDate);
+            Date endDate = AlfahresDateUtils.getEndOfDay(todayDate);
+            String queryString = "select count(t.fileNumber) from Transfer t where t.fileNumber = :fileNumber and t.appointment_Date_G >= :start " +
+                    "and t.appointment_Date_G <= :end ";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("fileNumber",fileNumber);
+            currentQuery.setParameter("start",startDate);
+            currentQuery.setParameter("end",endDate);
             return (Long)currentQuery.getSingleResult();
 
 
@@ -125,13 +132,44 @@ public class TransferDAO extends AbstractDAO<Transfer> {
         }
     }
 
+    public List<Transfer> getFutureTransfer(String fileNumber)
+    {
+        try
+        {
+            Date todayDate = new Date();
+            Date endDate = AlfahresDateUtils.getEndOfDay(todayDate);
+
+            String queryString = "select t from Transfer t where t.fileNumber = :fileNumber and t.appointment_Date_G > :end " +
+                    " order by t.appointment_Date_G ASC ";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("fileNumber",fileNumber);
+            currentQuery.setParameter("end",endDate);
+            currentQuery.setMaxResults(5);
+            return currentQuery.getResultList();
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<Transfer>();
+        }
+    }
+
     public List<Transfer> getTransfers(String fileNumber)
     {
         try
         {
-            String queryString = "select t from Transfer t where t.fileNumber = :fileNumber order by t.appointment_Date_G ASC ";
+            Date todayDate = new Date();
+
+            Date startDate = AlfahresDateUtils.getStartOfDay(todayDate);
+            Date endDate = AlfahresDateUtils.getEndOfDay(todayDate);
+
+            String queryString = "select t from Transfer t where t.fileNumber = :fileNumber and t.appointment_Date_G >= :start and " +
+                    " t.appointment_Date_G <= :end order by t.appointment_Date_G ASC ";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("fileNumber",fileNumber);
+            currentQuery.setParameter("start",startDate);
+            currentQuery.setParameter("end",endDate);
             currentQuery.setMaxResults(5);
             return currentQuery.getResultList();
 

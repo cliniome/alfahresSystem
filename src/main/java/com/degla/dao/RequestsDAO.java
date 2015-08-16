@@ -162,9 +162,7 @@ public class RequestsDAO extends  AbstractDAO<Request> {
             Date endofDay = getEndOfDay(date);
 
             String queryString = "select r from Request r where r.assignedTo.userName=:username and " +
-                    "r.assignedTo.active=:state and r.appointment_Date >= :date and r.appointment_Date <= :endofDay " +
-                    "and r.fileNumber not in (select file.fileID from PatientFile file where file.currentStatus.state " +
-                    " != :archivingState)";
+                    "r.assignedTo.active=:state and r.appointment_Date >= :date and r.appointment_Date <= :endofDay ";
 
             Query currentQuery = getManager().createQuery(queryString);
 
@@ -172,7 +170,7 @@ public class RequestsDAO extends  AbstractDAO<Request> {
             currentQuery.setParameter("state",true);
             currentQuery.setParameter("date",date);
             currentQuery.setParameter("endofDay",endofDay);
-            currentQuery.setParameter("archivingState", FileStates.CHECKED_IN);
+
             return currentQuery.getResultList();
 
 
@@ -186,13 +184,15 @@ public class RequestsDAO extends  AbstractDAO<Request> {
     {
         try
         {
+
             String queryString = "select r from Request r where r.assignedTo.userName=:username and " +
-                    "r.assignedTo.active=:state";
+                    "r.assignedTo.active=:state and r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state != :filestate)";
 
             Query currentQuery = getManager().createQuery(queryString);
 
             currentQuery.setParameter("username",username);
             currentQuery.setParameter("state",true);
+            currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
 
             return currentQuery.getResultList();
 

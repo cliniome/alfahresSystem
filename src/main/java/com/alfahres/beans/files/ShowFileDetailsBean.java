@@ -83,6 +83,19 @@ public class ShowFileDetailsBean {
     }
 
     public List<FileHistory> getFileHistories() {
+
+        if(this.fileHistories != null && this.fileHistories.size() > 0)
+        {
+            //now sort them in descending order based on the createdAt flag
+            Collections.sort(this.fileHistories, new Comparator<FileHistory>() {
+                @Override
+                public int compare(FileHistory first, FileHistory second) {
+
+                    return second.getCreatedAt().compareTo(first.getCreatedAt());
+                }
+            });
+        }
+
         return fileHistories;
     }
 

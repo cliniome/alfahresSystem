@@ -105,50 +105,46 @@ public class SyncService extends BasicRestful implements Serializable {
             //Sort them according to the appointment time
             Collections.sort(transferList);
 
-            if(hasTransfer)
+            if(hasTransfer && transferList != null && transferList.size() > 0)
             {
 
                 Transfer recentTransfer = transferList.get(0);
 
-                if(file.getState().equals(FileStates.COORDINATOR_OUT.toString()))
+                if(patientFile.getCurrentStatus().getState().equals(FileStates.COORDINATOR_OUT.toString()))
                 {
                     //that means the file has a transfer and the coordinator is submitting that file
                     //So check for the dates of the current transfer with the patient file
                     //if the dates are in the same day , that means it is a transfer ,
                     //otherwise , it is not a transfer
-
-                    if(AlfahresDateUtils.DatesInTheSameDay(patientFile.getCurrentStatus().getAppointment_Date_G(),recentTransfer.getAppointment_Date_G()))
-                    {
-                        //that means it is a true transfer , so transfer that file
-                        FileHistory transferrableHistory = recentTransfer.toFileHistory();
-                        transferrableHistory.setOwner(currentEmployee);
+                    //that means it is a true transfer , so transfer that file
+                    FileHistory transferrableHistory = recentTransfer.toFileHistory();
+                    transferrableHistory.setOwner(currentEmployee);
 
 
-                        transferrableHistory.setPatientFile(patientFile);
+                    transferrableHistory.setPatientFile(patientFile);
 
-                        //now add that history to the current patient file and update it
-                        patientFile.setCurrentStatus(transferrableHistory);
+                    //now add that history to the current patient file and update it
+                    patientFile.setCurrentStatus(transferrableHistory);
 
-                        //now update that patient file
-                        boolean result = controller.getSystemService().getFilesService().updateEntity(patientFile);
-                        result &= controller.getSystemService().getTransferManager().removeEntity(recentTransfer);
+                    //now update that patient file
+                    boolean result = controller.getSystemService().getFilesService().updateEntity(patientFile);
+                    result &= controller.getSystemService().getTransferManager().removeEntity(recentTransfer);
 
-                        if(!result)
-                            failedBatches.getFiles().add(file);
-
-                    } //don't do anything else on this file
+                    if(!result)
+                        failedBatches.getFiles().add(file);
 
 
                     //Otherwise , if that file  has been submitted by keeper during the final process of the lifecycle at the archiving step
-                }else if (file.getState().equals(FileStates.CHECKED_IN.toString()))
+                }else if (patientFile.getCurrentStatus().getState().equals(FileStates.CHECKED_IN.toString()))
                 {
+                    transferList = controller.getSystemService().getTransferManager().getFutureTransfer(file.getFileNumber());
 
-                    //if the patient file has a transfer in another day, so add that as a brand new request
-                    if(!AlfahresDateUtils.DatesInTheSameDay(patientFile.getCurrentStatus().getAppointment_Date_G(),
-                            recentTransfer.getAppointment_Date_G()))
+                    if(transferList != null && transferList.size() > 0)
                     {
+                        Transfer futureTransfer = transferList.get(0);
+
                         //That means it is properly a new request, so add it
-                        Request transferRequest = recentTransfer.toRequestObject();
+                        Request transferRequest = futureTransfer.toRequestObject();
 
                         //Route the current request
                         List<Request> tempRequests = new ArrayList<Request>();
@@ -160,10 +156,8 @@ public class SyncService extends BasicRestful implements Serializable {
                         //after that , try to add the current request into the database
                         boolean result = controller.getSystemService().getRequestsManager().addEntity(transferRequest);
                         result &= controller.getSystemService().getTransferManager().removeEntity(recentTransfer);
-
-                        if(!result)
-                            failedBatches.getFiles().add(file);
                     }
+
                 }
 
             }

@@ -626,7 +626,7 @@ public class FilesService extends BasicRestful {
                 {
 
                     boolean hasMultipleClinics = systemService.getTransferManager().
-                            hasTransferInTheSameDay(file.getFileID(),file.getCurrentStatus().getAppointment_Date_G());
+                            hasTransferInTheSameDay(file.getFileID(),new Date());
 
                     RestfulClinic currentClinic = getRestfulClinicByCode(file.getCurrentStatus().getClinicCode(),clinics);
 
