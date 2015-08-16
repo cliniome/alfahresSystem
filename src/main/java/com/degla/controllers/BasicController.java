@@ -250,7 +250,11 @@ public class BasicController implements BasicRestfulOperations {
             Request foundRequest = getSystemService().getRequestsManager().getRequestByBatchNumber(
                     file.getFileNumber(), file.getBatchRequestNumber());
 
-            if(foundRequest != null)
+
+            //Check the patient file
+            boolean patientFileExists = getSystemService().getFilesService().fileExists(file.getFileNumber());
+
+            if(foundRequest != null && !patientFileExists)
             {
                 //That means the current restful file is just checked out from the keeper
                 //Create a new Patient File
@@ -295,6 +299,11 @@ public class BasicController implements BasicRestfulOperations {
 
             }else
             {
+
+                if(foundRequest != null)
+                {
+                    getSystemService().getRequestsManager().removeEntity(foundRequest);
+                }
                 //that means the current request is not found
                 //it means it is not the first time for that file in the system
                 //Get the file by knowing its file number

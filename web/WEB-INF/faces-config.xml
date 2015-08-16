@@ -229,6 +229,10 @@
         <managed-bean-name>fileDetailsBean</managed-bean-name>
         <managed-bean-class>com.alfahres.beans.files.ShowFileDetailsBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
+        <managed-property>
+            <property-name>helperBean</property-name>
+            <value>#{viewHelper}</value>
+        </managed-property>
     </managed-bean>
 
 
@@ -268,6 +272,17 @@
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
 
+
+    <managed-bean>
+        <managed-bean-name>viewstats</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.stats.ViewStatisticsBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
+        <managed-property>
+            <property-name>viewHelper</property-name>
+            <value>#{viewHelper}</value>
+        </managed-property>
+
+    </managed-bean>
 
 
 

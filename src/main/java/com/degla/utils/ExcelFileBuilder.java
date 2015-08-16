@@ -8,10 +8,12 @@ import com.degla.system.SystemService;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,6 +35,58 @@ public class ExcelFileBuilder {
         try
         {
            return systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString(),true);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return null;
+        }
+    }
+
+    public Workbook extractOnly(Date appointmentDate , List<PatientFile> availableFiles)
+    {
+        try
+        {
+            if(availableFiles == null || availableFiles.size() <= 0 )
+                return null;
+
+            Workbook wb = new HSSFWorkbook();
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+            String appointmentDateString = format.format(appointmentDate);
+
+            Sheet currentSheet = wb.createSheet(appointmentDateString);
+
+            this.addFileHeaders(currentSheet);
+
+            for(int i = 0 ; i < availableFiles.size() ;i++)
+            {
+                PatientFile patientFile = availableFiles.get(i);
+                Row currentRow = currentSheet.createRow(i+1);
+
+                //File Number
+                Cell fileNumberCell = currentRow.createCell(0);
+                fileNumberCell.setCellValue(patientFile.getFileID());
+                //Patient Name
+                Cell patientNameCell = currentRow.createCell(1);
+                patientNameCell.setCellValue(patientFile.getPatientName());
+                //Appointment Date
+                Cell appointmentDateCell = currentRow.createCell(2);
+                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                appointmentDateCell.setCellValue(formatter.format(patientFile.getCurrentStatus().getAppointment_Date_G()));
+
+                //State
+                Cell stateCell = currentRow.createCell(3);
+                stateCell.setCellValue(patientFile.getCurrentStatus().getState().toString());
+
+                //Clinic Code
+                Cell clinicCodeCell = currentRow.createCell(4);
+                clinicCodeCell.setCellValue(patientFile.getCurrentStatus().getClinicCode());
+            }
+
+
+            return wb;
+
+
 
         }catch (Exception s)
         {
@@ -139,6 +193,31 @@ public class ExcelFileBuilder {
             //Date Object
             Cell date = headerRow.createCell(2);
             date.setCellValue("Appointment_Date");
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+    }
+
+    private void addFileHeaders(Sheet currentSheet)
+    {
+        try
+        {
+            Row headerRow = currentSheet.createRow(0);
+            Cell fileNumber  =headerRow.createCell(0);
+            fileNumber.setCellValue("File Number");
+            Cell patientNumber = headerRow.createCell(1);
+            patientNumber.setCellValue("Patient Name");
+            //Date Object
+            Cell date = headerRow.createCell(2);
+            date.setCellValue("Appointment_Date");
+            //State
+            Cell stateCell = headerRow.createCell(3);
+            stateCell.setCellValue("State");
+            //Clinic Code
+            Cell clinicCell = headerRow.createCell(4);
+            clinicCell.setCellValue("Clinic Code");
 
         }catch (Exception s)
         {

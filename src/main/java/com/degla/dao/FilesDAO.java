@@ -6,12 +6,14 @@ import com.degla.db.models.FileStates;
 import com.degla.db.models.PatientFile;
 import com.degla.restful.models.FileModelStates;
 import com.degla.restful.models.RestfulFile;
+import com.degla.restful.utils.AlfahresDateUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Query;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,6 +25,8 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
 
     private FileStates queryState = null;
+
+    private Date appointmentDate;
 
     public List<PatientFile> getFilesWithBatchNumber(String batchNumber)
     {
@@ -46,13 +50,17 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
     public List<PatientFile> getPaginatedResults(int first, int pageSize) {
 
 
-        if(queryState != null)
+        if(queryState != null && getAppointmentDate() != null)
         {
-            String query = "select f from PatientFile f where f.currentStatus.state=:state";
+            String query = "select f from PatientFile f where f.currentStatus.state=:state " +
+                    "and f.currentStatus.appointment_Date_G >= :startdate " +
+                    "and f.currentStatus.appointment_Date_G <= :enddate";
             Query currentQuery = getManager().createQuery(query);
             currentQuery.setFirstResult(first);
             currentQuery.setMaxResults(pageSize);
-            currentQuery.setParameter("state",getQueryState());
+            currentQuery.setParameter("state", getQueryState());
+            currentQuery.setParameter("startdate", AlfahresDateUtils.getStartOfDay(getAppointmentDate()));
+            currentQuery.setParameter("enddate",AlfahresDateUtils.getEndOfDay(getAppointmentDate()));
             return currentQuery.getResultList();
 
         }else
@@ -96,6 +104,27 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         {
             s.printStackTrace();
             return new ArrayList<PatientFile>();
+        }
+    }
+
+    public boolean fileExists(String fileNumber)
+    {
+        try
+        {
+
+            String queryString = "select count (distinct f.fileID) from PatientFile f where f.fileID = :file";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("file",fileNumber);
+
+            long number = (Long)currentQuery.getSingleResult();
+
+            if(number > 0) return true;
+            else return false;
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return false;
         }
     }
 
@@ -398,6 +427,32 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         }
     }
 
+    public List<PatientFile> getPaginatedWrappedData()
+    {
+        try
+        {
+            if(getAppointmentDate() != null && getQueryState() != null)
+            {
+                String query = "select f from PatientFile f where f.currentStatus.state=:state " +
+                        "and f.currentStatus.appointment_Date_G >= :startdate " +
+                        "and f.currentStatus.appointment_Date_G <= :enddate";
+
+                Query currentQuery = getManager().createQuery(query);
+                currentQuery.setParameter("state",getQueryState());
+                currentQuery.setParameter("startdate",AlfahresDateUtils.getStartOfDay(getAppointmentDate()));
+                currentQuery.setParameter("enddate",AlfahresDateUtils.getEndOfDay(getAppointmentDate()));
+
+                return currentQuery.getResultList();
+
+            }else return null;
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return null;
+        }
+    }
+
     public List<PatientFile> getMissingFiles()
     {
         try
@@ -418,6 +473,38 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
 
     @Override
+    public long getMaxResults()
+    {
+        try
+        {
+            if(getQueryState() != null && getAppointmentDate() != null)
+            {
+                String queryString = "select count(f) from PatientFile f where f.currentStatus.state=:state and " +
+                        "f.currentStatus.appointment_Date_G >= :startdate and f.currentStatus.appointment_Date_G <= :enddate " +
+                        "ORDER BY f.currentStatus.createdAt DESC";
+                Query currentQuery = getManager().createQuery(queryString);
+
+                currentQuery.setParameter("state",getQueryState());
+
+                currentQuery.setParameter("startdate",AlfahresDateUtils.getStartOfDay(getAppointmentDate()));
+                currentQuery.setParameter("enddate",AlfahresDateUtils.getEndOfDay(getAppointmentDate()));
+
+                return (Long)currentQuery.getSingleResult();
+
+            }else
+            {
+                return super.getMaxResults();
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return 0;
+        }
+    }
+
+
+    @Override
     public String getEntityName() {
         return "PatientFile";
     }
@@ -429,5 +516,13 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
     public void setQueryState(FileStates queryState) {
         this.queryState = queryState;
+    }
+
+    public Date getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    public void setAppointmentDate(Date appointmentDate) {
+        this.appointmentDate = appointmentDate;
     }
 }

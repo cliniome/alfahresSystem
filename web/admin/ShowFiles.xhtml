@@ -40,12 +40,18 @@
                             <p:outputLabel value="#{patientFile.patientNumber}"/>
                         </p:column>
 
-                        <p:column headerText="Operation Date">
-                            <p:outputLabel value="#{patientFile.currentStatus.createdAt}"/>
+                        <p:column headerText="Appointment Date">
+                            <p:outputLabel value="#{patientFile.currentStatus.appointment_Date_G}">
+                                <f:convertDateTime pattern="dd-MM-yyyy hh:mm a"/>
+                            </p:outputLabel>
                         </p:column>
 
                         <p:column headerText="State">
-                            <p:outputLabel value="#{patientFile.currentStatus.readableState}"/>
+                            <p:outputLabel value="#{patientFile.currentStatus.state}"/>
+                        </p:column>
+
+                        <p:column headerText="Clinic Code">
+                            <p:outputLabel value="#{patientFile.currentStatus.clinicCode}"/>
                         </p:column>
                         <p:column headerText="Action By...">
                             <p:outputLabel styleClass="label label-danger"

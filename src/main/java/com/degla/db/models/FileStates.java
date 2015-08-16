@@ -1,5 +1,7 @@
 package com.degla.db.models;
 
+import com.degla.utils.FileStateUtils;
+
 public enum FileStates {
 
 	CHECKED_IN(14),
@@ -29,4 +31,14 @@ public enum FileStates {
 	public void setStep(int step) {
 		this.step = step;
 	}
+
+
+	public String getReadableState()
+	{
+		FileStateUtils utils = new FileStateUtils(this);
+
+		return utils.getReadableState();
+	}
+
+
 }

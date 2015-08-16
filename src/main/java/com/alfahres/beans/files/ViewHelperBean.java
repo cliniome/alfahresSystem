@@ -3,6 +3,7 @@ package com.alfahres.beans.files;
 import com.degla.db.models.FileStates;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by snouto on 12/08/15.
@@ -10,6 +11,10 @@ import java.io.Serializable;
 public class ViewHelperBean implements Serializable {
 
     private String currentState;
+
+    private Date appointmentDate;
+
+    private String fileNumber;
 
     public String getCurrentState() {
         return currentState;
@@ -19,5 +24,21 @@ public class ViewHelperBean implements Serializable {
 
         if(currentState != null && !currentState.isEmpty())
             this.currentState = currentState;
+    }
+
+    public Date getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    public void setAppointmentDate(Date appointmentDate) {
+        this.appointmentDate = appointmentDate;
+    }
+
+    public String getFileNumber() {
+        return fileNumber;
+    }
+
+    public void setFileNumber(String fileNumber) {
+        this.fileNumber = fileNumber;
     }
 }

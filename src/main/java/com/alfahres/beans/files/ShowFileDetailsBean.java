@@ -6,8 +6,6 @@ import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,6 +19,8 @@ public class ShowFileDetailsBean {
     private PatientFile file;
     private SystemService systemService;
     private List<FileHistory> fileHistories;
+
+    private ViewHelperBean helperBean;
 
 
     @PostConstruct
@@ -37,24 +37,28 @@ public class ShowFileDetailsBean {
 
             if(fileNumber != null)
             {
-                //get the Patient File
-                this.setFile(getSystemService().getFilesService().getFileWithNumber(fileNumber));
-                //get the current file history
-                List<FileHistory> histories = getSystemService().getFileHistoryDAO().getFileHistory(getFile());
-                this.setFileHistories(histories);
-                //Sort them
-                if(this.getFileHistories() != null && this.getFileHistories().size() > 0)
-                {
-                    //now sort them in descending order based on the createdAt flag
-                    Collections.sort(this.getFileHistories(), new Comparator<FileHistory>() {
-                        @Override
-                        public int compare(FileHistory first, FileHistory second) {
+                getHelperBean().setFileNumber(fileNumber);
 
-                            return first.getCreatedAt().compareTo(second.getCreatedAt());
-                        }
-                    });
-                }
             }
+
+            //get the Patient File
+            this.setFile(getSystemService().getFilesService().getFileWithNumber(getHelperBean().getFileNumber()));
+            //get the current file history
+            List<FileHistory> histories = getSystemService().getFileHistoryDAO().getFileHistory(getFile());
+            this.setFileHistories(histories);
+            //Sort them
+            if(this.getFileHistories() != null && this.getFileHistories().size() > 0)
+            {
+                //now sort them in descending order based on the createdAt flag
+                Collections.sort(this.getFileHistories(), new Comparator<FileHistory>() {
+                    @Override
+                    public int compare(FileHistory first, FileHistory second) {
+
+                        return second.getCreatedAt().compareTo(first.getCreatedAt());
+                    }
+                });
+            }
+
 
         }catch (Exception s)
         {
@@ -84,5 +88,13 @@ public class ShowFileDetailsBean {
 
     public void setFileHistories(List<FileHistory> fileHistories) {
         this.fileHistories = fileHistories;
+    }
+
+    public ViewHelperBean getHelperBean() {
+        return helperBean;
+    }
+
+    public void setHelperBean(ViewHelperBean helperBean) {
+        this.helperBean = helperBean;
     }
 }

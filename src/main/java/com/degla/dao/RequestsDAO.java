@@ -1,6 +1,7 @@
 package com.degla.dao;
 
 import com.degla.db.models.Employee;
+import com.degla.db.models.FileStates;
 import com.degla.db.models.Request;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -161,7 +162,9 @@ public class RequestsDAO extends  AbstractDAO<Request> {
             Date endofDay = getEndOfDay(date);
 
             String queryString = "select r from Request r where r.assignedTo.userName=:username and " +
-                    "r.assignedTo.active=:state and r.appointment_Date >= :date and r.appointment_Date <= :endofDay";
+                    "r.assignedTo.active=:state and r.appointment_Date >= :date and r.appointment_Date <= :endofDay " +
+                    "and r.fileNumber not in (select file.fileID from PatientFile file where file.currentStatus.state " +
+                    " != :archivingState)";
 
             Query currentQuery = getManager().createQuery(queryString);
 
@@ -169,7 +172,7 @@ public class RequestsDAO extends  AbstractDAO<Request> {
             currentQuery.setParameter("state",true);
             currentQuery.setParameter("date",date);
             currentQuery.setParameter("endofDay",endofDay);
-
+            currentQuery.setParameter("archivingState", FileStates.CHECKED_IN);
             return currentQuery.getResultList();
 
 
