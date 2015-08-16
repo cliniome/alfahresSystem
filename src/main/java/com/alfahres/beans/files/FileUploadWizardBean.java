@@ -2,6 +2,7 @@ package com.alfahres.beans.files;
 
 import com.degla.db.models.*;
 import com.degla.exceptions.BarcodeFormatException;
+import com.degla.restful.utils.AlfahresDateUtils;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.BarcodeUtils;
@@ -217,6 +218,16 @@ public class FileUploadWizardBean implements Serializable {
 
                  */
 
+                Date todayDate = new Date();
+
+                todayDate = AlfahresDateUtils.getEndOfDay(todayDate);
+
+                if(todayDate.compareTo(current.getAppointment_Date()) < 1)
+                {
+                    current.setFailureReason("The request contains an old appointment date");
+                    failedRequests.add(current);
+                    continue;
+                }
 
                 /*
                     1. Check in the requests table ,if the same request number exists for the same clinic code in the same date,
