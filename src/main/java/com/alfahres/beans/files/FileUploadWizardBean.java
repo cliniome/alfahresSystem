@@ -2,6 +2,7 @@ package com.alfahres.beans.files;
 
 import com.degla.db.models.*;
 import com.degla.exceptions.BarcodeFormatException;
+import com.degla.restful.utils.AlfahresDateUtils;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.BarcodeUtils;
@@ -210,12 +211,24 @@ public class FileUploadWizardBean implements Serializable {
             for(Request current:availableRequests)
             {
 
+
                 /*
                   1. Check for the exactness of the current request , if it is an exact match , don't add it at all to the collection and just continue
                   2. if it is not exact match , that means it is partial matching , so it might be a transfer
                   3. check for the exactness of the transfer , if it is not an exact transfer so add it to the transfer collection if it does not exist otherwise,continue
 
                  */
+
+                Date todayDate = new Date();
+
+                todayDate = AlfahresDateUtils.getEndOfDay(todayDate);
+
+                if(todayDate.compareTo(current.getAppointment_Date()) < 1)
+                {
+                    current.setFailureReason("The request contains an old appointment date");
+                    failedRequests.add(current);
+                    continue;
+                }
 
 
                 /*
