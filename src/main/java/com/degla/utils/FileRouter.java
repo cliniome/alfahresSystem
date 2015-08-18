@@ -25,6 +25,15 @@ public class FileRouter {
     private EmployeeDAO employeeDAO;
 
 
+
+    public FileRouter(){}
+
+    public FileRouter(EmployeeDAO dao)
+    {
+        this.employeeDAO = dao;
+    }
+
+
     public void routeFiles(List<Request> requests , List<Employee> toEmployees) throws Exception
     {
         if(requests == null || requests.size() <= 0) throw new Exception("Requests should not be null or empty " +

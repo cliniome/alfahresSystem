@@ -154,8 +154,8 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
         if(other == null) throw new Exception("Request can't be null");
         if(other.getAppointment_Date() == null || other.getClinicCode() == null) throw new Exception("Request is incomplete in either Appointment Date or Clinic Code");
 
-        boolean result = other.getAppointment_Date().equals(this.getAppointment_Date()) && other.getFileNumber().equals(this.getFileNumber()) && other.getClinicCode().trim()
-                .equals(this.getClinicCode());
+        boolean result = other.getAppointment_Date().equals(this.getAppointment_Date()) && other.getFileNumber().trim().equals(this.getFileNumber().trim()) && other.getClinicCode().trim()
+                .equals(this.getClinicCode().trim());
 
         return result;
     }

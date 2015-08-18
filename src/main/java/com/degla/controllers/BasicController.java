@@ -358,7 +358,7 @@ public class BasicController implements BasicRestfulOperations {
         //the above problem
         file.setOperationDate(new Date().getTime());
 
-        history.setCreatedAt(new Date(file.getOperationDate()));
+        history.setCreatedAt(new Date());
         history.setPatientFile(patientFile);
         history.setInpatient(file.isInpatient());
         history.setAppointment_Hijri_Date(file.getAppointmentDateH());
@@ -391,7 +391,7 @@ public class BasicController implements BasicRestfulOperations {
         //the above problem
         file.setOperationDate(new Date().getTime());
 
-        history.setCreatedAt(new Date(file.getOperationDate()));
+        history.setCreatedAt(new Date());
         history.setPatientFile(patientFile);
         history.setInpatient(file.isInpatient());
         history.setAppointment_Hijri_Date(file.getAppointmentDateH());

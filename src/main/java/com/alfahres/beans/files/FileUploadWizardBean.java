@@ -172,7 +172,7 @@ public class FileUploadWizardBean implements Serializable {
 
                         }
 
-                        //check to see if that request number exists already in patient Files
+                       /* //check to see if that request number exists already in patient Files
                         //If it does not exists no problem.
                         //if it exists please check to see if its current state is not CHECKED_IN , SO ignore that file otherwise accept
                         PatientFile exists = systemService.getFilesService().getFileWithNumber(req.getFileNumber());
@@ -187,7 +187,7 @@ public class FileUploadWizardBean implements Serializable {
                                 continue;
                             }
                         }
-
+*/
 
                         availableRequests.add(req);
                     }
@@ -223,7 +223,7 @@ public class FileUploadWizardBean implements Serializable {
 
                 todayDate = AlfahresDateUtils.getEndOfDay(todayDate);
 
-                if(todayDate.compareTo(current.getAppointment_Date()) < 1)
+                if(todayDate.compareTo(current.getAppointment_Date()) > 1)
                 {
                     current.setFailureReason("The request contains an old appointment date");
                     failedRequests.add(current);
@@ -242,42 +242,30 @@ public class FileUploadWizardBean implements Serializable {
                 if(exact_request_exists) continue;
                 else
                 {
-                    //it could be a partial match
+                    //it could be a partial match   """""At the Request Table""""""
+
+                                                                //True
                     boolean partial_request = this.existsPartiallyinDB(current) || this.existsPartiallyInMemory(current,temporaryList);
 
                     if(partial_request)
                     {
                         //that means this is a transfer
                         boolean transfer_exists = systemService.getTransferManager().hasTransferBasedonClinicCode(current.getFileNumber(),
-                                current.getClinicCode(),current.getAppointment_date_h(),current.getAppointment_time()) ||
+                                current.getClinicCode(),current.getAppointment_Date())
+                                ||
                                 this.transferListContains(current.clone().toTransferObject(),transfers);
 
                         if(!transfer_exists)
                             transfers.add(current.clone().toTransferObject());
 
 
-                    }else
+                    }else // False
                     {
                         //that means it is definitely a new request
                         if(!this.templistContainsExactly(current, temporaryList))
                             temporaryList.add(current);
                     }
                 }
-
-                /*if(!this.templistContainsExactly(current,temporaryList) && !this.existsPartiallyinDB(current))
-                {
-                    temporaryList.add(current);
-                }else
-                {
-                    boolean transfer_exists  = systemService.getTransferManager().hasTransferBasedonClinicCode(current.getFileNumber(),
-                            current.getClinicCode(),current.getAppointment_date_h(),current.getAppointment_time()) ||
-                            this.transferListContains(current.clone().toTransferObject(),transfers);
-
-                    if(!transfer_exists)
-                        transfers.add(current.clone().toTransferObject());
-                }*/
-
-
             }
 
 
@@ -335,9 +323,6 @@ public class FileUploadWizardBean implements Serializable {
                         continue;
                     }
                 }
-
-
-
                 if(result)
                 {
                     message = "Requests have been submitted Successfully";
@@ -363,6 +348,10 @@ public class FileUploadWizardBean implements Serializable {
                         s.printStackTrace();
                     }
                 }
+
+
+                message += String.format(" With  (%d) Transfers",transfers.size());
+
             }else
                 message +=" With No Transfers";
 
@@ -453,6 +442,9 @@ public class FileUploadWizardBean implements Serializable {
     }
 
     private boolean templistContainsExactly(Request current, List<Request> availableRequests) {
+
+
+        /// I will sort the availableRequests list in Ascending order ya popp el geel this lisg is created here in memory.
 
         if(availableRequests == null || availableRequests.size()<=0) return false;
 

@@ -107,17 +107,16 @@ public class TransferDAO extends AbstractDAO<Transfer> {
 
     }
 
-    public boolean hasTransferBasedonClinicCode(String fileNumber,String clinicCode,String hijri,String time)
+    public boolean hasTransferBasedonClinicCode(String fileNumber,String clinicCode,Date appointmentDate)
     {
         try
         {
-            String queryString = "select count(t) from Transfer t where t.fileNumber = :fileNumber and t.clinicCode = :code " +
-                    " and t.appointment_Hijri_Date =:hijriDate and t.appointmentTime = :time";
+            String queryString = "select count(t.fileNumber) from Transfer t where t.fileNumber = :fileNumber and t.clinicCode = :code " +
+                    " and t.appointment_Date_G = :date";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("fileNumber",fileNumber);
             currentQuery.setParameter("code",clinicCode);
-            currentQuery.setParameter("hijriDate",hijri);
-            currentQuery.setParameter("time",time);
+            currentQuery.setParameter("date",appointmentDate);
 
             long count = (Long)currentQuery.getSingleResult();
 
