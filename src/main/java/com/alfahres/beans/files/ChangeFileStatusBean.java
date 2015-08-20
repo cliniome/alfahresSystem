@@ -3,6 +3,7 @@ package com.alfahres.beans.files;
 import com.degla.db.models.*;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
+import com.degla.utils.FileRouter;
 import com.degla.utils.FileStateUtils;
 import com.degla.utils.WebUtils;
 
@@ -66,6 +67,14 @@ public class ChangeFileStatusBean implements Serializable{
         try
         {
 
+            FileStates chosenState = getStates().getState(this.getStatus());
+
+            if(chosenState == FileStates.CHECKED_IN && (this.getShelfNumber() == null || this.getShelfNumber().isEmpty()))
+            {
+                WebUtils.addMessage("You have to select a shelf number for archiving that file ");
+                return;
+            }
+
             if(this.file == null)
             {
                 if(systemService == null)
@@ -89,7 +98,7 @@ public class ChangeFileStatusBean implements Serializable{
             newStatus.setAppointment_Date_G(currentStatus.getAppointment_Date_G());
             newStatus.setOwner(this.getAssignedEmployee());
             newStatus.setPatientFile(this.file);
-            FileStates chosenState = getStates().getState(this.getStatus());
+
             newStatus.setState(chosenState);
             this.file.setShelfId(this.getShelfNumber());
             //Now add the new file history to the patient file
@@ -100,6 +109,7 @@ public class ChangeFileStatusBean implements Serializable{
 
             if(result)
             {
+                this.checkForTransfer(file);
                 //Notify the user
                 WebUtils.addMessage("File has been updated Successfully.");
 
@@ -117,6 +127,47 @@ public class ChangeFileStatusBean implements Serializable{
         }
     }
 
+    private void checkForTransfer(PatientFile file) {
+
+        try
+        {
+           List<Transfer> transferList = systemService.getTransferManager().getFutureTransfer(file.getFileID());
+
+            if(transferList != null && transferList.size() > 0)
+            {
+                try
+                {
+                    if(file.getCurrentStatus().getState() == FileStates.CHECKED_IN)
+                    {
+                        Transfer futureTransfer = transferList.get(0);
+
+                        //That means it is properly a new request, so add it
+                        Request transferRequest = futureTransfer.toRequestObject();
+
+                        //Route the current request
+                        List<Request> tempRequests = new ArrayList<Request>();
+                        tempRequests.add(transferRequest);
+
+                        FileRouter router = new FileRouter(systemService.getEmployeeService());
+                        router.routeFiles(tempRequests);
+
+                        //after that , try to add the current request into the database
+                        boolean result = systemService.getRequestsManager().addEntity(transferRequest);
+                        result &= systemService.getTransferManager().removeEntity(futureTransfer);
+                    }
+
+                }catch (Exception s)
+                {
+                    s.printStackTrace();
+                    return;
+                }
+            }
+
+        }catch (Exception s)
+        {
+            System.out.println(s.getMessage());
+        }
+    }
 
 
     public List<SelectItem> getItems()

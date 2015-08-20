@@ -62,6 +62,7 @@ public class SyncService extends BasicRestful implements Serializable {
 
                 for(RestfulFile file : batch.getFiles())
                 {
+                    //If the file comes as sent out by coordinator
                     boolean updateResult = controller.updateFile(file,currentEmployee);
 
                     if(!updateResult)
@@ -118,6 +119,7 @@ public class SyncService extends BasicRestful implements Serializable {
                     //otherwise , it is not a transfer
                     //that means it is a true transfer , so transfer that file
                     FileHistory transferrableHistory = recentTransfer.toFileHistory();
+
                     transferrableHistory.setOwner(currentEmployee);
 
 

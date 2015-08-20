@@ -5,6 +5,7 @@ import org.hibernate.annotations.Index;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -240,7 +241,13 @@ public class Transfer extends EntityEO implements Serializable , Comparable<Tran
             history.setClinicDocCode(this.getClinicDocCode());
             history.setClinicDocName(this.getClinicDocName());
             history.setClinicName(this.getClinicName());
-            history.setCreatedAt(new Date());
+            history.setAppointment_Date_G(this.getAppointment_Date_G());
+
+            Date opDate = new Date();
+            Calendar calc = Calendar.getInstance();
+            calc.setTime(opDate);
+            calc.add(Calendar.SECOND,2);
+            history.setCreatedAt(calc.getTime());
             history.setState(FileStates.TRANSFERRED);
             history.setInpatient(this.isInpatient());
 
