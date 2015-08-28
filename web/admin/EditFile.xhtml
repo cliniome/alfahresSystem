@@ -93,7 +93,7 @@
                             </p:column>
 
                             <p:column headerText="Time" filterable="true">
-                                <p:outputLabel value="#{history.createdAt}">
+                                <p:outputLabel value="#{fileDetailsBean.getLocalizedDate(history.createdAt)}">
                                     <f:convertDateTime  pattern="d-M-yyyy hh:mm"/>
                                 </p:outputLabel>
                             </p:column>

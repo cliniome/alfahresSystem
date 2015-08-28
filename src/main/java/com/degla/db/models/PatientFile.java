@@ -141,7 +141,9 @@ public class PatientFile extends EntityEO {
         this.setFileID(file.getFileNumber());
         this.setPatientName(file.getPatientName());
         this.setPatientNumber(this.getPatientNumber());
-        this.setShelfId(file.getShelfId());
+        if(file.getShelfId() != null && file.getShelfId().length() > 0)
+            this.setShelfId(file.getShelfId());
+
         return true;
     }
 

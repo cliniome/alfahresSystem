@@ -100,7 +100,10 @@ public class ChangeFileStatusBean implements Serializable{
             newStatus.setPatientFile(this.file);
 
             newStatus.setState(chosenState);
-            this.file.setShelfId(this.getShelfNumber());
+
+            if(this.getShelfNumber() != null && !this.getShelfNumber().isEmpty())
+                this.file.setShelfId(this.getShelfNumber());
+
             //Now add the new file history to the patient file
             this.file.setCurrentStatus(newStatus);
 

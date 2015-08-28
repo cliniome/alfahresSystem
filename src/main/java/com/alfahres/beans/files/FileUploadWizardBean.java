@@ -210,7 +210,11 @@ public class FileUploadWizardBean implements Serializable {
 
             for(Request current:availableRequests)
             {
+                //check for the current request , did we see it before in any file history or not .
 
+                Boolean existsInHistory = systemService.getFileHistoryDAO().appointmentExistsInHistory(current);
+
+                if(existsInHistory == null || existsInHistory.booleanValue()) continue;
 
                 /*
                   1. Check for the exactness of the current request , if it is an exact match , don't add it at all to the collection and just continue

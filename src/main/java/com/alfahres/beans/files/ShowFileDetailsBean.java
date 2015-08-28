@@ -7,9 +7,7 @@ import com.degla.system.SystemService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by snouto on 10/06/15.
@@ -21,6 +19,19 @@ public class ShowFileDetailsBean {
     private List<FileHistory> fileHistories;
 
     private ViewHelperBean helperBean;
+
+
+
+
+    public Date getLocalizedDate(Date date)
+    {
+        Calendar calc = Calendar.getInstance();
+        calc.setTime(date);
+
+        calc.add(Calendar.HOUR,3);
+
+        return calc.getTime();
+    }
 
 
     @PostConstruct

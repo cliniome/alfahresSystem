@@ -7,6 +7,7 @@ import com.degla.restful.models.*;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import org.apache.commons.lang3.time.DateUtils;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -402,7 +403,26 @@ public class BasicController implements BasicRestfulOperations {
         history.setClinicDocCode(file.getClinicDocCode());
         history.setClinicDocName(file.getClinicDocName());
         history.setClinicName(file.getClinicName());
-        history.setAppointment_Date_G(patientFile.getCurrentStatus().getAppointment_Date_G());
+        try
+        {
+            if(file.getAppointmentDate() != null && file.getAppointmentDate().length() > 0)
+            {
+                SimpleDateFormat formatter = new SimpleDateFormat();
+
+                Date appointmentDate = formatter.parse(file.getAppointmentDate());
+
+                history.setAppointment_Date_G(appointmentDate);
+
+            }else
+            {
+                history.setAppointment_Date_G(patientFile.getCurrentStatus().getAppointment_Date_G());
+            }
+
+        }catch (Exception s)
+        {
+            history.setAppointment_Date_G(patientFile.getCurrentStatus().getAppointment_Date_G());
+        }
+
         patientFile.setCurrentStatus(history);
     }
 
