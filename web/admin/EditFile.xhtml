@@ -92,6 +92,10 @@
                                 <p:outputLabel value="#{history.readableState}"/>
                             </p:column>
 
+                            <p:column headerText="App.Date">
+                                <h:outputLabel value="#{history.appointment_Date_G}"/>
+                            </p:column>
+
                             <p:column headerText="Time" filterable="true">
                                 <p:outputLabel value="#{fileDetailsBean.getLocalizedDate(history.createdAt)}">
                                     <f:convertDateTime  pattern="d-M-yyyy hh:mm"/>

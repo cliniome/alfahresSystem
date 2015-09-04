@@ -301,10 +301,10 @@ public class BasicController implements BasicRestfulOperations {
             }else
             {
 
-                if(foundRequest != null)
+                /*if(foundRequest != null)
                 {
                     getSystemService().getRequestsManager().removeEntity(foundRequest);
-                }
+                }*/
                 //that means the current request is not found
                 //it means it is not the first time for that file in the system
                 //Get the file by knowing its file number
@@ -317,7 +317,15 @@ public class BasicController implements BasicRestfulOperations {
                 //now update the current Patient File with the restful File
                 patientFile.updateWithRestful(file);
                 //then add new file History to that
-                this.addNewFileHistory(patientFile,file,emp);
+                if(foundRequest != null)
+                {
+                    this.addNewFileHistory(patientFile,file,emp,foundRequest);
+                    getSystemService().getRequestsManager().removeEntity(foundRequest);
+                }else
+                {
+                    this.addNewFileHistory(patientFile,file,emp);
+                }
+
 
                 //finally update the current patient file
                 return getSystemService().getFilesService().updateEntity(patientFile);
