@@ -86,6 +86,14 @@
             <to-view-id>/admin/ShowRequests.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+
+        <navigation-case>
+            <from-outcome>SHOWWATCHLIST</from-outcome>
+            <to-view-id>/admin/WatchList.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+
+
         <navigation-case>
             <from-outcome>CHANGESTATUS</from-outcome>
             <to-view-id>/admin/ChangeFile.xhtml</to-view-id>

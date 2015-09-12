@@ -53,7 +53,7 @@
                             <h:panelGrid columns="3" cellspacing="3">
                                 <p:commandButton value="Save Request" actionListener="#{editSavedRequestBean.onSubmit}"
                                                  ajax="false" update="growl"/>
-                                <p:commandButton value="Cancel" action="SHOWREQUESTS"
+                                <p:commandButton value="Cancel" action="#{editSavedRequestBean.getRouteAction()}"
                                                  immediate="true"/>
                                 <h:inputHidden value="#{editRequestBean.oldNumber}"/>
                             </h:panelGrid>

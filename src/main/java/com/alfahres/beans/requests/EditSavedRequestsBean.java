@@ -31,6 +31,8 @@ public class EditSavedRequestsBean implements Serializable {
     private List<Employee> employees;
     private Request chosenRequest;
 
+    private boolean route;
+
     @PostConstruct
     public void onInit()
     {
@@ -107,12 +109,30 @@ public class EditSavedRequestsBean implements Serializable {
         }
     }
 
+    public String getRouteAction()
+    {
+        String defaultRoute = "SHOWREQUESTS";
+
+        if(this.isRoute())
+            return defaultRoute;
+        else
+        {
+            return "SHOWWATCHLIST";
+        }
+    }
+
     private void loadQueryString() throws Exception {
 
         FacesContext context = FacesContext.getCurrentInstance();
         String id = context.getExternalContext().getRequestParameterMap().get("id");
 
-        if(id == null) return;
+        String routeString = context.getExternalContext().getRequestParameterMap().get("route");
+
+        if(id == null || routeString == null) return;
+
+        int routeInt = Integer.parseInt(routeString);
+
+        this.setRoute((routeInt > 0) ? true : false);
 
         this.chosenRequest = systemService.getRequestsManager().getSingleRequest(id);
 
@@ -164,5 +184,13 @@ public class EditSavedRequestsBean implements Serializable {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    public boolean isRoute() {
+        return route;
+    }
+
+    public void setRoute(boolean route) {
+        this.route = route;
     }
 }

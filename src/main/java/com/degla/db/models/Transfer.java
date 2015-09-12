@@ -1,5 +1,6 @@
 package com.degla.db.models;
 
+import com.degla.utils.AnnotatingModel;
 import org.hibernate.annotations.Index;
 
 import javax.persistence.*;
