@@ -7,6 +7,7 @@ import com.degla.system.SystemService;
 import com.degla.utils.ExcelFileBuilder;
 import com.degla.utils.GenericLazyDataModel;
 import com.degla.utils.RequestsLazyDataModel;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -20,7 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by snouto on 20/05/15.
@@ -52,6 +55,19 @@ public class RequestsBean implements Serializable {
         {
             s.printStackTrace();
         }
+    }
+
+    public boolean filterByDate(Object value, Object filter, Locale locale) {
+
+        if( filter == null ) {
+            return true;
+        }
+
+        if( value == null ) {
+            return false;
+        }
+
+        return DateUtils.truncatedEquals((Date) filter, (Date) value, Calendar.DATE);
     }
 
 

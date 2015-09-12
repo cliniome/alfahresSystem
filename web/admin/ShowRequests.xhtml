@@ -48,12 +48,12 @@
                 </f:facet>
 
                 <p:column exportable="true"
-                          headerText="Request Number" sortable="true" sortBy="#{filerequest.fileNumber}">
+                          headerText="Request Number" sortable="true" sortBy="#{filerequest.fileNumber}"  filterable="true" filterBy="#{filerequest.fileNumber}">
                     <p:outputLabel value="#{filerequest.fileNumber}"/>
                 </p:column>
 
                 <p:column exportable="true" headerText="Patient Number" sortable="true"
-                          sortBy="#{filerequest.patientNumber}">
+                          sortBy="#{filerequest.patientNumber}"  filterable="true" filterBy="#{filerequest.patientNumber}">
 
                     <p:outputLabel value="#{filerequest.patientNumber}"/>
 
@@ -67,11 +67,19 @@
 
                 </p:column>
 
-                <p:column exportable="false" headerText="App. Date">
-                    <p:outputLabel value="#{filerequest.appointment_Date}">
+                <p:column exportable="false" headerText="App. Date" width="250"  filterBy="#{filerequest.appointment_Date}" filterFunction="#{requestsBean.filterByDate}">
 
+                    <f:facet name="filter">
+                        <p:calendar id="cal1"   pattern="yyyy-MM-dd" style="width: 100px;">
+                            <p:ajax event="dateSelect" oncomplete="PF('requestsTable').filter()" update="requestsTable"/>
+                            <p:ajax event="change" oncomplete="PF('requestsTable').filter()" update="requestsTable"/>
+                        </p:calendar>
+                    </f:facet>
+                    <p:outputLabel value="#{filerequest.appointment_Date}">
+                        <f:convertDateTime pattern="yyyy-MM-dd hh:mm:ss"/>
                     </p:outputLabel>
                 </p:column>
+
                 <p:column exportable="false" headerText="Requested By"
                           sortable="true" sortBy="#{filerequest.userName}">
                     <p:outputLabel value="#{filerequest.userName}"/>
@@ -82,7 +90,7 @@
                 </p:column>
 
                 <p:column headerText="...">
-                    <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.fileNumber}&amp;route=1">Edit Request</a>
+                    <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.fileNumber}route=1">Edit Request</a>
                 </p:column>
 
             </p:dataTable>

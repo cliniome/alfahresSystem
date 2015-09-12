@@ -2,9 +2,11 @@ package com.degla.utils;
 
 import com.degla.dao.AbstractDAO;
 import com.degla.dao.RequestsDAO;
+import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -101,13 +103,34 @@ public class RequestsLazyDataModel <T extends AnnotatingModel> extends LazyDataM
                         String methodName = "get"+Capitalize(filterProperty);
                         String fieldValue = String.valueOf(model.getClass().getMethod(methodName).invoke(model));
 
-                        if(filterValue == null || fieldValue.startsWith(filterValue)) {
-                            match = true;
+                        if(filterProperty.equals("appointment_Date"))
+                        {
+                            SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
+                            Date passedValue = formatter.parse(filterValue);
+                            formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                            Date object_Date = formatter.parse(fieldValue);
+
+                            if(DateUtils.isSameDay(passedValue,object_Date))
+                            {
+                                match = true;
+                            }else
+                            {
+                                match = false;
+                                break;
+                            }
+
+                        }else
+                        {
+                            if(filterValue == null || fieldValue.startsWith(filterValue)) {
+                                match = true;
+                            }
+                            else {
+                                match = false;
+                                break;
+                            }
                         }
-                        else {
-                            match = false;
-                            break;
-                        }
+
+
                     } catch(Exception e) {
                         match = false;
                     }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+
+
+<ui:composition template="../fragments/masterLayout.xhtml">
+
+<ui:define name="mainContents">
+
+<c:set target="#{cssBean}" property="currentPageName" value="MultipleAppointments"/>
+
+
+
+
+    <h:form prependId="false">
+
+    <h:panelGrid columns="1" id="appointmentsTablePanel">
+
+
+        <p:dataTable lazy="true" paginator="true" rows="20" id="transferTable"
+                     rowKey="#{transfer}"
+                     selectionMode="single" selection="#{transfer}"
+                     paginatorTemplate=" {Exporters}    {CurrentPageReport}  {FirstPageLink}
+                         {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     var="filerequest" value="#{transfersBean.transfers}"
+                     stickyHeader="true" emptyMessage="There is no Multiple Appointments for the moment"
+                     widgetVar="transferTable">
+
+
+            <f:facet name="header">
+                <b>Available Transfers(<font color="red">#{transfersBean.totalCount}</font>)</b>
+            </f:facet>
+
+
+
+
+
+        </p:dataTable>
+
+    </h:panelGrid>
+
+    </h:form>
+
+</ui:define>
+
+
+</ui:composition>
+
+
+</html>
