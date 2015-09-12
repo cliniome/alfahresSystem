@@ -62,6 +62,7 @@ public class SyncService extends BasicRestful implements Serializable {
 
                 for(RestfulFile file : batch.getFiles())
                 {
+
                     //If the file comes as sent out by coordinator
                     boolean updateResult = controller.updateFile(file,currentEmployee);
 

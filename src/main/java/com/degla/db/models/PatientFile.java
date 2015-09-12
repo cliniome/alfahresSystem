@@ -170,6 +170,7 @@ public class PatientFile extends EntityEO {
         file.setPatientNumber(this.getPatientNumber());
         file.setState(this.getCurrentStatus().getState().toString());
         file.setInpatient(this.getCurrentStatus().isInpatient());
+        file.setOperationDate(this.getCurrentStatus().getCreatedAt().getTime());
 
 
         return file;

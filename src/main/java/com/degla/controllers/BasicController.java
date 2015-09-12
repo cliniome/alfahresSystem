@@ -226,6 +226,9 @@ public class BasicController implements BasicRestfulOperations {
                     request.setClinicName(current.getClinicName());
                     request.setState(FileStates.NEW.toString());
                     request.setInpatient(current.isInpatient());
+                    request.setOperationDate(new Date().getTime());
+
+
 
                     availableRequests.add(request);
                 }
@@ -311,11 +314,20 @@ public class BasicController implements BasicRestfulOperations {
                 PatientFile patientFile = getSystemService().getFilesService()
                         .getFileWithNumber(file.getFileNumber());
 
+
+
                 if(patientFile == null) throw new RecordNotFoundException("There is something wrong " +
                         "in the system , Please contact your system administrator");
 
+                long serverTimeStamp = patientFile.getCurrentStatus().getCreatedAt().getTime();
+
+
+                if(file.getOperationDate() != null && foundRequest == null &&
+                        serverTimeStamp != file.getOperationDate()) return true;
+
                 //now update the current Patient File with the restful File
                 patientFile.updateWithRestful(file);
+
                 //then add new file History to that
                 if(foundRequest != null)
                 {
@@ -379,6 +391,7 @@ public class BasicController implements BasicRestfulOperations {
         history.setClinicDocName(file.getClinicDocName());
         history.setClinicName(file.getClinicName());
         history.setAppointment_Date_G(request.getAppointment_Date());
+
         patientFile.setCurrentStatus(history);
     }
 
@@ -398,9 +411,16 @@ public class BasicController implements BasicRestfulOperations {
 
         //Always set the time of operation to the server side Received Date to solve
         //the above problem
-        file.setOperationDate(new Date().getTime());
 
-        history.setCreatedAt(new Date());
+        if(file.getOperationDate() != -1 && file.getOperationDate() != null)
+        {
+            history.setCreatedAt(new Date(file.getDeviceOperationDate()));
+        }else
+        {
+            history.setCreatedAt(new Date());
+        }
+
+
         history.setPatientFile(patientFile);
         history.setInpatient(file.isInpatient());
         history.setAppointment_Hijri_Date(file.getAppointmentDateH());

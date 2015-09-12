@@ -24,9 +24,17 @@ public class ExcelFileBuilder {
 
     private SystemService systemService;
 
+    private boolean watchList;
+
     public ExcelFileBuilder(SystemService service)
     {
         this.systemService = service;
+    }
+
+    public ExcelFileBuilder(SystemService service,boolean watchList)
+    {
+        this.systemService = service;
+        this.watchList = watchList;
     }
 
 
@@ -86,6 +94,89 @@ public class ExcelFileBuilder {
 
             return wb;
 
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public Workbook buildExcelNow()
+    {
+        if(watchList)
+        {
+            //download the watch list requests only
+
+            return buildWatchList();
+        }else
+        {
+            //build the new available Requests Only
+            return buildExcelFile();
+        }
+    }
+
+    private Workbook buildWatchList() {
+
+        try
+        {
+            Workbook wb = new HSSFWorkbook();
+
+            Sheet workSheet = wb.createSheet("WatchList");
+            this.addHeaders(workSheet);
+
+            List<Request> watchListRequests = systemService.getRequestsManager().getAllWatchListRequests();
+
+            Collections.sort(watchListRequests, new Comparator<Request>() {
+                @Override
+                public int compare(Request first, Request second) {
+
+                    BarcodeUtils firstUtils = new BarcodeUtils(first.getFileNumber());
+                    BarcodeUtils secondUtils = new BarcodeUtils(second.getFileNumber());
+                    int firstCabinId = Integer.parseInt(firstUtils.getCabinID()+firstUtils.getColumnNo());
+                    int secondCabinId = Integer.parseInt(secondUtils.getCabinID()+secondUtils.getColumnNo());
+
+                    if(firstCabinId > secondCabinId)
+                        return 1;
+                    else if (firstCabinId == secondCabinId) return 0;
+                    else return -1;
+
+                }
+            });
+
+            if(watchListRequests == null || watchListRequests.size() <=0)
+            {
+                wb.removeSheetAt(0);
+                return wb;
+            }
+
+            SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy");
+
+            for(int i = 0 ; i < watchListRequests.size();i++)
+            {
+                Request watchRequest = watchListRequests.get(i);
+
+                Row currentRow = workSheet.createRow(i+1);
+
+                //File Number Cell
+                Cell fileNumberCell = currentRow.createCell(0);
+                fileNumberCell.setCellValue(watchRequest.getFileNumber());
+                //Patient Number Cell
+                Cell patientNumberCell = currentRow.createCell(1);
+                patientNumberCell.setCellValue(watchRequest.getPatientNumber());
+                //Appointment Date
+                Cell dateCell = currentRow.createCell(2);
+                dateCell.setCellValue(formatter.format(watchRequest.getAppointment_Date()));
+
+            }
+
+
+
+
+
+            return wb;
 
 
         }catch (Exception s)
@@ -223,5 +314,13 @@ public class ExcelFileBuilder {
         {
             s.printStackTrace();
         }
+    }
+
+    public boolean isWatchList() {
+        return watchList;
+    }
+
+    public void setWatchList(boolean watchList) {
+        this.watchList = watchList;
     }
 }

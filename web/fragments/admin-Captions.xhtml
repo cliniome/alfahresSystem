@@ -26,14 +26,19 @@
             <h3>Requested Files</h3>
             <p><a href="ShowRequests.xhtml" class="badge badge-inverse">#{dashboardBean.totalNewFiles}</a></p>
         </div>
+
         <div class="span3">
-            <h3>In-Sorting Files</h3>
-            <p><a href="ShowFiles.xhtml?state=OUT_OF_CABIN" class="badge badge-inverse">#{dashboardBean.totalFilesUnderSorting}</a></p>
+            <h3>Watch-List Requests</h3>
+            <p><a href="WatchList.xhtml" class="badge badge-inverse">#{dashboardBean.totalWatchList}</a></p>
         </div>
 
     </div>
 
     <div class="row-fluid">
+        <div class="span3">
+            <h3>In-Sorting Files</h3>
+            <p><a href="ShowFiles.xhtml?state=OUT_OF_CABIN" class="badge badge-inverse">#{dashboardBean.totalFilesUnderSorting}</a></p>
+        </div>
         <div class="span3">
             <h3>Checked Out Files</h3>
             <p><a href="ShowFiles.xhtml?state=CHECKED_OUT" class="badge badge-inverse">#{dashboardBean.totalCheckedOutFiles}</a></p>
@@ -46,7 +51,9 @@
             <h3>At Clinics</h3>
             <p><a href="ShowFiles.xhtml?state=DISTRIBUTED" class="badge badge-inverse">#{dashboardBean.totalDistributedFiles}</a></p>
         </div>
+    </div>
 
+    <div class="row-fluid">
         <div class="span3">
             <h3>Missing Files</h3>
             <p><a href="ShowFiles.xhtml?state=MISSING" class="badge badge-inverse">#{dashboardBean.totalMissingFiles}</a></p>

@@ -143,6 +143,10 @@
         <managed-bean-name>requestsBean</managed-bean-name>
         <managed-bean-class>com.alfahres.beans.RequestsBean</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
+        <managed-property>
+            <property-name>dashboardBean</property-name>
+            <value>#{dashboardBean}</value>
+        </managed-property>
     </managed-bean>
 
     <managed-bean>

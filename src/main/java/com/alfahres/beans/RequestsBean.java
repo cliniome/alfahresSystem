@@ -1,10 +1,12 @@
 package com.alfahres.beans;
 
 import com.degla.db.models.Request;
+import com.degla.security.JSFUtils;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.ExcelFileBuilder;
 import com.degla.utils.GenericLazyDataModel;
+import com.degla.utils.RequestsLazyDataModel;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -28,7 +30,9 @@ public class RequestsBean implements Serializable {
 
     private SystemService systemService;
 
-    private GenericLazyDataModel<Request> availableRequests;
+    private RequestsLazyDataModel<Request> availableRequests;
+
+    private RequestsLazyDataModel<Request> watchListRequests;
 
     private StreamedContent excelFile;
 
@@ -53,6 +57,7 @@ public class RequestsBean implements Serializable {
 
     public void onPagination(PageEvent event)
     {
+
         getDashboardBean().setCurrentPageNumber(event.getPage());
     }
 
@@ -62,26 +67,26 @@ public class RequestsBean implements Serializable {
         else return getAvailableRequests().getRowCount();
     }
 
+    public long getTotalWatchList()
+    {
+        if(getWatchListRequests() == null || getWatchListRequests().getRowCount() <= 0 ) return 0;
+        else return getWatchListRequests().getRowCount();
+    }
+
     private void initRequests()
     {
-        setAvailableRequests(new GenericLazyDataModel<Request>(systemService.getRequestsManager()));
+        setAvailableRequests(new RequestsLazyDataModel<Request>(systemService.getRequestsManager(),false));
+        setWatchListRequests(new RequestsLazyDataModel<Request>(systemService.getRequestsManager(),true));
     }
 
 
-    public GenericLazyDataModel<Request> getAvailableRequests() {
 
-        return availableRequests;
-    }
 
-    public void setAvailableRequests(GenericLazyDataModel<Request> availableRequests) {
-        this.availableRequests = availableRequests;
-    }
-
-    public StreamedContent getExcelFile() {
+    public StreamedContent getExcelFile(boolean watchList) {
         try
         {
             //Get all the files in here
-            excelFile = getFileContents();
+            excelFile = getFileContents(watchList);
 
             FacesContext context = FacesContext.getCurrentInstance();
             HttpServletResponse response = (HttpServletResponse)context.getExternalContext().getResponse();
@@ -101,12 +106,12 @@ public class RequestsBean implements Serializable {
     }
 
 
-    private StreamedContent getFileContents() throws Exception
+    private StreamedContent getFileContents(boolean watchList) throws Exception
     {
 
-        ExcelFileBuilder fileBuilder = new ExcelFileBuilder(systemService);
+        ExcelFileBuilder fileBuilder = new ExcelFileBuilder(systemService,watchList);
 
-        Workbook wb = fileBuilder.buildExcelFile();
+        Workbook wb = fileBuilder.buildExcelNow();
         if(wb == null) return null;
 
         //then write it
@@ -130,10 +135,27 @@ public class RequestsBean implements Serializable {
 
 
     public DashboardBean getDashboardBean() {
+
         return dashboardBean;
     }
 
     public void setDashboardBean(DashboardBean dashboardBean) {
         this.dashboardBean = dashboardBean;
+    }
+
+    public RequestsLazyDataModel<Request> getAvailableRequests() {
+        return availableRequests;
+    }
+
+    public void setAvailableRequests(RequestsLazyDataModel<Request> availableRequests) {
+        this.availableRequests = availableRequests;
+    }
+
+    public RequestsLazyDataModel<Request> getWatchListRequests() {
+        return watchListRequests;
+    }
+
+    public void setWatchListRequests(RequestsLazyDataModel<Request> watchListRequests) {
+        this.watchListRequests = watchListRequests;
     }
 }

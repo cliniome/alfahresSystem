@@ -1,9 +1,6 @@
 package com.degla.dao;
 
-import com.degla.db.models.Clinic;
-import com.degla.db.models.Employee;
-import com.degla.db.models.FileStates;
-import com.degla.db.models.PatientFile;
+import com.degla.db.models.*;
 import com.degla.restful.models.FileModelStates;
 import com.degla.restful.models.RestfulFile;
 import com.degla.restful.utils.AlfahresDateUtils;
@@ -212,7 +209,6 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         }
     }
 
-
     public List<PatientFile> collectFiles(Employee coordinator)
     {
         try
@@ -223,6 +219,27 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("state",FileStates.DISTRIBUTED);
             currentQuery.setParameter("id",coordinator.getId());
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<PatientFile>();
+        }
+    }
+
+
+    public List<PatientFile> collectFiles(Employee coordinator,Date serverTimeStamp)
+    {
+        try
+        {
+
+            String queryString = "select f from PatientFile f where" +
+                    " f.currentStatus.state =:state and f.currentStatus.owner.id = :id and f.currentStatus.createdAt > :serverTimeStamp";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("state",FileStates.DISTRIBUTED);
+            currentQuery.setParameter("id",coordinator.getId());
+            currentQuery.setParameter("serverTimeStamp",serverTimeStamp);
             return currentQuery.getResultList();
 
         }catch (Exception s)
@@ -293,6 +310,30 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             return new ArrayList<PatientFile>();
         }
     }
+
+    public List<PatientFile> getFilesByStateAndEmployee(FileStates state , Employee emp , Date operationDate)
+    {
+        try
+        {
+            String queryString = "select f from PatientFile f where f.currentStatus.state=:state AND f.currentStatus.owner.id" +
+                    " = :id and f.currentStatus.createdAt > :operationDate";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("state",state);
+            currentQuery.setParameter("id",emp.getId());
+            currentQuery.setParameter("operationDate",operationDate);
+
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return null;
+        }
+
+    }
+
+
+
 
     public List<PatientFile> getFilesByStateAndEmployee(FileStates state , Employee emp)
     {

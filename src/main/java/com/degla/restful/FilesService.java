@@ -508,9 +508,9 @@ public class FilesService extends BasicRestful {
      * @return
      */
     @Path("/getDistributedFiles")
-    @POST
+    @GET
     @Produces("application/json")
-    public Response getDistributedFiles()
+    public Response getDistributedFiles(@QueryParam("serverTimeStamp") long serverTimeStamp)
     {
 
         try
@@ -527,10 +527,19 @@ public class FilesService extends BasicRestful {
             if(systemService == null)
                 systemService = SpringSystemBridge.services();
 
-            //List<PatientFile> availableFiles = systemService.getFilesService().collectFiles(currentEmp);
 
-            List<PatientFile> availableFiles = systemService.getFilesService().getFilesByStateAndEmployee(
-                    FileStates.COORDINATOR_IN, currentEmp);
+
+            List<PatientFile> availableFiles = new ArrayList<PatientFile>();
+
+            if(serverTimeStamp == -1)
+            {
+                availableFiles = systemService.getFilesService().getFilesByStateAndEmployee(
+                        FileStates.COORDINATOR_IN, currentEmp);
+            }else
+            {
+                availableFiles = systemService.getFilesService().getFilesByStateAndEmployee(
+                        FileStates.COORDINATOR_IN, currentEmp,new Date(serverTimeStamp));
+            }
 
 
             if(availableFiles != null && availableFiles.size() > 0)
@@ -595,9 +604,9 @@ public class FilesService extends BasicRestful {
      * @return
      */
     @Path("/collect")
-    @POST
+    @GET
     @Produces("application/json")
-    public Response collectFiles()
+    public Response collectFiles(@QueryParam("serverTimeStamp") long serverTimeStamp)
     {
         try
         {
@@ -613,7 +622,18 @@ public class FilesService extends BasicRestful {
             if(systemService == null)
                 systemService = SpringSystemBridge.services();
 
-            List<PatientFile> availableFiles = systemService.getFilesService().collectFiles(currentEmp);
+
+            List<PatientFile> availableFiles = new ArrayList<PatientFile>();
+
+            if(serverTimeStamp == -1)
+            {
+
+                availableFiles = systemService.getFilesService().collectFiles(currentEmp);
+
+            }else
+            {
+                availableFiles = systemService.getFilesService().collectFiles(currentEmp,new Date(serverTimeStamp));
+            }
 
             if(availableFiles != null && availableFiles.size() > 0)
             {

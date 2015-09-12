@@ -14,7 +14,7 @@
 
     <ui:define name="mainContents">
 
-        <c:set target="#{cssBean}" property="currentPageName" value="ShowRequests"/>
+        <c:set target="#{cssBean}" property="currentPageName" value="ShowWatchList"/>
 
 
 
@@ -27,8 +27,8 @@
                          selectionMode="single" selection="#{filerequest}"
                          paginatorTemplate=" {Exporters}    {CurrentPageReport}  {FirstPageLink}
                          {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         var="filerequest" value="#{requestsBean.availableRequests}"
-                         stickyHeader="true" emptyMessage="There are no Available Requests"
+                         var="filerequest" value="#{requestsBean.watchListRequests}"
+                         stickyHeader="true" emptyMessage="There are no Available Watch-List Requests for the moment"
                          widgetVar="requestsTable">
 
 
@@ -36,13 +36,13 @@
                 <p:ajax event="page" listener="#{requestsBean.onPagination}"/>
 
                 <f:facet name="header">
-                    <b>Available Requests(<font color="red">#{requestsBean.totalCount}</font>)</b>
+                    <b>Watch-List Requests(<font color="red">#{requestsBean.totalWatchList}</font>)</b>
                 </f:facet>
 
                 <f:facet name="{Exporters}">
                     <p:commandLink ajax="false">
                         <img src="../img/excel.png" alt="img"/>
-                        <p:fileDownload value="#{requestsBean.getExcelFile(false)}"
+                        <p:fileDownload value="#{requestsBean.getExcelFile(true)}"
                                         contentDisposition="application/vnd.ms-excel"/>
                     </p:commandLink>
                 </f:facet>

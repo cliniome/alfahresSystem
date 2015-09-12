@@ -3,6 +3,7 @@ package com.degla.dao;
 import com.degla.db.models.Employee;
 import com.degla.db.models.FileStates;
 import com.degla.db.models.Request;
+import com.degla.restful.models.FileModelStates;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -139,11 +140,18 @@ public class RequestsDAO extends  AbstractDAO<Request> {
 
     public long getTotalNewRequests()
     {
-        String queryString = "select count(r) from Request r";
+        String queryString = "select count(r) from Request r where r.fileNumber in (select p.fileID from PatientFile p where p.currentStatus.state =:filestate)";
         Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
         return (Long)currentQuery.getSingleResult();
-
     }
+
+
+    public long getTotalWatchList()
+    {
+        return getCountOfWatchListRequests();
+    }
+
 
     private Date getEndOfDay(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -206,6 +214,53 @@ public class RequestsDAO extends  AbstractDAO<Request> {
         }
     }
 
+    public List<Request> getAllWatchListRequests(int first , int pageSize)
+    {
+        try
+        {
+            String queryString = "select r from Request r where r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate)";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
+            currentQuery.setFirstResult(first);
+            currentQuery.setMaxResults(pageSize);
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<Request>();
+        }
+    }
+
+    public List<Request> getAllWatchListRequests()
+    {
+        try
+        {
+            String queryString = "select r from Request r where r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate)";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<Request>();
+        }
+    }
+
+
+
+
+
+
+    public long getCountOfWatchListRequests()
+    {
+        String queryString = "select count(r) from Request r where r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate)";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
+        return Long.parseLong(currentQuery.getSingleResult().toString());
+    }
+
     private Date getStartOfDay(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -217,7 +272,33 @@ public class RequestsDAO extends  AbstractDAO<Request> {
     }
 
 
+    @Override
+    public List<Request> getPaginatedResults(int first, int pageSize) {
 
+        try
+        {
+            String queryString = "select r from Request r where r.fileNumber in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate)";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
+            currentQuery.setFirstResult(first);
+            currentQuery.setMaxResults(pageSize);
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<Request>();
+        }
+    }
+
+    @Override
+    public long getMaxResults() {
+
+        String queryString = "select count(r) from Request r where r.fileNumber in (select p.fileID from PatientFile p where p.currentStatus.state =:filestate)";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
+        return Long.parseLong(currentQuery.getSingleResult().toString());
+    }
 
     public List<Request> getPaginatedResultsByDate(int start , int end , Date chosenDate)
     {

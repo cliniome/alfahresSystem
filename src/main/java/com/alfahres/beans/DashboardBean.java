@@ -54,6 +54,20 @@ public class DashboardBean {
         }
     }
 
+    public long getTotalWatchList()
+    {
+        try
+        {
+
+            return systemService.getRequestsManager().getTotalWatchList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return -1;
+        }
+    }
+
     public long getTotalReceivedByCoordinator()
     {
         try
