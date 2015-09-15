@@ -140,7 +140,8 @@ public class RequestsDAO extends  AbstractDAO<Request> {
 
     public long getTotalNewRequests()
     {
-        String queryString = "select count(r) from Request r where r.fileNumber in (select p.fileID from PatientFile p where p.currentStatus.state =:filestate)";
+        String queryString = "select count(r) from Request r where r.fileNumber in (select p.fileID from PatientFile p where p.currentStatus.state =:filestate) or " +
+                " r.fileNumber not in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber)";
         Query currentQuery = getManager().createQuery(queryString);
         currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
         return (Long)currentQuery.getSingleResult();
@@ -218,7 +219,8 @@ public class RequestsDAO extends  AbstractDAO<Request> {
     {
         try
         {
-            String queryString = "select r from Request r where r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate)";
+            String queryString = "select r from Request r where r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate " +
+                    "and p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber)";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
             currentQuery.setFirstResult(first);
@@ -236,7 +238,8 @@ public class RequestsDAO extends  AbstractDAO<Request> {
     {
         try
         {
-            String queryString = "select r from Request r where r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate)";
+            String queryString = "select r from Request r where r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate " +
+                    " and p.fileID = r.fileNumber)";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
             return currentQuery.getResultList();
@@ -255,7 +258,8 @@ public class RequestsDAO extends  AbstractDAO<Request> {
 
     public long getCountOfWatchListRequests()
     {
-        String queryString = "select count(r) from Request r where r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate)";
+        String queryString = "select count(r) from Request r where r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate and " +
+                "p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber)";
         Query currentQuery = getManager().createQuery(queryString);
         currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
         return Long.parseLong(currentQuery.getSingleResult().toString());
@@ -277,7 +281,7 @@ public class RequestsDAO extends  AbstractDAO<Request> {
 
         try
         {
-            String queryString = "select r from Request r where r.fileNumber in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate)";
+            String queryString = "select r from Request r where r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state != :filestate)";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
             currentQuery.setFirstResult(first);
@@ -294,7 +298,7 @@ public class RequestsDAO extends  AbstractDAO<Request> {
     @Override
     public long getMaxResults() {
 
-        String queryString = "select count(r) from Request r where r.fileNumber in (select p.fileID from PatientFile p where p.currentStatus.state =:filestate)";
+        String queryString = "select count(r) from Request r where r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state !=:filestate)";
         Query currentQuery = getManager().createQuery(queryString);
         currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
         return Long.parseLong(currentQuery.getSingleResult().toString());
