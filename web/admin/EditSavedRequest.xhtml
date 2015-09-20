@@ -52,9 +52,15 @@
                             <br/>
                             <h:panelGrid columns="3" cellspacing="3">
                                 <p:commandButton value="Save Request" actionListener="#{editSavedRequestBean.onSubmit}"
-                                                 ajax="false" update="growl"/>
+                                                 ajax="false" update="growl">
+                                    <f:param name="route" value="#{param['route']}"/>
+                                    <f:param name="id" value="#{param['id']}"/>
+                                </p:commandButton>
                                 <p:commandButton value="Cancel" action="#{editSavedRequestBean.getRouteAction()}"
-                                                 immediate="true"/>
+                                                 immediate="true">
+                                    <f:param name="route" value="#{param['route']}"/>
+                                    <f:param name="id" value="#{param['id']}"/>
+                                </p:commandButton>
                                 <h:inputHidden value="#{editRequestBean.oldNumber}"/>
                             </h:panelGrid>
 
