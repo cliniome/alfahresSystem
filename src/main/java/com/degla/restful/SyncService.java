@@ -148,9 +148,6 @@ public class SyncService extends BasicRestful implements Serializable {
                 {
                     try
                     {
-
-
-
                         if(patientFile.getCurrentStatus().getState() == FileStates.CHECKED_IN)
                         {
                             Transfer futureTransfer = transferList.get(0);
