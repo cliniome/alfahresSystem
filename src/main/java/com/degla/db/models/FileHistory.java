@@ -30,22 +30,6 @@ public class FileHistory extends EntityEO {
 	@Index(name="containerIdIndex")
     @Column(name="containerId")
 	private String containerId;
-    @Column(name="Batch_Request_No",nullable = true)
-    private String batchRequestNumber;
-    @Column(name="appointment_Hijri_Date",nullable = true)
-    private String appointment_Hijri_Date;
-    @Column(name="Appointment_Made_by",nullable = true)
-    private String appointment_Made_by;
-    @Column(name="AppointmentType",nullable = true)
-    private String appointmentType;
-    @Column(name="ClinicName",nullable = true)
-    private String clinicName;
-    @Column(name="clinicCode",nullable = true)
-    private String clinicCode;
-    @Column(name="ClinicDocName",nullable = true)
-    private String clinicDocName;
-    @Column(name="ClinicDocCode",nullable = true)
-    private String clinicDocCode;
     //TODO : Don't forget to map PatientFile in this Class
     @ManyToOne
     @JoinColumn(name="patientFile")
@@ -58,14 +42,10 @@ public class FileHistory extends EntityEO {
     @Enumerated(EnumType.STRING)
     private FileStates state;
 
-    @Column(name="appointment_Date_G",nullable =false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date appointment_Date_G;
+    @ManyToOne
+    @JoinColumn(name="appointment_ID")
+    private Appointment appointment;
 
-
-
-    @Column(name="inpatient_col",nullable = false)
-    private boolean inpatient = false;
 
 	public void setContainerId(String containerId) {
 		this.containerId = containerId;
@@ -115,69 +95,6 @@ public class FileHistory extends EntityEO {
         this.state = state;
     }
 
-    public String getBatchRequestNumber() {
-        return batchRequestNumber;
-    }
-
-    public void setBatchRequestNumber(String batchRequestNumber) {
-        this.batchRequestNumber = batchRequestNumber;
-    }
-
-    public String getAppointment_Hijri_Date() {
-        return appointment_Hijri_Date;
-    }
-
-    public void setAppointment_Hijri_Date(String appointment_Hijri_Date) {
-        this.appointment_Hijri_Date = appointment_Hijri_Date;
-    }
-
-    public String getAppointment_Made_by() {
-        return appointment_Made_by;
-    }
-
-    public void setAppointment_Made_by(String appointment_Made_by) {
-        this.appointment_Made_by = appointment_Made_by;
-    }
-
-    public String getAppointmentType() {
-        return appointmentType;
-    }
-
-    public void setAppointmentType(String appointmentType) {
-        this.appointmentType = appointmentType;
-    }
-
-    public String getClinicName() {
-        return clinicName;
-    }
-
-    public void setClinicName(String clinicName) {
-        this.clinicName = clinicName;
-    }
-
-    public String getClinicCode() {
-        return clinicCode;
-    }
-
-    public void setClinicCode(String clinicCode) {
-        this.clinicCode = clinicCode;
-    }
-
-    public String getClinicDocName() {
-        return clinicDocName;
-    }
-
-    public void setClinicDocName(String clinicDocName) {
-        this.clinicDocName = clinicDocName;
-    }
-
-    public String getClinicDocCode() {
-        return clinicDocCode;
-    }
-
-    public void setClinicDocCode(String clinicDocCode) {
-        this.clinicDocCode = clinicDocCode;
-    }
 
     public String getReadableState()
     {
@@ -185,19 +102,12 @@ public class FileHistory extends EntityEO {
         return utils.getReadableState();
     }
 
-    public boolean isInpatient() {
-        return inpatient;
+
+    public Appointment getAppointment() {
+        return appointment;
     }
 
-    public void setInpatient(boolean inpatient) {
-        this.inpatient = inpatient;
-    }
-
-    public Date getAppointment_Date_G() {
-        return appointment_Date_G;
-    }
-
-    public void setAppointment_Date_G(Date appointment_Date_G) {
-        this.appointment_Date_G = appointment_Date_G;
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
     }
 }

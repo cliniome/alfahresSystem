@@ -6,6 +6,7 @@ import com.degla.exceptions.WorkflowOutOfBoundException;
 import com.degla.restful.models.*;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
+import com.sun.jersey.core.impl.provider.entity.XMLJAXBElementProvider;
 import org.apache.commons.lang3.time.DateUtils;
 import sun.java2d.pipe.SpanShapeRenderer;
 
@@ -39,7 +40,7 @@ public class BasicController implements BasicRestfulOperations {
         try
         {
             List<PatientFile> existingFiles = getSystemService().getFilesService().
-                    scanForIndividualFiles(query,states);
+                    scanForIndividualFiles(query, states);
 
             if(existingFiles != null && existingFiles.size() > 0)
             {
@@ -47,27 +48,7 @@ public class BasicController implements BasicRestfulOperations {
 
                 for(PatientFile file : existingFiles)
                 {
-                    RestfulFile restFile = new RestfulFile();
-                    restFile.setCabinetId(file.getArchiveCabinet().getCabinetID());
-                    restFile.setDescription(file.getDescription());
-                    restFile.setFileNumber(file.getFileID());
-                    restFile.setOperationDate(file.getCurrentStatus().getCreatedAt().getTime());
-                    restFile.setShelfId(file.getShelfId());
-                    restFile.setState(file.getCurrentStatus().getState().toString());
-                    restFile.setTemporaryCabinetId(file.getCurrentStatus().getContainerId());
-                    restFile.setPatientName(file.getPatientName());
-                    restFile.setPatientNumber(file.getPatientNumber());
-                    restFile.setAppointmentDate(file.getCurrentStatus().getAppointment_Hijri_Date());
-                    restFile.setAppointmentDateH(file.getCurrentStatus().getAppointment_Hijri_Date());
-                    restFile.setAppointmentMadeBy(file.getCurrentStatus().getAppointment_Made_by());
-                    restFile.setAppointmentTime(file.getCurrentStatus().getAppointment_Hijri_Date());
-                    restFile.setBatchRequestNumber(file.getCurrentStatus().getBatchRequestNumber());
-                    restFile.setAppointmentType(file.getCurrentStatus().getAppointmentType());
-                    restFile.setClinicCode(file.getCurrentStatus().getClinicCode());
-                    restFile.setClinicDocCode(file.getCurrentStatus().getClinicDocCode());
-                    restFile.setClinicDocName(file.getCurrentStatus().getClinicDocName());
-                    restFile.setClinicName(file.getCurrentStatus().getClinicName());
-                    restFile.setInpatient(file.getCurrentStatus().isInpatient());
+                    RestfulFile restFile = file.toRestfulFile();
 
 
                     availableFiles.add(restFile);
@@ -97,27 +78,7 @@ public class BasicController implements BasicRestfulOperations {
 
                 for(PatientFile file : existingFiles)
                 {
-                    RestfulFile restFile = new RestfulFile();
-                    restFile.setCabinetId(file.getArchiveCabinet().getCabinetID());
-                    restFile.setDescription(file.getDescription());
-                    restFile.setFileNumber(file.getFileID());
-                    restFile.setOperationDate(file.getCurrentStatus().getCreatedAt().getTime());
-                    restFile.setShelfId(file.getShelfId());
-                    restFile.setState(file.getCurrentStatus().getState().toString());
-                    restFile.setTemporaryCabinetId(file.getCurrentStatus().getContainerId());
-                    restFile.setPatientName(file.getPatientName());
-                    restFile.setPatientNumber(file.getPatientNumber());
-                    restFile.setAppointmentDate(file.getCurrentStatus().getAppointment_Hijri_Date());
-                    restFile.setAppointmentDateH(file.getCurrentStatus().getAppointment_Hijri_Date());
-                    restFile.setAppointmentMadeBy(file.getCurrentStatus().getAppointment_Made_by());
-                    restFile.setAppointmentTime(file.getCurrentStatus().getAppointment_Hijri_Date());
-                    restFile.setBatchRequestNumber(file.getCurrentStatus().getBatchRequestNumber());
-                    restFile.setAppointmentType(file.getCurrentStatus().getAppointmentType());
-                    restFile.setClinicCode(file.getCurrentStatus().getClinicCode());
-                    restFile.setClinicDocCode(file.getCurrentStatus().getClinicDocCode());
-                    restFile.setClinicDocName(file.getCurrentStatus().getClinicDocName());
-                    restFile.setClinicName(file.getCurrentStatus().getClinicName());
-                    restFile.setInpatient(file.getCurrentStatus().isInpatient());
+                    RestfulFile restFile = file.toRestfulFile();
 
 
                     availableFiles.add(restFile);
@@ -146,41 +107,18 @@ public class BasicController implements BasicRestfulOperations {
             Date chosenDate = DateUtils.parseDate(date, SpringSystemBridge.services().getDatePatternsBean().getDatePatterns().toArray(new String[]{}));
             List<RestfulRequest> availableRequests = new ArrayList<RestfulRequest>();
 
+            List<Appointment> appointments = getSystemService().getAppointmentManager().selectAppointmentsByDate(username,chosenDate);
+
+            if (appointments != null) {
 
 
-            List<Request> requests = getSystemService().getRequestsManager().selectRequestsByDate(username, chosenDate);
-
-            if (requests != null) {
+                for (Appointment current : appointments) {
 
 
-                for (Request current : requests) {
-
-                    RestfulRequest request = new RestfulRequest();
-
-
-
-                    request.setAppointment_Date(formatter.format(current.getAppointment_Date()));
-                    request.setAppointment_Type(current.getAppointment_Type());
-                    request.setFileNumber(current.getFileNumber());
-                    request.setPatientName(current.getPatientName());
-                    request.setPatientNumber(current.getPatientNumber());
-                    request.setUserName(current.getUserName());
-
-                    request.setAppointment_Type(current.getCf_appointment_type());
-
-                    request.setAppointmentDateH(current.getAppointment_date_h());
-                    request.setAppointmentMadeBy(current.getAppointment_made_by());
-                    request.setAppointmentTime(current.getAppointment_time());
-                    request.setAppointmentType(current.getCf_appointment_type());
-                    request.setBatchRequestNumber(current.getBatchRequestNumber());
-                    request.setClinicCode(current.getClinicCode());
-                    request.setClinicDocCode(current.getClinic_Doc_Code());
-                    request.setClinicDocName(current.getRequestingDocName());
-                    request.setClinicName(current.getClinicName());
-                    request.setState(FileStates.NEW.toString());
-                    request.setInpatient(current.isInpatient());
+                    RestfulRequest request = current.toRestfulRequest();
 
                     availableRequests.add(request);
+
                 }
 
                 return availableRequests;
@@ -194,85 +132,24 @@ public class BasicController implements BasicRestfulOperations {
 
 
     @Override
-    public List<RestfulRequest> getNewRequests(String userName) {
-
-        try {
-            List<RestfulRequest> availableRequests = new ArrayList<RestfulRequest>();
-
-            List<Request> requests = getSystemService().getRequestsManager().getNewRequestsFor(userName);
-
-            if (requests != null) {
-                SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy");
-
-                for (Request current : requests) {
-
-                    RestfulRequest request = new RestfulRequest();
-
-                    request.setAppointment_Date(formatter.format(current.getAppointment_Date()));
-                    request.setAppointment_Type(current.getAppointment_Type());
-                    request.setFileNumber(current.getFileNumber());
-                    request.setPatientName(current.getPatientName());
-                    request.setPatientNumber(current.getPatientNumber());
-                    request.setUserName(current.getUserName());
-                    request.setAppointment_Type(current.getCf_appointment_type());
-                    request.setAppointmentDateH(current.getAppointment_date_h());
-                    request.setAppointmentMadeBy(current.getAppointment_made_by());
-                    request.setAppointmentTime(current.getAppointment_time());
-                    request.setAppointmentType(current.getCf_appointment_type());
-                    request.setBatchRequestNumber(current.getBatchRequestNumber());
-                    request.setClinicCode(current.getClinicCode());
-                    request.setClinicDocCode(current.getClinic_Doc_Code());
-                    request.setClinicDocName(current.getRequestingDocName());
-                    request.setClinicName(current.getClinicName());
-                    request.setState(FileStates.NEW.toString());
-                    request.setInpatient(current.isInpatient());
-                    request.setOperationDate(new Date().getTime());
-
-
-
-                    availableRequests.add(request);
-                }
-
-                return availableRequests;
-            } else return null;
-
-        } catch (Exception s) {
-            s.printStackTrace();
-            return null;
-        }
-
-
-    }
-
-    @Override
-    public boolean updateFile(RestfulFile file, Employee emp)
-            throws RecordNotFoundException, WorkflowOutOfBoundException {
-
+    public boolean updateFile(RestfulFile file , Employee emp)
+    {
         try
         {
-            //First check to see if the request is found
-            Request foundRequest = getSystemService().getRequestsManager().getRequestByBatchNumber(
-                    file.getFileNumber(), file.getBatchRequestNumber());
+            Appointment appointment = getSystemService().getAppointmentManager().getEntity(file.getAppointmentId());
 
-
-            //Check the patient file
             boolean patientFileExists = getSystemService().getFilesService().fileExists(file.getFileNumber());
 
-            if(foundRequest != null && !patientFileExists)
+            if(!patientFileExists) //that means it is a new file
             {
-                //That means the current restful file is just checked out from the keeper
-                //Create a new Patient File
                 PatientFile newPatientFile = new PatientFile();
-                //create a new file cabinet
                 ArchiveCabinet cabinet = null;
 
                 cabinet = getSystemService().getCabinetsService().getCabinetByID(file.getCabinetId());
 
                 if(cabinet != null)
-                {
                     newPatientFile.setArchiveCabinet(cabinet);
-
-                }else
+                else
                 {
                     cabinet = new ArchiveCabinet();
                     cabinet.setCabinetID(file.getCabinetId());
@@ -289,28 +166,25 @@ public class BasicController implements BasicRestfulOperations {
                 newPatientFile.setCreationTime(new Date());
                 newPatientFile.setFileID(file.getFileNumber());
                 newPatientFile.setShelfId(file.getShelfId());
-                newPatientFile.setPatientName(foundRequest.getPatientName());
-                newPatientFile.setPatientNumber(foundRequest.getPatientNumber());
-                this.addNewFileHistory(newPatientFile, file, emp,foundRequest);
+                newPatientFile.setPatientName(appointment.getPatientName());
+                newPatientFile.setPatientNumber(appointment.getPatientNumber());
+
+                //Add the new file History
+                this.addNewHistory(file,newPatientFile,emp,appointment);
 
                 boolean result = getSystemService().getFilesService().addEntity(newPatientFile);
 
                 if (result) {
                     //now remove the current request
-                    return getSystemService().getRequestsManager().removeEntity(foundRequest);
+                    appointment.setActive(false);
+
+                    return getSystemService().getAppointmentManager().updateEntity(appointment);
 
                 } else return false;
 
             }else
             {
-
-                /*if(foundRequest != null)
-                {
-                    getSystemService().getRequestsManager().removeEntity(foundRequest);
-                }*/
-                //that means the current request is not found
-                //it means it is not the first time for that file in the system
-                //Get the file by knowing its file number
+                //that means the patient file exists already
                 PatientFile patientFile = getSystemService().getFilesService()
                         .getFileWithNumber(file.getFileNumber());
 
@@ -322,26 +196,24 @@ public class BasicController implements BasicRestfulOperations {
                 long serverTimeStamp = patientFile.getCurrentStatus().getCreatedAt().getTime();
 
 
-                if(file.getOperationDate() != null && foundRequest == null &&
+                if(file.getOperationDate() != null &&
                         serverTimeStamp != file.getOperationDate()) return true;
 
                 //now update the current Patient File with the restful File
                 patientFile.updateWithRestful(file);
 
-                //then add new file History to that
-                if(foundRequest != null)
+               boolean result = this.addHistoryToExistingPatientFile(patientFile,file,emp,appointment);
+
+
+                if(result)
                 {
-                    this.addNewFileHistory(patientFile,file,emp,foundRequest);
-                    getSystemService().getRequestsManager().removeEntity(foundRequest);
-                }else
-                {
-                    this.addNewFileHistory(patientFile,file,emp);
+                    //Deactive the current appointment
+                    appointment.setActive(false);
+                    getSystemService().getAppointmentManager().updateEntity(appointment);
 
-                }
+                    return getSystemService().getFilesService().updateEntity(patientFile);
 
-
-                //finally update the current patient file
-                return getSystemService().getFilesService().updateEntity(patientFile);
+                }else return false;
 
 
             }
@@ -353,6 +225,185 @@ public class BasicController implements BasicRestfulOperations {
         }
     }
 
+    private boolean addHistoryToExistingPatientFile(PatientFile patientFile, RestfulFile file, Employee emp, Appointment appointment) throws Exception {
+
+        FileStates state = FileStates.valueOf(file.getState());
+
+        switch (state)
+        {
+            case COORDINATOR_OUT:
+            {
+                //Add the current state as is
+                this.addNewHistory(file,patientFile,emp,appointment);
+
+                //check if that file has multiple appointments today
+                List<Appointment> todayAppointments = getSystemService().getAppointmentManager().getTodayAppointments();
+
+                if(todayAppointments != null && todayAppointments.size() > 0)
+                {
+                    //get the first appointment from the list
+                    Appointment activeAppointment = todayAppointments.get(0);
+                    //set the file state to transferred
+                    file.setState(FileStates.TRANSFERRED.toString());
+                    //then create a new file history with the new active appointment
+                    this.addNewHistory(file,patientFile,emp,activeAppointment);
+                    //set the new chosen appointment to inactive as well because it is being used already
+                    activeAppointment.setActive(false);
+                    getSystemService().getAppointmentManager().updateEntity(activeAppointment);
+
+                }
+
+            }
+            break;
+
+            default:
+            {
+                this.addNewHistory(file,patientFile,emp,appointment);
+            }
+            break;
+        }
+
+        //finally return success
+        return true;
+    }
+
+    /**
+     * This method will add a completely new File History to the file
+     * @param file
+     * @param newPatientFile
+     * @param emp
+     * @param appointment
+     */
+    private void addNewHistory(RestfulFile file, PatientFile newPatientFile, Employee emp, Appointment appointment) {
+
+        try
+        {
+            FileHistory newFileHistory = new FileHistory();
+            newFileHistory.setAppointment(appointment);
+            newFileHistory.setContainerId(file.getTemporaryCabinetId());
+            newFileHistory.setCreatedAt(new Date());
+            newFileHistory.setOwner(emp);
+            newFileHistory.setPatientFile(newPatientFile);
+            FileStates state = FileStates.valueOf(file.getState());
+            newFileHistory.setState(state);
+            newPatientFile.setCurrentStatus(newFileHistory);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+    }
+
+
+//    @Override
+//    public boolean updateFile(RestfulFile file, Employee emp)
+//            throws RecordNotFoundException, WorkflowOutOfBoundException {
+//
+//        try
+//        {
+//            //First check to see if the request is found
+//            Request foundRequest = getSystemService().getRequestsManager().getRequestByBatchNumber(
+//                    file.getFileNumber(), file.getBatchRequestNumber());
+//
+//
+//            //Check the patient file
+//            boolean patientFileExists = getSystemService().getFilesService().fileExists(file.getFileNumber());
+//
+//            if(foundRequest != null && !patientFileExists)
+//            {
+//                //That means the current restful file is just checked out from the keeper
+//                //Create a new Patient File
+//                PatientFile newPatientFile = new PatientFile();
+//                //create a new file cabinet
+//                ArchiveCabinet cabinet = null;
+//
+//                cabinet = getSystemService().getCabinetsService().getCabinetByID(file.getCabinetId());
+//
+//                if(cabinet != null)
+//                {
+//                    newPatientFile.setArchiveCabinet(cabinet);
+//
+//                }else
+//                {
+//                    cabinet = new ArchiveCabinet();
+//                    cabinet.setCabinetID(file.getCabinetId());
+//                    cabinet.setCreationTime(new Date());
+//
+//                    //save the cabin into the database
+//                    getSystemService().getCabinetsService().addEntity(cabinet);
+//
+//                    cabinet = getSystemService().getCabinetsService().getCabinetByID(cabinet.getCabinetID());
+//
+//                    newPatientFile.setArchiveCabinet(cabinet);
+//                }
+//
+//                newPatientFile.setCreationTime(new Date());
+//                newPatientFile.setFileID(file.getFileNumber());
+//                newPatientFile.setShelfId(file.getShelfId());
+//                newPatientFile.setPatientName(foundRequest.getPatientName());
+//                newPatientFile.setPatientNumber(foundRequest.getPatientNumber());
+//                this.addNewFileHistory(newPatientFile, file, emp,foundRequest);
+//
+//                boolean result = getSystemService().getFilesService().addEntity(newPatientFile);
+//
+//                if (result) {
+//                    //now remove the current request
+//                    return getSystemService().getRequestsManager().removeEntity(foundRequest);
+//
+//                } else return false;
+//
+//            }else
+//            {
+//
+//                /*if(foundRequest != null)
+//                {
+//                    getSystemService().getRequestsManager().removeEntity(foundRequest);
+//                }*/
+//                //that means the current request is not found
+//                //it means it is not the first time for that file in the system
+//                //Get the file by knowing its file number
+//                PatientFile patientFile = getSystemService().getFilesService()
+//                        .getFileWithNumber(file.getFileNumber());
+//
+//
+//
+//                if(patientFile == null) throw new RecordNotFoundException("There is something wrong " +
+//                        "in the system , Please contact your system administrator");
+//
+//                long serverTimeStamp = patientFile.getCurrentStatus().getCreatedAt().getTime();
+//
+//
+//                if(file.getOperationDate() != null && foundRequest == null &&
+//                        serverTimeStamp != file.getOperationDate()) return true;
+//
+//                //now update the current Patient File with the restful File
+//                patientFile.updateWithRestful(file);
+//
+//                //then add new file History to that
+//                if(foundRequest != null)
+//                {
+//                    this.addNewFileHistory(patientFile,file,emp,foundRequest);
+//                    getSystemService().getRequestsManager().removeEntity(foundRequest);
+//                }else
+//                {
+//                    this.addNewFileHistory(patientFile,file,emp);
+//
+//                }
+//
+//
+//                //finally update the current patient file
+//                return getSystemService().getFilesService().updateEntity(patientFile);
+//
+//
+//            }
+//
+//        }catch (Exception s)
+//        {
+//            s.printStackTrace();
+//            return false;
+//        }
+//    }
+
 
     /**
      * This method will try to add a completely new File History to a recent Patient File
@@ -362,7 +413,7 @@ public class BasicController implements BasicRestfulOperations {
      * @param request
      * @throws Exception
      */
-    private void addNewFileHistory(PatientFile patientFile,RestfulFile file , Employee emp , Request request)
+   /* private void addNewFileHistory(PatientFile patientFile,RestfulFile file , Employee emp , Request request)
             throws Exception
     {
         FileHistory history = new FileHistory();
@@ -373,8 +424,8 @@ public class BasicController implements BasicRestfulOperations {
         //I have deactivated this feature because it allows for mixing different time periods
         //coming from the browser to the server which both might not be in sync, please look at
         //the YouTrack Task, for a bug related to improper display of Patient File's FileHistories
-        /*if(file.getOperationDate() == null)
-            file.setOperationDate(new Date().getTime());*/
+        *//*if(file.getOperationDate() == null)
+            file.setOperationDate(new Date().getTime());*//*
 
         //Always set the time of operation to the server side Received Date to solve
         //the above problem
@@ -394,10 +445,10 @@ public class BasicController implements BasicRestfulOperations {
         history.setAppointment_Date_G(request.getAppointment_Date());
 
         patientFile.setCurrentStatus(history);
-    }
+    }*/
 
 
-    private void addNewFileHistory(PatientFile patientFile, RestfulFile file, Employee emp) {
+    /*private void addNewFileHistory(PatientFile patientFile, RestfulFile file, Employee emp) {
 
         FileHistory history = new FileHistory();
         history.setContainerId(file.getTemporaryCabinetId());
@@ -407,8 +458,8 @@ public class BasicController implements BasicRestfulOperations {
         //I have deactivated this feature because it allows for mixing different time periods
         //coming from the browser to the server which both might not be in sync, please look at
         //the YouTrack Task, for a bug related to improper display of Patient File's FileHistories
-        /*if(file.getOperationDate() == null)
-            file.setOperationDate(new Date().getTime());*/
+        *//*if(file.getOperationDate() == null)
+            file.setOperationDate(new Date().getTime());*//*
 
         //Always set the time of operation to the server side Received Date to solve
         //the above problem
@@ -453,7 +504,7 @@ public class BasicController implements BasicRestfulOperations {
         }
 
         patientFile.setCurrentStatus(history);
-    }
+    }*/
 
     @Override
     public boolean updateFiles(List<RestfulFile> files, Employee emp) throws RecordNotFoundException,

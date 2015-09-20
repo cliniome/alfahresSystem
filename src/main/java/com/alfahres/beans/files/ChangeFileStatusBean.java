@@ -85,17 +85,12 @@ public class ChangeFileStatusBean implements Serializable{
 
             FileHistory currentStatus = this.file.getCurrentStatus();
             FileHistory newStatus = new FileHistory();
-            newStatus.setAppointment_Hijri_Date(currentStatus.getAppointment_Hijri_Date());
-            newStatus.setAppointment_Made_by(currentStatus.getAppointment_Made_by());
-            newStatus.setAppointmentType(currentStatus.getAppointmentType());
-            newStatus.setBatchRequestNumber(currentStatus.getBatchRequestNumber());
-            newStatus.setClinicCode(currentStatus.getClinicCode());
-            newStatus.setClinicDocCode(currentStatus.getClinicDocCode());
-            newStatus.setClinicDocName(currentStatus.getClinicDocName());
-            newStatus.setClinicName(currentStatus.getClinicName());
+
+
+            //Set the same appointment for that file
+            newStatus.setAppointment(currentStatus.getAppointment());
             newStatus.setContainerId(currentStatus.getContainerId());
             newStatus.setCreatedAt(new Date());
-            newStatus.setAppointment_Date_G(currentStatus.getAppointment_Date_G());
             newStatus.setOwner(this.getAssignedEmployee());
             newStatus.setPatientFile(this.file);
 

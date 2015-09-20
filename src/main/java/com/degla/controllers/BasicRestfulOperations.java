@@ -14,7 +14,6 @@ import java.util.List;
 public interface BasicRestfulOperations {
 
 
-    public List<RestfulRequest> getNewRequests(String userName);
     public boolean updateFile(RestfulFile file,Employee emp) throws RecordNotFoundException, WorkflowOutOfBoundException;
     public boolean updateFiles(List<RestfulFile> files,Employee emp) throws RecordNotFoundException, WorkflowOutOfBoundException;
     public List<RestfulFile> searchFiles(String query);

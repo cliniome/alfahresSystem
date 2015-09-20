@@ -764,36 +764,7 @@ public class FilesService extends BasicRestful {
        }
     }*/
 
-    @Path("/new")
-    @GET
-    @Produces("application/json")
-   public Response newRequests()
-   {
-       BasicController controller = new BasicController();
 
-       Employee emp = getAccount();
-
-        if(emp != null)
-        {
-            String currentUserName = emp.getUserName();
-
-            Gson gson = RestGsonBuilder.createGson();
-
-            List<RestfulRequest> availableRequests = controller.getNewRequests(currentUserName);
-
-
-
-            if(availableRequests == null)
-                return Response.noContent().build();
-            else
-            {
-                //Sort them according
-                return Response.ok(gson.toJson(availableRequests)).build();
-            }
-
-        }else
-            return Response.status(UNAUTHORIZED).build();
-   }
 
     @Path("/selectDate")
     @GET

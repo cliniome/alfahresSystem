@@ -46,6 +46,9 @@ public class SystemService {
     private TransferDAO transferManager;
 
     @Autowired
+    private AppointmentsDAO appointmentManager;
+
+    @Autowired
     private DatePatternsBean datePatternsBean;
 
 
@@ -153,5 +156,13 @@ public class SystemService {
 
     public void setDatePatternsBean(DatePatternsBean datePatternsBean) {
         this.datePatternsBean = datePatternsBean;
+    }
+
+    public AppointmentsDAO getAppointmentManager() {
+        return appointmentManager;
+    }
+
+    public void setAppointmentManager(AppointmentsDAO appointmentManager) {
+        this.appointmentManager = appointmentManager;
     }
 }

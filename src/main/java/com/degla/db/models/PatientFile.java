@@ -156,20 +156,20 @@ public class PatientFile extends EntityEO {
         file.setShelfId(this.getShelfId());
         file.setState(this.getCurrentStatus().getState().toString());
         file.setTemporaryCabinetId(this.getCurrentStatus().getContainerId());
-        file.setAppointmentDate(this.getCurrentStatus().getAppointment_Hijri_Date());
-        file.setAppointmentDateH(this.getCurrentStatus().getAppointment_Hijri_Date());
-        file.setAppointmentMadeBy(this.getCurrentStatus().getAppointment_Made_by());
-        file.setAppointmentTime(this.getCurrentStatus().getAppointment_Hijri_Date());
-        file.setAppointmentType(this.getCurrentStatus().getAppointmentType());
-        file.setBatchRequestNumber(this.getCurrentStatus().getBatchRequestNumber());
-        file.setClinicCode(this.getCurrentStatus().getClinicCode());
-        file.setClinicDocCode(this.getCurrentStatus().getClinicDocCode());
-        file.setClinicDocName(this.getCurrentStatus().getClinicDocName());
-        file.setClinicName(this.getCurrentStatus().getClinicName());
+        file.setAppointmentDate(this.getCurrentStatus().getAppointment().getAppointment_Date().toString());
+        file.setAppointmentDateH(this.getCurrentStatus().getAppointment().getAppointment_date_h());
+        file.setAppointmentMadeBy(this.getCurrentStatus().getAppointment().getAppointment_made_by());
+        file.setAppointmentTime(this.getCurrentStatus().getAppointment().getAppointment_time());
+        file.setAppointmentType(this.getCurrentStatus().getAppointment().getAppointment_Type());
+        file.setBatchRequestNumber(this.getCurrentStatus().getAppointment().getBatchRequestNumber());
+        file.setClinicCode(this.getCurrentStatus().getAppointment().getClinicCode());
+        file.setClinicDocCode(this.getCurrentStatus().getAppointment().getClinic_Doc_Code());
+        file.setClinicDocName(this.getCurrentStatus().getAppointment().getRequestingDocName());
+        file.setClinicName(this.getCurrentStatus().getAppointment().getClinicName());
         file.setPatientName(this.getPatientName());
         file.setPatientNumber(this.getPatientNumber());
         file.setState(this.getCurrentStatus().getState().toString());
-        file.setInpatient(this.getCurrentStatus().isInpatient());
+        file.setInpatient(this.getCurrentStatus().getAppointment().isInpatient());
         file.setOperationDate(this.getCurrentStatus().getCreatedAt().getTime());
 
 
