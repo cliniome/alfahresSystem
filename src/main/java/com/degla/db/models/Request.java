@@ -40,6 +40,7 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
     @Index(name="req_patientName")
     private String patientName;
 
+
     @Column(name="appointment_Type")
     private String appointment_Type;
 
