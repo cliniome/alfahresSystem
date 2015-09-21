@@ -1,4 +1,5 @@
 package com.degla.restful;
+
 import com.degla.controllers.BasicController;
 import com.degla.db.models.*;
 import com.degla.exceptions.RecordNotFoundException;
@@ -63,7 +64,8 @@ public class FilesService extends BasicRestful {
                 return Response.status(UNAUTHORIZED).build();
 
 
-            List<Transfer> transfers = systemService.getTransferManager().getTransfers(fileNumber);
+            //List<Transfer> transfers = systemService.getTransferManager().getTransfers(fileNumber);
+            List<Appointment> transfers = systemService.getAppointmentManager().getTransfersFor(fileNumber);
 
             if(transfers == null || transfers.size() <= 0 )
                 return Response.status(NOT_FOUND).build();
@@ -72,16 +74,16 @@ public class FilesService extends BasicRestful {
             Collections.sort(transfers);
 
             //get the first one
-            Transfer currentTransfer = transfers.get(0);
+            Appointment currentTransfer = transfers.get(0);
 
             //Create a transfer info card
             RestfulTransferInfo info = new RestfulTransferInfo();
-            info.setAppointmentDate(currentTransfer.getAppointment_Hijri_Date());
-            info.setAppointmentTime(currentTransfer.getAppointmentTime());
+            info.setAppointmentDate(currentTransfer.getAppointment_date_h());
+            info.setAppointmentTime(currentTransfer.getAppointment_time());
             info.setClinicCode(currentTransfer.getClinicCode());
             info.setClinicName(currentTransfer.getClinicName());
-            info.setClinicDocCode(currentTransfer.getClinicDocCode());
-            info.setClinicDocName(currentTransfer.getClinicDocName());
+            info.setClinicDocCode(currentTransfer.getClinic_Doc_Code());
+            info.setClinicDocName(currentTransfer.getRequestingDocName());
             info.setInpatient(currentTransfer.isInpatient());
 
             String coordinatorName = "<No Coordinator Available>";
@@ -488,16 +490,10 @@ public class FilesService extends BasicRestful {
 
 
 
-            }catch (RecordNotFoundException e)
+            }catch (Exception e)
             {
                 return Response.ok(new BooleanResult(false,e.getMessage())).build();
 
-            }catch(WorkflowOutOfBoundException e)
-            {
-                return Response.ok(new BooleanResult(false,e.getMessage())).build();
-            }catch(EntityNotFoundException e)
-            {
-                return Response.ok(new BooleanResult(false,e.getMessage())).build();
             }
 
         }
@@ -538,7 +534,7 @@ public class FilesService extends BasicRestful {
             }else
             {
                 availableFiles = systemService.getFilesService().getFilesByStateAndEmployee(
-                        FileStates.COORDINATOR_IN, currentEmp,new Date(serverTimeStamp));
+                        FileStates.COORDINATOR_IN, currentEmp, new Date(serverTimeStamp));
             }
 
 
@@ -552,16 +548,16 @@ public class FilesService extends BasicRestful {
                 for(PatientFile file : availableFiles)
                 {
 
-                    boolean hasMultipleClinics = systemService.getTransferManager().hasTransferInTheSameDay(file.getFileID(),
-                            file.getCurrentStatus().getAppointment_Date_G());
+                    boolean hasMultipleClinics = systemService.getAppointmentManager().hasTransfer(file.getFileID(),file.getCurrentStatus()
+                            .getAppointment().getAppointment_Date());
 
-                    RestfulClinic currentClinic = getRestfulClinicByCode(file.getCurrentStatus().getClinicCode(),clinics);
+                    RestfulClinic currentClinic = getRestfulClinicByCode(file.getCurrentStatus().getAppointment().getClinicCode(),clinics);
 
                     if(currentClinic == null)
                     {
                         RestfulClinic clinic = new RestfulClinic();
-                        clinic.setClinicCode(file.getCurrentStatus().getClinicCode());
-                        clinic.setClinicName(file.getCurrentStatus().getClinicName());
+                        clinic.setClinicCode(file.getCurrentStatus().getAppointment().getClinicCode());
+                        clinic.setClinicName(file.getCurrentStatus().getAppointment().getClinicName());
                         RestfulFile restfile = file.toRestfulFile();
                         restfile.setMultipleClinics(hasMultipleClinics);
                         clinic.getFiles().add(restfile);
@@ -645,16 +641,16 @@ public class FilesService extends BasicRestful {
                 for(PatientFile file : availableFiles)
                 {
 
-                    boolean hasMultipleClinics = systemService.getTransferManager().
-                            hasTransferInTheSameDay(file.getFileID(),new Date());
+                    boolean hasMultipleClinics = systemService.getAppointmentManager().hasTransfer(file.getFileID(),
+                            file.getCurrentStatus().getAppointment().getAppointment_Date());
 
-                    RestfulClinic currentClinic = getRestfulClinicByCode(file.getCurrentStatus().getClinicCode(),clinics);
+                    RestfulClinic currentClinic = getRestfulClinicByCode(file.getCurrentStatus().getAppointment().getClinicCode(),clinics);
 
                     if(currentClinic == null)
                     {
                         RestfulClinic clinic = new RestfulClinic();
-                        clinic.setClinicCode(file.getCurrentStatus().getClinicCode());
-                        clinic.setClinicName(file.getCurrentStatus().getClinicName());
+                        clinic.setClinicCode(file.getCurrentStatus().getAppointment().getClinicCode());
+                        clinic.setClinicName(file.getCurrentStatus().getAppointment().getClinicName());
                         RestfulFile restfile = file.toRestfulFile();
                         restfile.setMultipleClinics(hasMultipleClinics);
                         clinic.getFiles().add(restfile);

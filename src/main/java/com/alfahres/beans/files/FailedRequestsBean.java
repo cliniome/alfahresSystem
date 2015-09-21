@@ -1,7 +1,6 @@
 package com.alfahres.beans.files;
 
 import com.degla.db.models.Appointment;
-import com.degla.db.models.Request;
 import com.degla.utils.WebUtils;
 
 import javax.annotation.PreDestroy;

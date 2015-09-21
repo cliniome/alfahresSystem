@@ -2,7 +2,6 @@ package com.alfahres.beans;
 
 import com.degla.db.models.Appointment;
 import com.degla.db.models.Employee;
-import com.degla.db.models.Request;
 import com.degla.db.models.RoleTypes;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;

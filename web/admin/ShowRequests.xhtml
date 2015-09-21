@@ -27,7 +27,7 @@
                          selectionMode="single" selection="#{filerequest}"
                          paginatorTemplate=" {Exporters}    {CurrentPageReport}  {FirstPageLink}
                          {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         var="filerequest" value="#{requestsBean.availableRequests}"
+                         var="filerequest" value="#{requestsBean.availableAppointments}"
                          stickyHeader="true" emptyMessage="There are no Available Requests"
                          widgetVar="requestsTable">
 
@@ -49,7 +49,7 @@
 
                 <p:column exportable="true"
                           headerText="Request Number" sortable="true" sortBy="#{filerequest.appointmentId}"  filterable="true" filterBy="#{filerequest.appointmentId}">
-                    <p:outputLabel value="#{filerequest.appointmentId}"/>
+                    <p:outputLabel value="#{filerequest.fileNumber}"/>
                 </p:column>
 
                 <p:column exportable="true" headerText="Patient Number" sortable="true"
@@ -90,7 +90,7 @@
                 </p:column>
 
                 <p:column headerText="...">
-                    <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.appointmentId}route=1">Edit Request</a>
+                    <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.id}&amp;route=1">Edit Request</a>
                 </p:column>
 
             </p:dataTable>

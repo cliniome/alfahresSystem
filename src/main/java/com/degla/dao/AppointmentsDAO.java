@@ -33,6 +33,57 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
         return currentQuery.getResultList();
     }
 
+    public boolean hasTransfer(String fileNumber , Date appointmentDate)
+    {
+        try
+        {
+            String queryString = "select count(app) from Appointment app where app.fileNumber = :number and app.appointment_Date >= :startdate and " +
+                    "app.appointment_Date <=:enddate and app.active = true";
+
+            Query currentQuery = getManager().createQuery(queryString);
+
+            Date startOfDay = AlfahresDateUtils.getStartOfDay(appointmentDate);
+            Date endofDay = AlfahresDateUtils.getEndOfDay(appointmentDate);
+
+            currentQuery.setParameter("number",fileNumber);
+            currentQuery.setParameter("startdate",startOfDay);
+            currentQuery.setParameter("enddate",endofDay);
+
+            return (((Long)currentQuery.getSingleResult()) > 0 ? true : false);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public List<Appointment> getTransfersFor(String fileNumber)
+    {
+        try
+        {
+            String queryString = "select app from Appointment app where app.fileNumber = :number and app.appointment_Date >= :startdate and " +
+                    "app.appointment_Date <=:enddate and app.active = true";
+
+            Query currentQuery = getManager().createQuery(queryString);
+
+            Date startOfDay = AlfahresDateUtils.getStartOfDay(new Date());
+            Date endofDay = AlfahresDateUtils.getEndOfDay(new Date());
+
+            currentQuery.setParameter("number",fileNumber);
+            currentQuery.setParameter("startdate",startOfDay);
+            currentQuery.setParameter("enddate",endofDay);
+
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return null;
+        }
+    }
+
     public List<Appointment> getNewRequestsFor(String username)
     {
         try
@@ -242,7 +293,7 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
     {
         try
         {
-            String queryString = "select r from Appointment r where r.assignedTo.userName=:username and " +
+            String queryString = "select r from Appointment r where r.active = true and r.assignedTo.userName=:username and " +
                     "r.assignedTo.active=:state and r.appointment_Date >= :date and r.appointment_Date <= :endofDay and r.fileNumber not in " +
                     " (select p.fileID from PatientFile p where p.currentStatus.state != :filestate) ";
 

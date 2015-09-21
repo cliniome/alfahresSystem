@@ -1,6 +1,6 @@
 package com.degla.utils;
 
-import com.degla.db.models.Request;
+import com.degla.db.models.Appointment;
 
 import java.util.Comparator;
 
@@ -12,10 +12,10 @@ public class LazyRequestSorter<T extends AnnotatingModel> implements Comparator<
     @Override
     public int compare(T first, T second) {
 
-        if((first instanceof Request) && (second instanceof Request))
+        if((first instanceof Appointment) && (second instanceof Appointment))
         {
-            Request firstReq = (Request)first;
-            Request secondReq = (Request)second;
+            Appointment firstReq = (Appointment)first;
+            Appointment secondReq = (Appointment)second;
             BarcodeUtils firstUtils = new BarcodeUtils(firstReq.getFileNumber());
             BarcodeUtils secondUtils = new BarcodeUtils(secondReq.getFileNumber());
             int firstCabinId = Integer.parseInt(firstUtils.getCabinID()+firstUtils.getColumnNo());

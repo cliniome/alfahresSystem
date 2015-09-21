@@ -26,9 +26,6 @@ public class RestfulSecurityDataService implements UserDetailsService , Applicat
 
         Employee emp = alfahresService.getEmployeeService().getEmployeeByUserName(s);
 
-
-
-
         return emp;
 
     }

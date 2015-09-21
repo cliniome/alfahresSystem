@@ -9,11 +9,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import com.degla.dao.AbstractDAO;
-import com.degla.db.models.Request;
 import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 
 @SuppressWarnings("serial")

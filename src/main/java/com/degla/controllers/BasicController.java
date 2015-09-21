@@ -6,9 +6,7 @@ import com.degla.exceptions.WorkflowOutOfBoundException;
 import com.degla.restful.models.*;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
-import com.sun.jersey.core.impl.provider.entity.XMLJAXBElementProvider;
 import org.apache.commons.lang3.time.DateUtils;
-import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -405,14 +403,7 @@ public class BasicController implements BasicRestfulOperations {
 //    }
 
 
-    /**
-     * This method will try to add a completely new File History to a recent Patient File
-     * @param patientFile
-     * @param file
-     * @param emp
-     * @param request
-     * @throws Exception
-     */
+
    /* private void addNewFileHistory(PatientFile patientFile,RestfulFile file , Employee emp , Request request)
             throws Exception
     {

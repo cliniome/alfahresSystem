@@ -35,8 +35,6 @@ public class SystemService {
     @Autowired
     private SystemSettings systemSettings;
     @Autowired
-    private RequestsDAO requestsManager;
-    @Autowired
     private FileRouter fileRouter;
     @Autowired
     private ClinicDAO clinicManager;
@@ -108,13 +106,7 @@ public class SystemService {
         this.systemSettings = systemSettings;
     }
 
-    public synchronized RequestsDAO getRequestsManager() {
-        return requestsManager;
-    }
 
-    public void setRequestsManager(RequestsDAO requestsManager) {
-        this.requestsManager = requestsManager;
-    }
 
     public synchronized FileRouter getFileRouter() {
         return fileRouter;

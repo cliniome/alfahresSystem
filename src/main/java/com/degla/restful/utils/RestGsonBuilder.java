@@ -8,9 +8,6 @@ import com.google.gson.GsonBuilder;
  */
 public class RestGsonBuilder {
 
-
-
-
     public static Gson createGson()
     {
         GsonBuilder builder = new GsonBuilder();

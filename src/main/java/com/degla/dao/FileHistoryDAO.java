@@ -2,7 +2,6 @@ package com.degla.dao;
 
 import com.degla.db.models.FileHistory;
 import com.degla.db.models.PatientFile;
-import com.degla.db.models.Request;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -57,29 +56,5 @@ where e.msgFrom IN (select distinct m.msgFrom
         }
     }
 
-
-
-    public Boolean appointmentExistsInHistory(Request request)
-    {
-        try
-        {
-            String queryString = "select count(distinct h.id) from FileHistory h where h.patientFile.fileID = :fileNumber and h.clinicCode=:code and h.appointment_Date_G = :appointmentDate";
-            Query currentQuery = getManager().createQuery(queryString);
-            currentQuery.setParameter("fileNumber",request.getFileNumber());
-            currentQuery.setParameter("code",request.getClinicCode());
-            currentQuery.setParameter("appointmentDate",request.getAppointment_Date());
-
-            long resultCount = (Long)currentQuery.getSingleResult();
-
-            if(resultCount > 0) return true;
-            else return false;
-
-        }catch (Exception s)
-        {
-            s.printStackTrace();
-
-            return null;
-        }
-    }
 
 }

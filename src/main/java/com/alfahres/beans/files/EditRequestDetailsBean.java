@@ -1,9 +1,6 @@
 package com.alfahres.beans.files;
 
 import com.degla.db.models.Appointment;
-import com.degla.db.models.FileStates;
-import com.degla.db.models.PatientFile;
-import com.degla.db.models.Request;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.BarcodeUtils;
@@ -11,9 +8,7 @@ import com.degla.utils.WebUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
+
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;

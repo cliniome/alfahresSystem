@@ -2,7 +2,6 @@ package com.degla.utils;
 
 import com.degla.dao.AbstractDAO;
 import com.degla.dao.AppointmentsDAO;
-import com.degla.dao.RequestsDAO;
 import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;

@@ -75,7 +75,7 @@ public class SyncService extends BasicRestful implements Serializable {
                     }
 
                     //That means the current file has been updated successfully , so check for transfers
-                    this.checkFileForTransfer(file,currentEmployee,controller,failedBatches);
+                   // this.checkFileForTransfer(file,currentEmployee,controller,failedBatches);
                 }
 
                 if(failedBatches.loaded())
@@ -93,102 +93,5 @@ public class SyncService extends BasicRestful implements Serializable {
             return Response.ok(new BooleanResult(false,s.getMessage())).build();
         }
     }
-
-    private void checkFileForTransfer(RestfulFile file, Employee currentEmployee,BasicController controller,SyncBatch failedBatches) {
-
-        try
-        {
-            boolean hasTransfer = controller.getSystemService().getTransferManager().hasTransfer(file.getFileNumber());
-            List<Transfer> transferList = controller.getSystemService().getTransferManager()
-                    .getTransfers(file.getFileNumber());
-
-            PatientFile patientFile = controller.getSystemService().getFilesService().getFileWithNumber(file.getFileNumber());
-
-            //Sort them according to the appointment time
-            Collections.sort(transferList);
-
-            if(hasTransfer && transferList != null && transferList.size() > 0)
-            {
-
-                Transfer recentTransfer = transferList.get(0);
-
-                if(patientFile.getCurrentStatus().getState() == FileStates.COORDINATOR_OUT)
-                {
-                    //that means the file has a transfer and the coordinator is submitting that file
-                    //So check for the dates of the current transfer with the patient file
-                    //if the dates are in the same day , that means it is a transfer ,
-                    //otherwise , it is not a transfer
-                    //that means it is a true transfer , so transfer that file
-                    FileHistory transferrableHistory = recentTransfer.toFileHistory();
-
-                    transferrableHistory.setOwner(currentEmployee);
-
-
-                    transferrableHistory.setPatientFile(patientFile);
-
-                    //now add that history to the current patient file and update it
-                    patientFile.setCurrentStatus(transferrableHistory);
-
-                    //now update that patient file
-                    boolean result = controller.getSystemService().getFilesService().updateEntity(patientFile);
-                    result &= controller.getSystemService().getTransferManager().removeEntity(recentTransfer);
-
-                    if(!result)
-                        failedBatches.getFiles().add(file);
-
-
-                    //Otherwise , if that file  has been submitted by keeper during the final process of the lifecycle at the archiving step
-                }
-
-            }else
-            {
-                transferList = controller.getSystemService().getTransferManager().getFutureTransfer(file.getFileNumber());
-
-                if(transferList != null && transferList.size() > 0)
-                {
-                    try
-                    {
-                        if(patientFile.getCurrentStatus().getState() == FileStates.CHECKED_IN)
-                        {
-                            Transfer futureTransfer = transferList.get(0);
-
-                            //That means it is properly a new request, so add it
-                            Request transferRequest = futureTransfer.toRequestObject();
-
-                            //Route the current request
-                            List<Request> tempRequests = new ArrayList<Request>();
-                            tempRequests.add(transferRequest);
-
-                            FileRouter router = new FileRouter(controller.getSystemService().getEmployeeService());
-                            router.routeFiles(tempRequests);
-
-                            //after that , try to add the current request into the database
-                            boolean result = controller.getSystemService().getRequestsManager().addEntity(transferRequest);
-                            result &= controller.getSystemService().getTransferManager().removeEntity(futureTransfer);
-                        }
-
-                    }catch (Exception s)
-                    {
-                        s.printStackTrace();
-                        return;
-                    }
-                }
-
-
-            }
-
-        }catch (Exception s)
-        {
-            s.printStackTrace();
-        }
-
-    }
-
-
-    private boolean transferInTheSameDay(Date date, Date appointment_date_g) {
-
-        return DateUtils.isSameDay(date,appointment_date_g);
-    }
-
 
 }
