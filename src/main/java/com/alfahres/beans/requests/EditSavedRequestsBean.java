@@ -1,15 +1,13 @@
 package com.alfahres.beans.requests;
 
+import com.degla.db.models.Appointment;
 import com.degla.db.models.Employee;
-import com.degla.db.models.Request;
 import com.degla.db.models.RoleTypes;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.WebUtils;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
@@ -24,12 +22,12 @@ public class EditSavedRequestsBean implements Serializable {
 
 
     private SystemService systemService;
-    private String fileNumber;
+    private String appointmentId;
     private String patientNumber;
     private String patientName;
     private Employee chosenEmployee;
     private List<Employee> employees;
-    private Request chosenRequest;
+    private Appointment chosenRequest;
 
     private boolean route;
 
@@ -61,10 +59,10 @@ public class EditSavedRequestsBean implements Serializable {
             if(this.chosenRequest == null)
             {
 
-                this.chosenRequest = systemService.getRequestsManager().getSingleRequest(this.getFileNumber());
+                this.chosenRequest = systemService.getAppointmentManager().getEntity(Integer.parseInt(this.getAppointmentId()));
             }
 
-            boolean done = systemService.getRequestsManager().removeEntity(this.chosenRequest);
+            boolean done = systemService.getAppointmentManager().removeEntity(this.chosenRequest);
 
             if(done)
             {
@@ -84,16 +82,16 @@ public class EditSavedRequestsBean implements Serializable {
             if(this.chosenRequest == null)
             {
                 //WebUtils.addMessage("There was a problem , Please contact your system administrator");
-                this.chosenRequest = this.systemService.getRequestsManager().getSingleRequest(this.getFileNumber());
+                this.chosenRequest = this.systemService.getAppointmentManager().getEntity(Integer.parseInt(this.getAppointmentId()));
             }
 
 
-            this.chosenRequest.setFileNumber(this.getFileNumber());
+            this.chosenRequest.setFileNumber(this.getAppointmentId());
             this.chosenRequest.setPatientName(this.getPatientName());
             this.chosenRequest.setPatientNumber(this.getPatientNumber());
             this.chosenRequest.setAssignedTo(this.getChosenEmployee());
 
-            boolean result = systemService.getRequestsManager().updateEntity(this.chosenRequest);
+            boolean result = systemService.getAppointmentManager().updateEntity(this.chosenRequest);
 
             if(result)
             {
@@ -134,24 +132,24 @@ public class EditSavedRequestsBean implements Serializable {
 
         this.setRoute((routeInt > 0) ? true : false);
 
-        this.chosenRequest = systemService.getRequestsManager().getSingleRequest(id);
+        this.chosenRequest = systemService.getAppointmentManager().getEntity(Integer.parseInt(id));
 
         if(this.chosenRequest != null)
         {
             this.chosenEmployee = this.chosenRequest.getAssignedTo();
-            this.setFileNumber(this.chosenRequest.getFileNumber());
+            this.setAppointmentId(this.chosenRequest.getFileNumber());
             this.setPatientName(this.chosenRequest.getPatientName());
             this.setPatientNumber(this.chosenRequest.getPatientNumber());
         }
 
     }
 
-    public String getFileNumber() {
-        return fileNumber;
+    public String getAppointmentId() {
+        return appointmentId;
     }
 
-    public void setFileNumber(String fileNumber) {
-        this.fileNumber = fileNumber;
+    public void setAppointmentId(String appointmentId) {
+        this.appointmentId = appointmentId;
     }
 
     public String getPatientNumber() {

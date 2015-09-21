@@ -48,8 +48,8 @@
                 </f:facet>
 
                 <p:column exportable="true"
-                          headerText="Request Number" sortable="true" sortBy="#{filerequest.fileNumber}"  filterable="true" filterBy="#{filerequest.fileNumber}">
-                    <p:outputLabel value="#{filerequest.fileNumber}"/>
+                          headerText="Request Number" sortable="true" sortBy="#{filerequest.appointmentId}"  filterable="true" filterBy="#{filerequest.appointmentId}">
+                    <p:outputLabel value="#{filerequest.appointmentId}"/>
                 </p:column>
 
                 <p:column exportable="true" headerText="Patient Number" sortable="true"  filterable="true" filterBy="#{filerequest.patientNumber}"
@@ -89,7 +89,7 @@
                 </p:column>
 
                 <p:column headerText="...">
-                    <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.fileNumber}&amp;route=0">Edit Request</a>
+                    <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.appointmentId}&amp;route=0">Edit Request</a>
                 </p:column>
 
             </p:dataTable>

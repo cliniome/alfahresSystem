@@ -24,6 +24,196 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
     }
 
 
+    public List<Appointment> searchAppointments(String query)
+    {
+        String queryString = "select r from Appointment r where r.fileNumber=:query or r.patientNumber =:query";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("query",query);
+
+        return currentQuery.getResultList();
+    }
+
+    public List<Appointment> getNewRequestsFor(String username)
+    {
+        try
+        {
+
+            String queryString = "select r from Appointment r where r.active=true and r.assignedTo.userName=:username and " +
+                    "r.assignedTo.active=:state and r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state != :filestate)";
+
+            Query currentQuery = getManager().createQuery(queryString);
+
+            currentQuery.setParameter("username",username);
+            currentQuery.setParameter("state",true);
+            currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
+
+            return currentQuery.getResultList();
+
+
+        }catch(Exception s)
+        {
+            return null;
+        }
+    }
+
+    public  long getRequestsCountFor(String username)
+    {
+
+        try
+        {
+            String queryString = "select count(r) from Appointment r where r.active=true and r.assignedTo.userName=:username and " +
+                    "r.assignedTo.active=:state";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("username",username);
+            currentQuery.setParameter("state",true);
+            return (Long)currentQuery.getSingleResult();
+
+
+        }catch(Exception s)
+        {
+            return Long.MIN_VALUE;
+        }
+    }
+
+    public long getTotalWatchList()
+    {
+        return getCountOfWatchListRequests();
+    }
+
+    public List<Appointment> getAllWatchListRequests()
+    {
+        try
+        {
+            String queryString = "select r from Appointment r where r.active = true and " +
+                    " r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate " +
+                    " and p.fileID = r.fileNumber)";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<Appointment>();
+        }
+    }
+
+    public boolean appointmentExistsBefore(Appointment appointment)
+    {
+        try
+        {
+
+            String queryString = "select count(app) from Appointment app where app.fileNumber = :number and " +
+                    "app.patientNumber = :patientNumber and " +
+                    " app.appointment_Date = :date and app.clinicCode = :code";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("number",appointment.getFileNumber());
+            currentQuery.setParameter("patientNumber",appointment.getPatientNumber());
+            currentQuery.setParameter("date",appointment.getAppointment_Date());
+            currentQuery.setParameter("code",appointment.getClinicCode());
+
+            return ((Long)currentQuery.getSingleResult() > 0 ? true : false);
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return false;
+        }
+    }
+
+    public long getTotalNewAppointments()
+    {
+        String queryString = "select count(r) from Appointment r where r.active = true and " +
+                " r.fileNumber in (select p.fileID from PatientFile p where p.currentStatus.state =:filestate) or " +
+                " r.fileNumber not in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber)";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
+        return (Long)currentQuery.getSingleResult();
+    }
+
+
+    public long getMaxResultsByDate(Date chosenDate)
+    {
+        try {
+            Date endofDay = AlfahresDateUtils.getEndOfDay(chosenDate);
+            Date startOfDay = AlfahresDateUtils.getStartOfDay(chosenDate);
+            String queryString = "select count(t) from Appointment t where t.active = true and t.appointment_Date >= :date and t.appointment_Date <= :endofDay";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("date",startOfDay);
+            currentQuery.setParameter("endofDay",endofDay);
+            return (Long)currentQuery.getSingleResult();
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return 0L;
+        }
+    }
+
+
+    @Override
+    public List<Appointment> getPaginatedResults(int first, int pageSize) {
+
+        try
+        {
+            String queryString = "select r from Appointment r where r.active = true and " +
+                    " r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state != :filestate)";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
+            currentQuery.setFirstResult(first);
+            currentQuery.setMaxResults(pageSize);
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<Appointment>();
+        }
+    }
+
+    @Override
+    public long getMaxResults() {
+
+        String queryString = "select count(r) from Appointment r where r.active = true and " +
+                " r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state !=:filestate)";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
+        return Long.parseLong(currentQuery.getSingleResult().toString());
+    }
+
+    public long getCountOfWatchListRequests()
+    {
+        String queryString = "select count(r) from Appointment r where r.active=true and r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate and " +
+                "p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber)";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
+
+        return Long.parseLong(currentQuery.getSingleResult().toString());
+    }
+
+    public List<Appointment> getAllWatchListRequests(int first , int pageSize)
+    {
+        try
+        {
+            String queryString = "select r from Appointment r where r.active = true and " +
+                    "r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate " +
+                    "and p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber)";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
+            currentQuery.setFirstResult(first);
+            currentQuery.setMaxResults(pageSize);
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<Appointment>();
+        }
+    }
+
+
     public List<Appointment> getTodayAppointments()
     {
         try

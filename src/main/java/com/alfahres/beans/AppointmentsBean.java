@@ -1,21 +1,16 @@
 package com.alfahres.beans;
 
-import com.degla.db.models.Request;
-import com.degla.security.JSFUtils;
+import com.degla.db.models.Appointment;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.ExcelFileBuilder;
-import com.degla.utils.GenericLazyDataModel;
-import com.degla.utils.RequestsLazyDataModel;
+import com.degla.utils.AppointmentsLazyDataModel;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
@@ -28,14 +23,14 @@ import java.util.Locale;
 /**
  * Created by snouto on 20/05/15.
  */
-public class RequestsBean implements Serializable {
+public class AppointmentsBean implements Serializable {
 
 
     private SystemService systemService;
 
-    private RequestsLazyDataModel<Request> availableRequests;
+    private AppointmentsLazyDataModel<Appointment> availableAppointments;
 
-    private RequestsLazyDataModel<Request> watchListRequests;
+    private AppointmentsLazyDataModel<Appointment> watchListAppointments;
 
     private StreamedContent excelFile;
 
@@ -44,7 +39,7 @@ public class RequestsBean implements Serializable {
     private DashboardBean dashboardBean;
 
 
-    public RequestsBean()
+    public AppointmentsBean()
     {
         try
         {
@@ -79,20 +74,20 @@ public class RequestsBean implements Serializable {
 
     public long getTotalCount()
     {
-        if(getAvailableRequests() == null || getAvailableRequests().getRowCount() <=0) return 0;
-        else return getAvailableRequests().getRowCount();
+        if(getAvailableAppointments() == null || getAvailableAppointments().getRowCount() <=0) return 0;
+        else return getAvailableAppointments().getRowCount();
     }
 
     public long getTotalWatchList()
     {
-        if(getWatchListRequests() == null || getWatchListRequests().getRowCount() <= 0 ) return 0;
-        else return getWatchListRequests().getRowCount();
+        if(getWatchListAppointments() == null || getWatchListAppointments().getRowCount() <= 0 ) return 0;
+        else return getWatchListAppointments().getRowCount();
     }
 
     private void initRequests()
     {
-        setAvailableRequests(new RequestsLazyDataModel<Request>(systemService.getRequestsManager(),false));
-        setWatchListRequests(new RequestsLazyDataModel<Request>(systemService.getRequestsManager(),true));
+        setAvailableAppointments(new AppointmentsLazyDataModel<Appointment>(systemService.getAppointmentManager(),false));
+        setWatchListAppointments(new AppointmentsLazyDataModel<Appointment>(systemService.getAppointmentManager(),true));
     }
 
 
@@ -159,19 +154,20 @@ public class RequestsBean implements Serializable {
         this.dashboardBean = dashboardBean;
     }
 
-    public RequestsLazyDataModel<Request> getAvailableRequests() {
-        return availableRequests;
+
+    public AppointmentsLazyDataModel<Appointment> getAvailableAppointments() {
+        return availableAppointments;
     }
 
-    public void setAvailableRequests(RequestsLazyDataModel<Request> availableRequests) {
-        this.availableRequests = availableRequests;
+    public void setAvailableAppointments(AppointmentsLazyDataModel<Appointment> availableAppointments) {
+        this.availableAppointments = availableAppointments;
     }
 
-    public RequestsLazyDataModel<Request> getWatchListRequests() {
-        return watchListRequests;
+    public AppointmentsLazyDataModel<Appointment> getWatchListAppointments() {
+        return watchListAppointments;
     }
 
-    public void setWatchListRequests(RequestsLazyDataModel<Request> watchListRequests) {
-        this.watchListRequests = watchListRequests;
+    public void setWatchListAppointments(AppointmentsLazyDataModel<Appointment> watchListAppointments) {
+        this.watchListAppointments = watchListAppointments;
     }
 }

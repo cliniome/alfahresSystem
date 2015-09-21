@@ -64,11 +64,11 @@
                         </f:facet>
 
                         <p:column headerText="..">
-                          <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.fileNumber}">Edit Request</a>
+                          <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.appointmentId}">Edit Request</a>
                         </p:column>
 
                         <p:column headerText="Request Number">
-                            <p:outputLabel value="#{filerequest.fileNumber}"/>
+                            <p:outputLabel value="#{filerequest.appointmentId}"/>
                         </p:column>
 
                         <p:column headerText="Patient Number">

@@ -1,5 +1,6 @@
 package com.alfahres.beans.files;
 
+import com.degla.db.models.Appointment;
 import com.degla.db.models.Request;
 import com.degla.utils.WebUtils;
 
@@ -17,16 +18,16 @@ import java.util.List;
 public class FailedRequestsBean implements Serializable {
 
 
-    private List<Request> failedRequests;
+    private List<Appointment> failedRequests;
 
 
     public void deleteRequestWithNumber(String requestId)
     {
         try
         {
-            Request tempRequest = null;
+            Appointment tempRequest = null;
 
-            for(Request current : getFailedRequests())
+            for(Appointment current : getFailedRequests())
             {
                 if(current.getFileNumber().equals(requestId))
                 {
@@ -50,7 +51,7 @@ public class FailedRequestsBean implements Serializable {
         try
         {
 
-            this.setFailedRequests(new ArrayList<Request>());
+            this.setFailedRequests(new ArrayList<Appointment>());
 
             WebUtils.addMessage("Failed Requests have been deleted Successfully");
 
@@ -67,11 +68,12 @@ public class FailedRequestsBean implements Serializable {
         this.setFailedRequests(null);
     }
 
-    public List<Request> getFailedRequests() {
+
+    public List<Appointment> getFailedRequests() {
         return failedRequests;
     }
 
-    public void setFailedRequests(List<Request> failedRequests) {
+    public void setFailedRequests(List<Appointment> failedRequests) {
         this.failedRequests = failedRequests;
     }
 }

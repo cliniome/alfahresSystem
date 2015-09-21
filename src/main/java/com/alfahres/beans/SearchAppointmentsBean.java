@@ -1,5 +1,6 @@
 package com.alfahres.beans;
 
+import com.degla.db.models.Appointment;
 import com.degla.db.models.Employee;
 import com.degla.db.models.Request;
 import com.degla.db.models.RoleTypes;
@@ -8,20 +9,18 @@ import com.degla.system.SystemService;
 import com.degla.utils.WebUtils;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import java.util.List;
 
 /**
  * Created by snouto on 20/05/15.
  */
-public class SearchRequestsBean {
+public class SearchAppointmentsBean {
 
     private String searchQuery;
 
     private SystemService systemService;
 
-    private List<Request> searchedRequests;
+    private List<Appointment> searchedAppointments;
 
     private List<Employee> employees;
     private Employee chosenEmployee;
@@ -35,6 +34,7 @@ public class SearchRequestsBean {
         {
             systemService = SpringSystemBridge.services();
             employees = systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString(),true);
+
         }catch (Exception s)
         {
             s.printStackTrace();
@@ -50,18 +50,18 @@ public class SearchRequestsBean {
             if(getChosenEmployee() != null)
             {
                 //assign that employee to the selected requests
-                if(getSearchedRequests() != null && getSearchedRequests().size() > 0)
+                if(getSearchedAppointments() != null && getSearchedAppointments().size() > 0)
                 {
                     boolean result = true;
 
-                    for(Request currentRequest : getSearchedRequests())
+                    for(Appointment currentRequest : getSearchedAppointments())
                     {
                         if(currentRequest.isSelected())
                         {
                             currentRequest.setAssignedTo(getChosenEmployee());
 
                             //now update the current request
-                            result &= systemService.getRequestsManager().updateEntity(currentRequest);
+                            result &= systemService.getAppointmentManager().updateEntity(currentRequest);
                         }
 
                     }
@@ -91,13 +91,13 @@ public class SearchRequestsBean {
 
     public boolean foundResults()
     {
-        if(searchedRequests == null || searchedRequests.size() <=0) return false;
+        if(getSearchedAppointments() == null || getSearchedAppointments().size() <=0) return false;
         else return true;
     }
 
     public int totalCount()
     {
-        if(foundResults()) return searchedRequests.size();
+        if(foundResults()) return getSearchedAppointments().size();
         else return 0;
     }
 
@@ -105,9 +105,10 @@ public class SearchRequestsBean {
     {
         if(getSearchQuery() != null && getSearchQuery().length() > 0)
         {
-            searchedRequests = systemService.getRequestsManager().searchRequests(getSearchQuery());
+            setSearchedAppointments(systemService.getAppointmentManager()
+                    .searchAppointments(getSearchQuery()));
 
-            if(searchedRequests == null || searchedRequests.size() <=0)
+            if(getSearchedAppointments() == null || getSearchedAppointments().size() <=0)
                 WebUtils.addMessage("There are no available requests");
 
         }else
@@ -123,13 +124,6 @@ public class SearchRequestsBean {
         this.searchQuery = searchQuery;
     }
 
-    public List<Request> getSearchedRequests() {
-        return searchedRequests;
-    }
-
-    public void setSearchedRequests(List<Request> searchedRequests) {
-        this.searchedRequests = searchedRequests;
-    }
 
     public List<Employee> getEmployees() {
         return employees;
@@ -153,5 +147,13 @@ public class SearchRequestsBean {
 
     public void setUpdateResultsLbl(String updateResultsLbl) {
         this.updateResultsLbl = updateResultsLbl;
+    }
+
+    public List<Appointment> getSearchedAppointments() {
+        return searchedAppointments;
+    }
+
+    public void setSearchedAppointments(List<Appointment> searchedAppointments) {
+        this.searchedAppointments = searchedAppointments;
     }
 }

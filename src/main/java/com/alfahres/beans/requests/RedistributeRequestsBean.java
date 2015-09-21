@@ -1,5 +1,6 @@
 package com.alfahres.beans.requests;
 
+import com.degla.db.models.Appointment;
 import com.degla.db.models.Employee;
 import com.degla.db.models.Request;
 import com.degla.db.models.RoleTypes;
@@ -69,7 +70,7 @@ public class RedistributeRequestsBean implements Serializable {
                 return;
             }
 
-            List<Request> availableRequests = systemService.getRequestsManager().getNewRequestsFor(this.fromKeeper.getUsername());
+            List<Appointment> availableRequests = systemService.getAppointmentManager().getNewRequestsFor(this.fromKeeper.getUsername());
 
             if(availableRequests == null || availableRequests.size() <=0)
             {
@@ -86,10 +87,10 @@ public class RedistributeRequestsBean implements Serializable {
             //then update those requests
             boolean updateResult = true;
 
-            for(Request currentRequest : availableRequests)
+            for(Appointment currentRequest : availableRequests)
             {
                 //update them respectively
-               updateResult &= systemService.getRequestsManager().updateEntity(currentRequest);
+               updateResult &= systemService.getAppointmentManager().updateEntity(currentRequest);
             }
 
             if(updateResult)

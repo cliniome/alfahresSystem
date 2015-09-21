@@ -1,7 +1,7 @@
 package com.degla.utils.xml;
 
 import com.alfahres.beans.files.FileUploadWizardBean;
-import com.degla.db.models.Request;
+import com.degla.db.models.Appointment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -30,22 +30,22 @@ public class PatientFileReader {
     private static  String TEMP_CLINIC_NAME = "";
     private static  String TEMP_CLINIC_DOC_NAME="";
 
-    private  Request request = new Request();
+    private Appointment request = new Appointment();
 
-    private Map<BatchRequestDetails,List<Request>> batchedDetails;
+    private Map<BatchRequestDetails,List<Appointment>> batchedDetails;
 
     private AtomicInteger outerControlNum = new AtomicInteger(0);
 
     private BatchRequestDetails details;
 
-    private List<Request> requests;
+    private List<Appointment> requests;
 
 
     public PatientFileReader()
     {
-        setBatchedDetails(new HashMap<BatchRequestDetails, List<Request>>());
-        details = new BatchRequestDetails();
-        requests = new ArrayList<Request>();
+        setBatchedDetails(new HashMap<BatchRequestDetails, List<Appointment>>());
+        setDetails(new BatchRequestDetails());
+        requests = new ArrayList<Appointment>();
     }
 
 
@@ -108,22 +108,22 @@ public class PatientFileReader {
         if(controlNum.intValue() == NumberOfFields)
         {
             requests.add(request.clone());
-            request = new Request();
+            request = new Appointment();
             controlNum.set(0);
         }
 
         if(outerControlNum.intValue() == OuterNumberOfFields)
         {
-            List<Request> clonedRequests = new ArrayList<Request>();
+            List<Appointment> clonedRequests = new ArrayList<Appointment>();
 
-            for(Request req : requests)
+            for(Appointment req : requests)
             {
                 clonedRequests.add(req.clone());
             }
 
-            getBatchedDetails().put(details,clonedRequests);
+            getBatchedDetails().put(getDetails(),clonedRequests);
 
-            details = new BatchRequestDetails();
+            setDetails(new BatchRequestDetails());
             requests.clear();
             outerControlNum.set(0);
 
@@ -151,7 +151,7 @@ public class PatientFileReader {
             if(foundAttr != null)
             {
                 String attrValue = documentElement.getTextContent();
-                boolean reflectingResult = setBatchValueThroughReflection(details,foundAttr,attrValue);
+                boolean reflectingResult = setBatchValueThroughReflection(getDetails(),foundAttr,attrValue);
 
                 if(reflectingResult) outerControlNum.incrementAndGet();
             }
@@ -208,7 +208,7 @@ public class PatientFileReader {
         return doc;
     }
 
-    public  Map<BatchRequestDetails,List<Request>> buildRequests(FileUploadWizardBean bean) throws  Exception
+    public  Map<BatchRequestDetails,List<Appointment>> buildRequests(FileUploadWizardBean bean) throws  Exception
     {
 
 
@@ -229,11 +229,11 @@ public class PatientFileReader {
         {
             for(BatchRequestDetails details : getBatchedDetails().keySet())
             {
-                List<Request> availableRequests = getBatchedDetails().get(details);
+                List<Appointment> availableRequests = getBatchedDetails().get(details);
 
                 if(availableRequests != null)
                 {
-                    for(Request current : availableRequests)
+                    for(Appointment current : availableRequests)
                     {
                         current.setBatchRequestNumber(batchNumber);
                     }
@@ -249,15 +249,15 @@ public class PatientFileReader {
 
 
 
-    private  void recursivelyBuildRequests(Node documentElement, Request request, FileUploadWizardBean bean,
-                                                 AtomicInteger controlNum,List<Request> requests)
+    private  void recursivelyBuildRequests(Node documentElement, Appointment request, FileUploadWizardBean bean,
+                                                 AtomicInteger controlNum,List<Appointment> requests)
             throws NoSuchFieldException , IllegalAccessException , InvocationTargetException , NoSuchMethodException
     {
 
         if(controlNum.intValue() == NumberOfFields)
         {
             requests.add(request.clone());
-            request = new Request();
+            request = new Appointment();
             controlNum.set(0);
         }
 
@@ -302,7 +302,7 @@ public class PatientFileReader {
     }
 
 
-    private  boolean setValueThroughReflection(Request request, String foundAttr, String attrValue)
+    private  boolean setValueThroughReflection(Appointment request, String foundAttr, String attrValue)
             throws NoSuchFieldException,IllegalAccessException,InvocationTargetException,NoSuchMethodException {
 
 
@@ -346,11 +346,19 @@ public class PatientFileReader {
     }
 
 
-    public Map<BatchRequestDetails, List<Request>> getBatchedDetails() {
+    public BatchRequestDetails getDetails() {
+        return details;
+    }
+
+    public void setDetails(BatchRequestDetails details) {
+        this.details = details;
+    }
+
+    public Map<BatchRequestDetails, List<Appointment>> getBatchedDetails() {
         return batchedDetails;
     }
 
-    public void setBatchedDetails(Map<BatchRequestDetails, List<Request>> batchedDetails) {
+    public void setBatchedDetails(Map<BatchRequestDetails, List<Appointment>> batchedDetails) {
         this.batchedDetails = batchedDetails;
     }
 }

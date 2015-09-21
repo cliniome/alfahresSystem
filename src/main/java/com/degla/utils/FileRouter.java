@@ -1,10 +1,7 @@
 package com.degla.utils;
 
 import com.degla.dao.EmployeeDAO;
-import com.degla.db.models.Employee;
-import com.degla.db.models.Request;
-import com.degla.db.models.RoleEO;
-import com.degla.db.models.RoleTypes;
+import com.degla.db.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -34,7 +31,7 @@ public class FileRouter {
     }
 
 
-    public void routeFiles(List<Request> requests , List<Employee> toEmployees) throws Exception
+    public void routeFiles(List<Appointment> requests , List<Employee> toEmployees) throws Exception
     {
         if(requests == null || requests.size() <= 0) throw new Exception("Requests should not be null or empty " +
                 "during the distribution process");
@@ -45,9 +42,9 @@ public class FileRouter {
         int keepers_size = toEmployees.size();
         int requests_size = requests.size();
 
-        Collections.sort(requests, new Comparator<Request>() {
+        Collections.sort(requests, new Comparator<Appointment>() {
             @Override
-            public int compare(Request first, Request second) {
+            public int compare(Appointment first, Appointment second) {
 
                 try
                 {
@@ -85,7 +82,7 @@ public class FileRouter {
             //loop over new Requests in step by step fashion
             for(int j=i*payload;j<(i+1)*payload;j++)
             {
-                Request currentRequest = requests.get(j);
+                Appointment currentRequest = requests.get(j);
                 Employee currentEmp = toEmployees.get(i);
                 currentRequest.setAssignedTo(currentEmp);
 
@@ -93,9 +90,9 @@ public class FileRouter {
         }
 
         //take the requests mapped by offset
-        List<Request> offset_requests = requests.subList(requests_size-offset,requests_size);
+        List<Appointment> offset_requests = requests.subList(requests_size-offset,requests_size);
 
-        for(Request request : offset_requests)
+        for(Appointment request : offset_requests)
         {
             //pick a random employee
             int index = new Random().nextInt(keepers_size);
@@ -108,7 +105,7 @@ public class FileRouter {
     }
 
 
-    public void routeFiles(List<Request> newRequests) throws Exception
+    public void routeFiles(List<Appointment> newRequests) throws Exception
     {
         if(newRequests == null || newRequests.size() <=0) return;
         //get all employees whose Role is File keeper
@@ -124,9 +121,9 @@ public class FileRouter {
 
         //Sort them depending upon their File Number
 
-        Collections.sort(newRequests, new Comparator<Request>() {
+        Collections.sort(newRequests, new Comparator<Appointment>() {
             @Override
-            public int compare(Request first, Request second) {
+            public int compare(Appointment first, Appointment second) {
 
                try
                {
@@ -171,16 +168,16 @@ public class FileRouter {
            //loop over new Requests in step by step fashion
            for(int j=i*payload;j<(i+1)*payload;j++)
            {
-               Request currentRequest = newRequests.get(j);
+               Appointment currentRequest = newRequests.get(j);
                currentRequest.setAssignedTo(keepers.get(i));
 
            }
        }
 
         //take the requests mapped by offset
-        List<Request> offset_requests = newRequests.subList(requests_size-offset,requests_size);
+        List<Appointment> offset_requests = newRequests.subList(requests_size-offset,requests_size);
 
-        for(Request request : offset_requests)
+        for(Appointment request : offset_requests)
         {
             //pick a random employee
             int index = new Random().nextInt(keepers_size);
@@ -189,10 +186,6 @@ public class FileRouter {
 
             request.setAssignedTo(randomEmp);
         }
-
-
-
-
 
     }
 

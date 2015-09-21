@@ -65,12 +65,12 @@ public class InPatientRequestsBean implements Serializable {
         {
             if(keepers == null || keepers.size() <=0)
             {
-                WebUtils.addMessage("Can't Add new Inpatient Requests while there is no Active Keepers in the system");
+                WebUtils.addMessage("Can't Add new Inpatient Requests while there are no Active Keepers in the system");
                 return;
             }
 
             //Create a new Request in here
-            Request inpatient = new Request();
+            Appointment inpatient = new Appointment();
 
             BarcodeUtils utils = new BarcodeUtils(this.getFileNumber());
 
@@ -85,7 +85,7 @@ public class InPatientRequestsBean implements Serializable {
                 //it must be added as a transfer request instead
                 WebUtils.addMessage(String.format("Request Number : %s already exists , It is already requested! ",patientFileNumber));
                 //Clear the request Number
-                this.setFileNumber("");
+                this.setAppointmentId("");
 
                 return;
             }*/
@@ -128,43 +128,14 @@ public class InPatientRequestsBean implements Serializable {
 
             inpatient.setInpatient(true);
 
-            PatientFile exists = systemService.getFilesService().getFileWithNumber(inpatient.getFileNumber());
-            boolean requestExists = (systemService.getRequestsManager().getSingleRequest(patientFileNumber) != null);
 
-            if(exists != null)
-            {
-                if(exists.getCurrentStatus() != null && exists.getCurrentStatus().getState() != FileStates.CHECKED_IN)
-                {
-                   boolean transferrable = systemService.getTransferManager().addEntity(inpatient.toTransferObject());
-
-                    if(transferrable)
-                    {
-                        WebUtils.addMessage(String.format("Request : %s has been transferred successfully because the same file already under processing by another clinic " +
-                                "on Date : %s",inpatient.getFileNumber(),exists.getCurrentStatus().getAppointment_Date_G()));
-                        return;
-                    }
-
-                }
-            }
-
-            if(requestExists)
-            {
-                //add that as a transfer
-                boolean result = systemService.getTransferManager().addEntity(inpatient.toTransferObject());
-
-                if(result)
-                {
-                    WebUtils.addMessage(String.format("Request : %s has been added as a transfer because it is under processing by another clinic",inpatient.getFileNumber()));
-                    return;
-                }
-            }
 
             //this request is inpatient
 
             //try to assign it to a given keeper employee randomly
             this.randomlyAssignInpatientRequest(inpatient,keepers);
             //now try to insert the current request
-            boolean result = systemService.getRequestsManager().addEntity(inpatient);
+            boolean result = systemService.getAppointmentManager().addEntity(inpatient);
 
             if(result)
             {
@@ -198,7 +169,7 @@ public class InPatientRequestsBean implements Serializable {
         this.setWardNumber("");
     }
 
-    private void randomlyAssignInpatientRequest(Request inpatient,List<Employee> keepers) {
+    private void randomlyAssignInpatientRequest(Appointment inpatient,List<Employee> keepers) {
 
         try
         {

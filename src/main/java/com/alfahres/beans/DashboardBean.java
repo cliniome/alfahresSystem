@@ -45,7 +45,7 @@ public class DashboardBean {
         try
         {
 
-            return systemService.getRequestsManager().getTotalNewRequests();
+            return systemService.getAppointmentManager().getTotalNewAppointments();
 
         }catch(Exception s)
         {
@@ -59,7 +59,7 @@ public class DashboardBean {
         try
         {
 
-            return systemService.getRequestsManager().getTotalWatchList();
+            return systemService.getAppointmentManager().getTotalWatchList();
 
         }catch (Exception s)
         {
@@ -211,20 +211,6 @@ public class DashboardBean {
         }
     }
 
-
-
-    public long getTotalRoles()
-    {
-        try
-        {
-            return systemService.getRoleService().getMaxResults();
-
-        }catch (Exception s)
-        {
-            s.printStackTrace();
-            return -1;
-        }
-    }
 
     public long getTotalEmployees()
     {

@@ -31,11 +31,11 @@
                                         <p:messages  showDetail="true" id="growl" closable="true" showSummary="false"/>
 
                                         <div class="control-group">
-                                            <label class="control-label" for="fileNumber">File Number</label>
+                                            <label class="control-label" for="appointmentId">File Number</label>
                                             <div class="controls">
                                                 <p:inputMask mask="99999999"  required="true" requiredMessage="file Number is required"
                                                               validatorMessage="File Number should be exactly 8 digits long"
-                                                              styleClass="input-xlarge" id="fileNumber" value="#{inpatientBean.fileNumber}">
+                                                              styleClass="input-xlarge" id="appointmentId" value="#{inpatientBean.appointmentId}">
                                                     <f:validateLength minimum="8" maximum="8"/>
                                                 </p:inputMask>
                                             </div>

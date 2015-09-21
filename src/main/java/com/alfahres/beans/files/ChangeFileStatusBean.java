@@ -107,7 +107,7 @@ public class ChangeFileStatusBean implements Serializable{
 
             if(result)
             {
-                this.checkForTransfer(file);
+               // this.checkForTransfer(file);
                 //Notify the user
                 WebUtils.addMessage("File has been updated Successfully.");
 
@@ -176,6 +176,9 @@ public class ChangeFileStatusBean implements Serializable{
 
         for(String state : states)
         {
+            //Exclude the new and checked-in states from the list
+            if(state.equals(FileStates.NEW.toString()) || state.equals(FileStates.CHECKED_IN.toString())) continue;
+
             SelectItem item = new SelectItem(state,state);
             items.add(item);
         }

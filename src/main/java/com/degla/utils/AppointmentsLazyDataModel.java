@@ -1,6 +1,7 @@
 package com.degla.utils;
 
 import com.degla.dao.AbstractDAO;
+import com.degla.dao.AppointmentsDAO;
 import com.degla.dao.RequestsDAO;
 import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.model.LazyDataModel;
@@ -12,7 +13,7 @@ import java.util.*;
 /**
  * Created by snouto on 12/09/15.
  */
-public class RequestsLazyDataModel <T extends AnnotatingModel> extends LazyDataModel<T> {
+public class AppointmentsLazyDataModel<T extends AnnotatingModel> extends LazyDataModel<T> {
 
     private List<T> dataModels = new ArrayList<T>();
     private AbstractDAO<T> paginator;
@@ -27,12 +28,12 @@ public class RequestsLazyDataModel <T extends AnnotatingModel> extends LazyDataM
     }
 
 
-    public RequestsLazyDataModel(AbstractDAO<T> paginatorModel)
+    public AppointmentsLazyDataModel(AbstractDAO<T> paginatorModel)
     {
         this.paginator = paginatorModel;
     }
 
-    public RequestsLazyDataModel(AbstractDAO<T> paginatorModel , boolean watchList)
+    public AppointmentsLazyDataModel(AbstractDAO<T> paginatorModel, boolean watchList)
     {
         this.paginator = paginatorModel;
         this.watchList = watchList;
@@ -85,8 +86,8 @@ public class RequestsLazyDataModel <T extends AnnotatingModel> extends LazyDataM
 
             if(watchList)
             {
-                this.dataModels = (List<T>) ((RequestsDAO)paginator).getAllWatchListRequests(first,pageSize);
-                this.setRowCount((int) ((RequestsDAO)paginator).getCountOfWatchListRequests());
+                this.dataModels = (List<T>) ((AppointmentsDAO)paginator).getAllWatchListRequests(first,pageSize);
+                this.setRowCount((int) ((AppointmentsDAO)paginator).getCountOfWatchListRequests());
             }else
             {
                 this.dataModels = paginator.getPaginatedResults(first, pageSize);

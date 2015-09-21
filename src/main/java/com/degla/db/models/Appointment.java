@@ -1,7 +1,9 @@
 package com.degla.db.models;
 
 import com.degla.restful.models.RestfulRequest;
+import com.degla.system.SpringSystemBridge;
 import com.degla.utils.AnnotatingModel;
+import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.annotations.Index;
 
 import javax.persistence.*;
@@ -105,6 +107,12 @@ public class Appointment implements Serializable , AnnotatingModel , Comparable<
 
     @Column(name="active",nullable = false)
     private boolean active = true;
+
+    private transient boolean selected;
+
+    private transient String failureReason;
+
+    private transient String appointmentDateG;
 
     public Date getAppointment_Date() {
         return appointment_Date;
@@ -341,5 +349,74 @@ public class Appointment implements Serializable , AnnotatingModel , Comparable<
         request.setState(FileStates.NEW.toString());
         request.setInpatient(this.isInpatient());
         return request;
+    }
+
+    public Appointment clone()
+    {
+        Appointment newRequest = new Appointment();
+
+        newRequest.setAppointment_Date(this.getAppointment_Date());
+        newRequest.setAppointment_Type(this.getAppointment_Type());
+        newRequest.setClinic_Doc_Code(this.getClinic_Doc_Code());
+        newRequest.setClinicCode(this.getClinicCode());
+        newRequest.setFileCurrentLocation(this.getFileCurrentLocation());
+        newRequest.setFileNumber(this.getFileNumber());
+        newRequest.setId(this.getId());
+        newRequest.setPatientName(this.getPatientName());
+        newRequest.setPatientNumber(this.getPatientNumber());
+        newRequest.setUserName(this.getUserName());
+        newRequest.setBatchRequestNumber(this.getBatchRequestNumber());
+        newRequest.setCsGroupCount(this.getCsGroupCount());
+        newRequest.setAppointment_made_by(this.getAppointment_made_by());
+        newRequest.setAppointment_date_h(this.getAppointment_date_h());
+        newRequest.setCf_appointment_type(this.getCf_appointment_type());
+        newRequest.setRequestingDocName(this.getRequestingDocName());
+        newRequest.setClinicName(this.getClinicName());
+        newRequest.setRmc_ord(this.getRmc_ord());
+        newRequest.setAppointment_time(this.getAppointment_time());
+        newRequest.setAppointment_Date(this.getAppointment_Date());
+        newRequest.setT_schedule_ruleNo(this.getT_schedule_ruleNo());
+        newRequest.setT_upd_user(this.getT_upd_user());
+
+        return newRequest;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public String getFailureReason() {
+        return failureReason;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
+    }
+
+    public String getAppointmentDateG() {
+        return appointmentDateG;
+    }
+
+    public void setAppointmentDateG(String appointmentDateG) {
+        this.appointmentDateG = appointmentDateG;
+
+        if(appointmentDateG != null && !appointmentDateG.isEmpty())
+        {
+
+            try
+            {
+                String[] patterns = SpringSystemBridge.services().getDatePatternsBean().getDatePatterns().toArray(new String[]{});
+                this.setAppointment_Date(DateUtils.parseDate(appointmentDateG,patterns));
+
+            }catch (Exception s)
+            {
+                s.printStackTrace();
+
+            }
+        }
     }
 }

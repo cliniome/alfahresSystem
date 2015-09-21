@@ -149,7 +149,7 @@
 
     <managed-bean>
         <managed-bean-name>requestsBean</managed-bean-name>
-        <managed-bean-class>com.alfahres.beans.RequestsBean</managed-bean-class>
+        <managed-bean-class>com.alfahres.beans.AppointmentsBean</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
         <managed-property>
             <property-name>dashboardBean</property-name>
@@ -165,7 +165,7 @@
 
     <managed-bean>
         <managed-bean-name>searchRequestsBean</managed-bean-name>
-        <managed-bean-class>com.alfahres.beans.SearchRequestsBean</managed-bean-class>
+        <managed-bean-class>com.alfahres.beans.SearchAppointmentsBean</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
     </managed-bean>
 

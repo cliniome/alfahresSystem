@@ -18,7 +18,7 @@
                 <h:panelGrid columns="1">
 
 
-                    <h:inputHidden value="#{changeFileStatusBean.fileNumber}"/>
+                    <h:inputHidden value="#{changeFileStatusBean.appointmentId}"/>
 
                     <p:panel header="File Status">
 
@@ -31,7 +31,7 @@
 
                             <p:outputLabel value="File Number"/>
                             <p:inputText readonly="true" disabled="true"
-                                         value="#{changeFileStatusBean.fileNumber}"/>
+                                         value="#{changeFileStatusBean.appointmentId}"/>
 
                             <p:outputLabel value="Assigned To"/>
                             <p:selectOneMenu value="#{changeFileStatusBean.assignedEmployee}"

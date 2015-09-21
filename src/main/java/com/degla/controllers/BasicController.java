@@ -303,11 +303,11 @@ public class BasicController implements BasicRestfulOperations {
 //        {
 //            //First check to see if the request is found
 //            Request foundRequest = getSystemService().getRequestsManager().getRequestByBatchNumber(
-//                    file.getFileNumber(), file.getBatchRequestNumber());
+//                    file.getAppointmentId(), file.getBatchRequestNumber());
 //
 //
 //            //Check the patient file
-//            boolean patientFileExists = getSystemService().getFilesService().fileExists(file.getFileNumber());
+//            boolean patientFileExists = getSystemService().getFilesService().fileExists(file.getAppointmentId());
 //
 //            if(foundRequest != null && !patientFileExists)
 //            {
@@ -338,7 +338,7 @@ public class BasicController implements BasicRestfulOperations {
 //                }
 //
 //                newPatientFile.setCreationTime(new Date());
-//                newPatientFile.setFileID(file.getFileNumber());
+//                newPatientFile.setFileID(file.getAppointmentId());
 //                newPatientFile.setShelfId(file.getShelfId());
 //                newPatientFile.setPatientName(foundRequest.getPatientName());
 //                newPatientFile.setPatientNumber(foundRequest.getPatientNumber());
@@ -363,7 +363,7 @@ public class BasicController implements BasicRestfulOperations {
 //                //it means it is not the first time for that file in the system
 //                //Get the file by knowing its file number
 //                PatientFile patientFile = getSystemService().getFilesService()
-//                        .getFileWithNumber(file.getFileNumber());
+//                        .getFileWithNumber(file.getAppointmentId());
 //
 //
 //

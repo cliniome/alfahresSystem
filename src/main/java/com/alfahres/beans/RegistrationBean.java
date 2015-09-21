@@ -421,7 +421,7 @@ public class RegistrationBean {
             updateableEmployee = systemService.getEmployeeService().getEntity(Integer.parseInt(getPassedEmpId()));
 
             this.setCanDeleteEmployee(systemService
-                    .getRequestsManager()
+                    .getAppointmentManager()
                     .getRequestsCountFor(updateableEmployee.getUsername()) <= 0);
 
         }

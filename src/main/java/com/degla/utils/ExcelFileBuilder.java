@@ -1,9 +1,6 @@
 package com.degla.utils;
 
-import com.degla.db.models.Employee;
-import com.degla.db.models.PatientFile;
-import com.degla.db.models.Request;
-import com.degla.db.models.RoleTypes;
+import com.degla.db.models.*;
 import com.degla.system.SystemService;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -80,7 +77,7 @@ public class ExcelFileBuilder {
                 //Appointment Date
                 Cell appointmentDateCell = currentRow.createCell(2);
                 SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                appointmentDateCell.setCellValue(formatter.format(patientFile.getCurrentStatus().getAppointment_Date_G()));
+                appointmentDateCell.setCellValue(formatter.format(patientFile.getCurrentStatus().getAppointment().getAppointment_Date()));
 
                 //State
                 Cell stateCell = currentRow.createCell(3);
@@ -88,7 +85,7 @@ public class ExcelFileBuilder {
 
                 //Clinic Code
                 Cell clinicCodeCell = currentRow.createCell(4);
-                clinicCodeCell.setCellValue(patientFile.getCurrentStatus().getClinicCode());
+                clinicCodeCell.setCellValue(patientFile.getCurrentStatus().getAppointment().getClinicCode());
             }
 
 
@@ -127,11 +124,11 @@ public class ExcelFileBuilder {
             Sheet workSheet = wb.createSheet("WatchList");
             this.addHeaders(workSheet);
 
-            List<Request> watchListRequests = systemService.getRequestsManager().getAllWatchListRequests();
+            List<Appointment> watchListRequests = systemService.getAppointmentManager().getAllWatchListRequests();
 
-            Collections.sort(watchListRequests, new Comparator<Request>() {
+            Collections.sort(watchListRequests, new Comparator<Appointment>() {
                 @Override
-                public int compare(Request first, Request second) {
+                public int compare(Appointment first, Appointment second) {
 
                     BarcodeUtils firstUtils = new BarcodeUtils(first.getFileNumber());
                     BarcodeUtils secondUtils = new BarcodeUtils(second.getFileNumber());
@@ -156,7 +153,7 @@ public class ExcelFileBuilder {
 
             for(int i = 0 ; i < watchListRequests.size();i++)
             {
-                Request watchRequest = watchListRequests.get(i);
+                Appointment watchRequest = watchListRequests.get(i);
 
                 Row currentRow = workSheet.createRow(i+1);
 
@@ -204,13 +201,13 @@ public class ExcelFileBuilder {
 
                 this.addHeaders(workSheet);
 
-                List<Request> assignedRequests = systemService.getRequestsManager()
+                List<Appointment> assignedRequests = systemService.getAppointmentManager()
                         .getNewRequestsFor(keeper.getUsername());
 
 
-                Collections.sort(assignedRequests, new Comparator<Request>() {
+                Collections.sort(assignedRequests, new Comparator<Appointment>() {
                     @Override
-                    public int compare(Request first, Request second) {
+                    public int compare(Appointment first, Appointment second) {
 
                         BarcodeUtils firstUtils = new BarcodeUtils(first.getFileNumber());
                         BarcodeUtils secondUtils = new BarcodeUtils(second.getFileNumber());
@@ -235,7 +232,7 @@ public class ExcelFileBuilder {
 
                 for(int i =0 ; i < assignedRequests.size();i++)
                 {
-                    Request req = assignedRequests.get(i);
+                    Appointment req = assignedRequests.get(i);
 
                     //Check to see if that request exists in the patient Files , if yes , that means it was built before
                     PatientFile file = systemService.getFilesService().getFileWithNumber(req.getFileNumber());

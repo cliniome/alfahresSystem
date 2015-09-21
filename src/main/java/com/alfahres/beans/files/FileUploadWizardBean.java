@@ -14,9 +14,6 @@ import org.primefaces.event.FileUploadEvent;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 import java.io.*;
 import java.util.*;
@@ -40,7 +37,7 @@ public class FileUploadWizardBean implements Serializable {
     private SystemService systemService;
     private Wizard wizard;
     private String uploadedFile;
-    private List<Request> failedRequests;
+    private List<Appointment> failedRequests;
 
 
     private FailedRequestsBean failedRequestsBean;
@@ -55,7 +52,7 @@ public class FileUploadWizardBean implements Serializable {
             systemService = SpringSystemBridge.services();
             setGeneratedFields(new ArrayList<SelectItem>());
             getGeneratedFields().add(new SelectItem());
-            this.setFailedRequests(new ArrayList<Request>());
+            this.setFailedRequests(new ArrayList<Appointment>());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,7 +64,7 @@ public class FileUploadWizardBean implements Serializable {
     @PreDestroy
     public void onDestroy()
     {
-        this.setFailedRequests(new ArrayList<Request>());
+        this.setFailedRequests(new ArrayList<Appointment>());
     }
 
 
@@ -79,20 +76,20 @@ public class FileUploadWizardBean implements Serializable {
         try
         {
             PatientFileReader fileReader = new PatientFileReader();
-            Map<BatchRequestDetails,List<Request>> requests = fileReader.buildRequests(this);
+            Map<BatchRequestDetails,List<Appointment>> requests = fileReader.buildRequests(this);
 
-            List<Request> availableRequests = new ArrayList<Request>();
+            List<Appointment> availableRequests = new ArrayList<Appointment>();
 
             if(requests == null || requests.size() <= 0 ) return;
 
             for(BatchRequestDetails key : requests.keySet())
             {
                 //get all requests
-                List<Request> values = requests.get(key);
+                List<Appointment> values = requests.get(key);
 
                 if(values != null && values.size() > 0)
                 {
-                    for(Request req : values)
+                    for(Appointment req : values)
                     {
 
                         req.setClinic_Doc_Code(key.getT_clinic_doc_code());
@@ -100,6 +97,7 @@ public class FileUploadWizardBean implements Serializable {
                         req.setClinicName(key.getClinic_name());
                         req.setCsGroupCount(key.getCs_group_count());
                         req.setRequestingDocName(key.getDoc_name());
+
                         if(req.getFileNumber() == null || req.getFileNumber().length() <= 0)
                         {
                             getFailedRequests().add(req);
@@ -138,57 +136,6 @@ public class FileUploadWizardBean implements Serializable {
                         req.setFileNumber(patientFileNumber);
 
 
-                       /* if(req.getAppointment_Date() != null && req.getFileNumber().equals("01-00710004"))
-                        {
-                            //make the request date to the start of the day
-                            Date reqDate = req.getAppointment_Date();
-                            reqDate = AlfahresDateUtils.getStartOfDay(reqDate);
-                            req.setAppointment_Date(reqDate);
-                        }*/
-
-                        //Try to append the hours into the original request appointment date
-                        try
-                        {
-                           /* if(req.getAppointment_time() != null && !req.getAppointment_time().isEmpty())
-                            {
-                                if(req.getAppointment_time().contains(":"))
-                                {
-                                    String[] splittedHours = req.getAppointment_time().split(":");
-                                    int hour = Integer.parseInt(splittedHours[0]);
-                                    int minute = Integer.parseInt(splittedHours[1]);
-
-                                    Calendar calc = Calendar.getInstance();
-                                    calc.setTime(req.getAppointment_Date());
-                                    calc.set(Calendar.HOUR,hour);
-                                    calc.set(Calendar.MINUTE,minute);
-                                    req.setAppointment_Date(calc.getTime());
-                                }
-
-                            }*/
-
-                        }catch (Exception s)
-                        {
-                            s.printStackTrace();
-
-                        }
-
-                       /* //check to see if that request number exists already in patient Files
-                        //If it does not exists no problem.
-                        //if it exists please check to see if its current state is not CHECKED_IN , SO ignore that file otherwise accept
-                        PatientFile exists = systemService.getFilesService().getFileWithNumber(req.getFileNumber());
-
-                        if(exists != null)
-                        {
-                            //check to see if that patient file is already archived
-                            if(exists.getCurrentStatus() != null && exists.getCurrentStatus().getState() != FileStates.CHECKED_IN)
-                            {
-                                //add that as a transfer request
-                                systemService.getTransferManager().addEntity(req.toTransferObject());
-                                continue;
-                            }
-                        }
-*/
-
                         availableRequests.add(req);
                     }
 
@@ -204,18 +151,23 @@ public class FileUploadWizardBean implements Serializable {
             //Before routing the Requests
             //Sort the requests based on appointment time in ascending order
             Collections.sort(availableRequests);
-            //Create a temporary list
-            List<Request> temporaryList = new ArrayList<Request>();
-            List<Transfer> transfers = new ArrayList<Transfer>();
 
-            for(Request current:availableRequests)
+
+            List<Appointment> temporaryList = new ArrayList<Appointment>();
+
+            for(Appointment current:availableRequests)
             {
                 //check for the current request , did we see it before in any file history or not .
 
-                Boolean existsInHistory = systemService.getFileHistoryDAO().appointmentExistsInHistory(current);
+                //Boolean existsInHistory = systemService.getFileHistoryDAO().appointmentExistsInHistory(current);
+                boolean appointmentExists = systemService.getAppointmentManager().appointmentExistsBefore(current);
 
-                if(existsInHistory == null || existsInHistory.booleanValue()) continue;
-
+                if (appointmentExists)
+                {
+                    current.setFailureReason("Duplicate Entry - Appointment has been added before");
+                    getFailedRequests().add(current);
+                    continue;
+                }
                 /*
                   1. Check for the exactness of the current request , if it is an exact match , don't add it at all to the collection and just continue
                   2. if it is not exact match , that means it is partial matching , so it might be a transfer
@@ -230,46 +182,14 @@ public class FileUploadWizardBean implements Serializable {
                 if(todayDate.compareTo(current.getAppointment_Date()) > 1)
                 {
                     current.setFailureReason("The request contains an old appointment date");
-                    failedRequests.add(current);
+                    getFailedRequests().add(current);
                     continue;
                 }
 
 
-                /*
-                    1. Check in the requests table ,if the same request number exists for the same clinic code in the same date,
-                    so basically , that means a duplicate request , drop it , otherwise , check if it is for a different clinic code , so it is definitely a transfer
-                    2. check if that transfer exactly was inserted before or not., if it was inserted before , drop it otherwise add it as a transfer
+                //add the current curated appointment into the array list
+                temporaryList.add(current);
 
-                 */
-                boolean exact_request_exists = this.checkRequestExactness(current) || this.templistContainsExactly(current, temporaryList);
-
-                if(exact_request_exists) continue;
-                else
-                {
-                    //it could be a partial match   """""At the Request Table""""""
-
-                                                                //True
-                    boolean partial_request = this.existsPartiallyinDB(current) || this.existsPartiallyInMemory(current,temporaryList);
-
-                    if(partial_request)
-                    {
-                        //that means this is a transfer
-                        boolean transfer_exists = systemService.getTransferManager().hasTransferBasedonClinicCode(current.getFileNumber(),
-                                current.getClinicCode(),current.getAppointment_Date())
-                                ||
-                                this.transferListContains(current.clone().toTransferObject(),transfers);
-
-                        if(!transfer_exists)
-                            transfers.add(current.clone().toTransferObject());
-
-
-                    }else // False
-                    {
-                        //that means it is definitely a new request
-                        if(!this.templistContainsExactly(current, temporaryList))
-                            temporaryList.add(current);
-                    }
-                }
             }
 
 
@@ -280,7 +200,7 @@ public class FileUploadWizardBean implements Serializable {
             {
                 boolean result = true;
                 //insert all requests one by one
-                for(Request currentRequest : temporaryList)
+                for(Appointment currentRequest : temporaryList)
                 {
                     try
                     {
@@ -311,7 +231,7 @@ public class FileUploadWizardBean implements Serializable {
 
                        try
                        {
-                           boolean stepResult = systemService.getRequestsManager().addEntity(currentRequest);
+                           boolean stepResult = systemService.getAppointmentManager().addEntity(currentRequest);
                            result = result && stepResult;
 
                        }catch (Exception s)
@@ -338,28 +258,6 @@ public class FileUploadWizardBean implements Serializable {
                 //WebUtils.addMessage("There are no New Requests or transfers in the Database");
             }
 
-            //check to see if the transfers already contains data
-            if(transfers != null && transfers.size() > 0)
-            {
-                for(Transfer currentTransfer : transfers)
-                {
-                    try
-                    {
-                        systemService.getTransferManager().addEntity(currentTransfer);
-
-                    }catch (Exception s)
-                    {
-                        s.printStackTrace();
-                    }
-                }
-
-
-                message += String.format(" With  (%d) Transfers",transfers.size());
-
-            }else
-                message +=" With No Transfers";
-
-
             WebUtils.addMessage(message);
 
 
@@ -373,106 +271,6 @@ public class FileUploadWizardBean implements Serializable {
             }else
                 WebUtils.addMessage(s.getMessage());
         }
-    }
-
-    private boolean existsPartiallyInMemory(Request current, List<Request> temporaryList) {
-
-        boolean result= false;
-
-        for(Request req : temporaryList)
-        {
-            if(req.getFileNumber().equals(current.getFileNumber()))
-            {
-                result = true;
-                break;
-            }
-        }
-
-        return result;
-
-    }
-
-    private boolean checkRequestExactness(Request current)
-    {
-        try
-        {
-            if(current == null) return false;
-
-            return systemService.getRequestsManager().requestExistsExactlyInDB(current);
-
-        }catch (Exception s)
-        {
-            return false;
-        }
-    }
-
-    private boolean existsPartiallyinDB(Request current) {
-
-        try
-        {
-            if(current == null) return false;
-
-            return systemService.getRequestsManager().requestExists(current.getFileNumber());
-
-        }catch (Exception s)
-        {
-            return false;
-        }
-    }
-
-    private boolean transferListContains(Transfer transfer,List<Transfer> availableTransfers)
-    {
-        if(availableTransfers == null || availableTransfers.size() <= 0 ) return false;
-        boolean result = false;
-
-        for(Transfer current : availableTransfers)
-        {
-            try
-            {
-                if(current.exactMatch(transfer))
-                {
-                    result = true;
-                    break;
-                }
-
-            }catch (Exception s)
-            {
-                s.printStackTrace();
-                break;
-            }
-        }
-
-        return result;
-    }
-
-    private boolean templistContainsExactly(Request current, List<Request> availableRequests) {
-
-
-        /// I will sort the availableRequests list in Ascending order ya popp el geel this lisg is created here in memory.
-
-        if(availableRequests == null || availableRequests.size()<=0) return false;
-
-        boolean result  = false;
-
-        for(Request req : availableRequests)
-        {
-            try
-            {
-                if(current.isExact(req))
-                {
-                    result = true;
-                    break;
-                }
-
-            }catch (Exception s)
-            {
-                s.printStackTrace();
-                continue;
-            }
-        }
-
-        return result;
-
     }
 
     public void onFileUploadListener(FileUploadEvent event)
@@ -735,13 +533,7 @@ public class FileUploadWizardBean implements Serializable {
         this.uploadedFile = uploadedFile;
     }
 
-    public List<Request> getFailedRequests() {
-        return failedRequests;
-    }
 
-    public void setFailedRequests(List<Request> failedRequests) {
-        this.failedRequests = failedRequests;
-    }
 
     public FailedRequestsBean getFailedRequestsBean() {
         return failedRequestsBean;
@@ -749,5 +541,13 @@ public class FileUploadWizardBean implements Serializable {
 
     public void setFailedRequestsBean(FailedRequestsBean failedRequestsBean) {
         this.failedRequestsBean = failedRequestsBean;
+    }
+
+    public List<Appointment> getFailedRequests() {
+        return failedRequests;
+    }
+
+    public void setFailedRequests(List<Appointment> failedRequests) {
+        this.failedRequests = failedRequests;
     }
 }

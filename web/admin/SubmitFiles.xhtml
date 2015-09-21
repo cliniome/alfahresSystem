@@ -57,7 +57,7 @@
                          </f:facet>
 
                          <p:column headerText="File Number">
-                             <p:outputLabel value="#{fileRequest.fileNumber}"/>
+                             <p:outputLabel value="#{fileRequest.appointmentId}"/>
                          </p:column>
 
                          <p:column headerText="Patient Number">
@@ -81,7 +81,7 @@
 
                          <p:column headerText="Options...">
 
-                             <a href="EditRequest.xhtml?id=#{fileRequest.fileNumber}">Edit Request</a>
+                             <a href="EditRequest.xhtml?id=#{fileRequest.appointmentId}">Edit Request</a>
 
                          </p:column>
 

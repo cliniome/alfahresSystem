@@ -1,5 +1,6 @@
 package com.alfahres.beans.files;
 
+import com.degla.db.models.Appointment;
 import com.degla.db.models.FileStates;
 import com.degla.db.models.PatientFile;
 import com.degla.db.models.Request;
@@ -24,8 +25,8 @@ import java.util.List;
  */
 public class EditRequestDetailsBean implements Serializable {
 
-    private List<Request> failedRequests;
-    private Request fileRequest;
+    private List<Appointment> failedRequests;
+    private Appointment fileRequest;
     private SystemService systemService;
 
     private String oldNumber;
@@ -42,7 +43,7 @@ public class EditRequestDetailsBean implements Serializable {
         {
             systemService = SpringSystemBridge.services();
             //Access the selected Request  from the flash scope
-            List<Request> failedRequests =  failedRequestsBean.getFailedRequests();
+            List<Appointment> failedRequests =  failedRequestsBean.getFailedRequests();
 
             if(failedRequests != null)
             {
@@ -53,9 +54,8 @@ public class EditRequestDetailsBean implements Serializable {
                 if(requestId != null)
                 {
                     //get the request
-                    Request selectedRequest = this.getRequest(requestId);
+                    Appointment selectedRequest = this.getRequest(requestId);
                     this.setFileRequest(selectedRequest.clone());
-
                     this.setFileNumber(selectedRequest.getFileNumber());
                     this.setOldNumber(selectedRequest.getFileNumber());
                     this.setPatientName(selectedRequest.getPatientName());
@@ -69,13 +69,13 @@ public class EditRequestDetailsBean implements Serializable {
         }
     }
 
-    private Request getRequest(String requestID) {
+    private Appointment getRequest(String requestID) {
 
         try
         {
-            Request tempRequest = null;
+            Appointment tempRequest = null;
 
-            for(Request current : failedRequestsBean.getFailedRequests())
+            for(Appointment current : failedRequestsBean.getFailedRequests())
             {
                 if(current != null && current.getFileNumber().equals(requestID))
                 {
@@ -106,14 +106,14 @@ public class EditRequestDetailsBean implements Serializable {
         {
             if(getFileRequest() == null)
             {
-                Request oldRequest = getRequest(this.getOldNumber());
+                Appointment oldRequest = getRequest(this.getOldNumber());
 
                 this.setFileRequest(oldRequest.clone());
             }
             //Do the submission in here
             if(getFileRequest() != null)
             {
-                Request currentRequest = getFileRequest();
+                Appointment currentRequest = getFileRequest();
                 String fileNumber = getFileNumber();
                 BarcodeUtils utils = new BarcodeUtils(fileNumber);
 
@@ -128,36 +128,18 @@ public class EditRequestDetailsBean implements Serializable {
                 currentRequest.setPatientNumber(getPatientNumber());
 
                 //now try to route the current request to a specific employee
-                List<Request> tempRequests = new ArrayList<Request>();
+                List<Appointment> tempRequests = new ArrayList<Appointment>();
                 tempRequests.add(currentRequest);
 
                 //route the Requests
                 systemService.getFileRouter().routeFiles(tempRequests);
 
                 //now get the request
-                Request request = tempRequests.get(0);
+                Appointment request = tempRequests.get(0);
 
-                PatientFile exists = systemService.getFilesService().getFileWithNumber(request.getFileNumber());
-
-                if(exists != null)
-                {
-                    if(exists.getCurrentStatus() != null && exists.getCurrentStatus().getState() != FileStates.CHECKED_IN)
-                    {
-                        boolean transferrable = systemService.getTransferManager().addEntity(request.toTransferObject());
-
-                        if(transferrable)
-                        {
-                            WebUtils.addMessage(String.format("Request : %s , has been added as a transfer for appointment : %s , because it is still under processing " +
-                                    "by another clinic on Date : %s",request.getFileNumber(),request.getAppointment_Date(),exists.getCurrentStatus().getAppointment_Date_G()));
-                            return;
-                        }
-
-
-                    }
-                }
 
                 //now save it
-                boolean result = systemService.getRequestsManager().addEntity(request);
+                boolean result = systemService.getAppointmentManager().addEntity(request);
 
                 if(result)
                 {
@@ -180,21 +162,9 @@ public class EditRequestDetailsBean implements Serializable {
 
 
 
-    public Request getFileRequest() {
-        return fileRequest;
-    }
 
-    public void setFileRequest(Request fileRequest) {
-        this.fileRequest = fileRequest;
-    }
 
-    public List<Request> getFailedRequests() {
-        return failedRequests;
-    }
 
-    public void setFailedRequests(List<Request> failedRequests) {
-        this.failedRequests = failedRequests;
-    }
 
     public FailedRequestsBean getFailedRequestsBean() {
         return failedRequestsBean;
@@ -234,5 +204,21 @@ public class EditRequestDetailsBean implements Serializable {
 
     public void setOldNumber(String oldNumber) {
         this.oldNumber = oldNumber;
+    }
+
+    public List<Appointment> getFailedRequests() {
+        return failedRequests;
+    }
+
+    public void setFailedRequests(List<Appointment> failedRequests) {
+        this.failedRequests = failedRequests;
+    }
+
+    public Appointment getFileRequest() {
+        return fileRequest;
+    }
+
+    public void setFileRequest(Appointment fileRequest) {
+        this.fileRequest = fileRequest;
     }
 }

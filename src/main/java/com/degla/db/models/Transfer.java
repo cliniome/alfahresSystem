@@ -229,7 +229,7 @@ public class Transfer extends EntityEO implements Serializable , Comparable<Tran
     }
 
 
-    public FileHistory toFileHistory()
+    /*public FileHistory toFileHistory()
     {
         try
         {
@@ -259,7 +259,7 @@ public class Transfer extends EntityEO implements Serializable , Comparable<Tran
             s.printStackTrace();
             return null;
         }
-    }
+    }*/
 
     public boolean isInpatient() {
         return inpatient;
