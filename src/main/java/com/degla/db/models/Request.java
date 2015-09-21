@@ -110,57 +110,6 @@ public class Request implements Serializable, AnnotatingModel, Comparable<Reques
     private transient String failureReason;
 
 
-
-    public Transfer toTransferObject()
-    {
-        try
-        {
-            Transfer currentTransfer = new Transfer();
-            currentTransfer.setAppointment_Hijri_Date(this.getAppointment_date_h());
-
-            currentTransfer.setAppointment_Date_G(this.getAppointment_Date());
-            currentTransfer.setAppointment_Made_by(this.getAppointment_made_by());
-            currentTransfer.setAppointmentType(this.getAppointment_Type());
-            currentTransfer.setBatchRequestNumber(this.getBatchRequestNumber());
-            currentTransfer.setClinicCode(this.getClinicCode());
-            currentTransfer.setClinicDocCode(this.getClinic_Doc_Code());
-            currentTransfer.setClinicDocName(this.getRequestingDocName());
-            currentTransfer.setClinicName(this.getClinicName());
-            currentTransfer.setCreatedAt(new Date());
-            currentTransfer.setFileNumber(this.getFileNumber());
-            currentTransfer.setAppointmentTime(this.getAppointment_time());
-            currentTransfer.setPatientName(this.getPatientName());
-            currentTransfer.setPatientNumber(this.getPatientNumber());
-
-            currentTransfer.setCf_appointment_type(this.getCf_appointment_type());
-            currentTransfer.setCsGroupCount(this.getCsGroupCount());
-            currentTransfer.setFileCurrentLocation(this.getFileCurrentLocation());
-            currentTransfer.setRmc_ord(this.getRmc_ord());
-            currentTransfer.setT_schedule_ruleNo(this.getT_schedule_ruleNo());
-            currentTransfer.setT_upd_user(this.getT_upd_user());
-            currentTransfer.setUserName(this.getUserName());
-            currentTransfer.setInpatient(this.isInpatient());
-            return currentTransfer;
-
-        }catch (Exception s)
-        {
-            s.printStackTrace();
-            return null;
-        }
-    }
-
-
-    public boolean isExact(Request other) throws Exception
-    {
-        if(other == null) throw new Exception("Request can't be null");
-        if(other.getAppointment_Date() == null || other.getClinicCode() == null) throw new Exception("Request is incomplete in either Appointment Date or Clinic Code");
-
-        boolean result = other.getAppointment_Date().equals(this.getAppointment_Date()) && other.getFileNumber().trim().equals(this.getFileNumber().trim()) && other.getClinicCode().trim()
-                .equals(this.getClinicCode().trim());
-
-        return result;
-    }
-
     public Request clone() {
 
         Request newRequest = new Request();

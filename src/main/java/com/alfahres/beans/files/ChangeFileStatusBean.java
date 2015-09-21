@@ -125,47 +125,7 @@ public class ChangeFileStatusBean implements Serializable{
         }
     }
 
-    private void checkForTransfer(PatientFile file) {
 
-        try
-        {
-           List<Transfer> transferList = systemService.getTransferManager().getFutureTransfer(file.getFileID());
-
-            if(transferList != null && transferList.size() > 0)
-            {
-                try
-                {
-                    if(file.getCurrentStatus().getState() == FileStates.CHECKED_IN)
-                    {
-                        Transfer futureTransfer = transferList.get(0);
-
-                        //That means it is properly a new request, so add it
-                        Request transferRequest = futureTransfer.toRequestObject();
-
-                        //Route the current request
-                        List<Request> tempRequests = new ArrayList<Request>();
-                        tempRequests.add(transferRequest);
-
-                        FileRouter router = new FileRouter(systemService.getEmployeeService());
-                        router.routeFiles(tempRequests);
-
-                        //after that , try to add the current request into the database
-                        boolean result = systemService.getRequestsManager().addEntity(transferRequest);
-                        result &= systemService.getTransferManager().removeEntity(futureTransfer);
-                    }
-
-                }catch (Exception s)
-                {
-                    s.printStackTrace();
-                    return;
-                }
-            }
-
-        }catch (Exception s)
-        {
-            System.out.println(s.getMessage());
-        }
-    }
 
 
     public List<SelectItem> getItems()

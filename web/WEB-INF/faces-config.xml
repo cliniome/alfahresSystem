@@ -298,12 +298,4 @@
 
 
 
-    <managed-bean>
-        <managed-bean-name>transfersBean</managed-bean-name>
-        <managed-bean-class>com.alfahres.beans.transfer.TransfersBean</managed-bean-class>
-        <managed-bean-scope>view</managed-bean-scope>
-    </managed-bean>
-
-
-
 </faces-config>

@@ -42,8 +42,7 @@ public class SystemService {
     private ClinicDAO clinicManager;
     @Autowired
     private FileHistoryDAO fileHistoryDAO;
-    @Autowired
-    private TransferDAO transferManager;
+
 
     @Autowired
     private AppointmentsDAO appointmentManager;
@@ -142,13 +141,6 @@ public class SystemService {
         this.fileHistoryDAO = fileHistoryDAO;
     }
 
-    public synchronized TransferDAO getTransferManager() {
-        return transferManager;
-    }
-
-    public void setTransferManager(TransferDAO transferManager) {
-        this.transferManager = transferManager;
-    }
 
     public DatePatternsBean getDatePatternsBean() {
         return datePatternsBean;
