@@ -19,7 +19,7 @@
 
              <h:form prependId="false">
 
-             <p:panel id="main" header="Files Requests Upload Wizard" style="width:600px;">
+             <p:panel id="main" header="Files Requests Upload Wizard">
 
                  <p:messages closable="true" id="growl" showDetail="true" showSummary="false"/>
 
@@ -41,7 +41,7 @@
                  <p:separator rendered="#{failedRequestsBean.failedRequests.size() > 0}" />
                  <br/>
                  <p:panel id="failedRequestsPane" rendered="#{failedRequestsBean.failedRequests.size() > 0}"
-                          header="Failed Requests" style="width: 600px;">
+                          header="Failed Requests" >
 
                      <p>These Requests failed to be added to the system, Please , Review them carefully</p>
                      <p>You can Click individual Request , Modify the request and then proces it </p>
@@ -57,7 +57,7 @@
                          </f:facet>
 
                          <p:column headerText="File Number">
-                             <p:outputLabel value="#{fileRequest.appointmentId}"/>
+                             <p:outputLabel value="#{fileRequest.fileNumber}"/>
                          </p:column>
 
                          <p:column headerText="Patient Number">
@@ -81,7 +81,7 @@
 
                          <p:column headerText="Options...">
 
-                             <a href="EditRequest.xhtml?id=#{fileRequest.appointmentId}">Edit Request</a>
+                             <a href="EditRequest.xhtml?id=#{fileRequest.fileNumber}">Edit Request</a>
 
                          </p:column>
 
