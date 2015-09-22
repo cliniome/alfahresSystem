@@ -73,7 +73,7 @@
                               </p:column>
 
                               <p:column headerText="Latest batch number">
-                                    <p:outputLabel value="#{file.currentStatus.batchRequestNumber}"/>
+                                    <p:outputLabel value="#{file.currentStatus.appointment.batchRequestNumber}"/>
                               </p:column>
 
                               <p:column headerText="shelf ID">
@@ -81,7 +81,7 @@
                               </p:column>
 
                               <p:column headerText="More...">
-                                    <a class="btn btn-success" href="EditFile.xhtml?appointmentId=#{file.fileID}">Show File Details</a>
+                                    <a class="btn btn-success" href="EditFile.xhtml?fileNumber=#{file.fileID}">Show File Details</a>
                               </p:column>
 
                         </p:dataTable>

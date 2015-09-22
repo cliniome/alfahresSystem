@@ -118,6 +118,8 @@ public class Appointment implements Serializable , AnnotatingModel , Comparable<
         return appointment_Date;
     }
 
+
+
     public void setAppointment_Date(Date appointment_Date) {
         this.appointment_Date = appointment_Date;
     }
@@ -348,6 +350,8 @@ public class Appointment implements Serializable , AnnotatingModel , Comparable<
         request.setClinicName(this.getClinicName());
         request.setState(FileStates.NEW.toString());
         request.setInpatient(this.isInpatient());
+        request.setAppointmentId(this.getId());
+
         return request;
     }
 

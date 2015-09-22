@@ -134,10 +134,12 @@ public class ChangeFileStatusBean implements Serializable{
 
         String[] states = getStates().getStates();
 
+        FileStateUtils stateUtils = new FileStateUtils();
+
         for(String state : states)
         {
             //Exclude the new and checked-in states from the list
-            if(state.equals(FileStates.NEW.toString()) || state.equals(FileStates.CHECKED_IN.toString())) continue;
+            if(stateUtils.getState(state)== FileStates.NEW || stateUtils.getState(state)==FileStates.CHECKED_IN ) continue;
 
             SelectItem item = new SelectItem(state,state);
             items.add(item);

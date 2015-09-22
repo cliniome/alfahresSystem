@@ -36,9 +36,9 @@
                             <p:outputLabel value="Patient Number"/>
                             <p:outputLabel value="#{fileDetailsBean.file.patientNumber}"/>
                             <p:outputLabel value="Clinic Name"/>
-                            <p:outputLabel value="#{fileDetailsBean.file.currentStatus.clinicName}"/>
+                            <p:outputLabel value="#{fileDetailsBean.file.currentStatus.appointment.clinicName}"/>
                             <p:outputLabel value="Requesting Doc Name"/>
-                            <p:outputLabel value="#{fileDetailsBean.file.currentStatus.clinicDocName}"/>
+                            <p:outputLabel value="#{fileDetailsBean.file.currentStatus.appointment.requestingDocName}"/>
                             <p:outputLabel value="File's State"/>
                             <p:outputLabel value="#{fileDetailsBean.file.currentStatus.readableState}"/>
                             <p:outputLabel value="Archive Cabinet"/>
@@ -46,7 +46,7 @@
                             <p:outputLabel value="Shelf ID"/>
                             <p:outputLabel value="#{fileDetailsBean.file.shelfId}"/>
                             <p:outputLabel value="Latest Batch Number"/>
-                            <p:outputLabel value="#{fileDetailsBean.file.currentStatus.batchRequestNumber}"/>
+                            <p:outputLabel value="#{fileDetailsBean.file.currentStatus.appointment.batchRequestNumber}"/>
 
 
                         </p:panelGrid>
@@ -70,16 +70,16 @@
 
                             <p:column headerText="Clinic Code" filterable="true" filterMatchMode="contains"
                                       sortable="true">
-                                <h:panelGrid columns="2" rendered="#{history.inpatient}">
-                                   <h:graphicImage url="../img/in-patient.png" rendered="#{history.inpatient}"/>
-                                <p:outputLabel value="#{history.clinicCode}"/>
+                                <h:panelGrid columns="2" rendered="#{history.appointment.inpatient}">
+                                   <h:graphicImage url="../img/in-patient.png" rendered="#{history.appointment.inpatient}"/>
+                                <p:outputLabel value="#{history.appointment.clinicCode}"/>
                                 </h:panelGrid>
-                                <p:outputLabel value="#{history.clinicCode}" rendered="#{!history.inpatient}"/>
+                                <p:outputLabel value="#{history.appointment.clinicCode}" rendered="#{!history.appointment.inpatient}"/>
                             </p:column>
 
                             <p:column headerText="Clinic Name" filterable="true" filterMatchMode="contains"
                                       >
-                                <p:outputLabel value="#{history.clinicName}"/>
+                                <p:outputLabel value="#{history.appointment.clinicName}"/>
                             </p:column>
 
                             <p:column headerText="Trolley ID" filterable="true"
@@ -93,7 +93,9 @@
                             </p:column>
 
                             <p:column headerText="App.Date">
-                                <h:outputLabel value="#{history.appointment_Date_G}"/>
+                                <h:outputLabel value="#{history.appointment.appointment_Date}">
+
+                                </h:outputLabel>
                             </p:column>
 
                             <p:column headerText="Time" filterable="true">

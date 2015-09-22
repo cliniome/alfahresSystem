@@ -27,7 +27,7 @@
                          selectionMode="single" selection="#{filerequest}"
                          paginatorTemplate=" {Exporters}    {CurrentPageReport}  {FirstPageLink}
                          {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         var="filerequest" value="#{requestsBean.watchListRequests}"
+                         var="filerequest" value="#{requestsBean.watchListAppointments}"
                          stickyHeader="true" emptyMessage="There are no Available Watch-List Requests for the moment"
                          widgetVar="requestsTable">
 
@@ -48,8 +48,8 @@
                 </f:facet>
 
                 <p:column exportable="true"
-                          headerText="Request Number" sortable="true" sortBy="#{filerequest.appointmentId}"  filterable="true" filterBy="#{filerequest.appointmentId}">
-                    <p:outputLabel value="#{filerequest.appointmentId}"/>
+                          headerText="Request Number" sortable="true" sortBy="#{filerequest.fileNumber}"  filterable="true" filterBy="#{filerequest.fileNumber}">
+                    <p:outputLabel value="#{filerequest.fileNumber}"/>
                 </p:column>
 
                 <p:column exportable="true" headerText="Patient Number" sortable="true"  filterable="true" filterBy="#{filerequest.patientNumber}"
@@ -89,7 +89,7 @@
                 </p:column>
 
                 <p:column headerText="...">
-                    <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.appointmentId}&amp;route=0">Edit Request</a>
+                    <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.id}&amp;route=0">Edit Request</a>
                 </p:column>
 
             </p:dataTable>

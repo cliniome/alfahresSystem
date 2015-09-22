@@ -11,10 +11,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -235,6 +232,7 @@ public class PatientFileReader {
                 {
                     for(Appointment current : availableRequests)
                     {
+                        prepareAppointmentDate(current);
                         current.setBatchRequestNumber(batchNumber);
                     }
                 }
@@ -246,7 +244,38 @@ public class PatientFileReader {
 
     }
 
+    private void prepareAppointmentDate(Appointment current) {
 
+        if(current != null)
+        {
+            String appointmentTime = current.getAppointment_time();
+            Date appointmentDate = current.getAppointment_Date();
+
+            if(appointmentDate != null && appointmentTime != null &&  !appointmentTime.isEmpty())
+            {
+                Calendar appCalc = Calendar.getInstance();
+                appCalc.setTime(appointmentDate);
+
+                if(appointmentTime.contains(":"))
+                {
+                    String[] splittedTime = appointmentTime.split(":");
+                    String hours = splittedTime[0];
+                    String minutes = splittedTime[1];
+
+                    //add the hours and minutes to the current appointment Date
+                    appCalc.add(Calendar.HOUR,Integer.parseInt(hours));
+
+                    // add any found minutes to the appointment date as well
+                    appCalc.add(Calendar.MINUTE,Integer.parseInt(minutes));
+
+                }
+
+
+                //now set the appointment date
+                current.setAppointment_Date(appCalc.getTime());
+            }
+        }
+    }
 
 
     private  void recursivelyBuildRequests(Node documentElement, Appointment request, FileUploadWizardBean bean,
