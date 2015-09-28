@@ -283,26 +283,7 @@ public class RegistrationBean {
     }
 
 
-    //TODO : Remove it after testing the whole system
-    private void addSomeRoles()
-    {
-        if(systemService != null)
-        {
-            RoleEO[] roles = {
-                    new RoleEO(RoleTypes.ADMIN.toString(),RoleTypes.ADMIN.toString(),"Admin Role"),
-                    new RoleEO(RoleTypes.COORDINATOR.toString(),RoleTypes.COORDINATOR.toString(),"Coordinator Role"),
-                    new RoleEO(RoleTypes.KEEPER.toString(),RoleTypes.KEEPER.toString() , "Files Keeper Role"),
-                    new RoleEO(RoleTypes.RECEPTIONIST.toString(),RoleTypes.RECEPTIONIST.toString(),"Receptionist Role")
-            };
 
-            for(RoleEO role : roles)
-            {
-                systemService.getRoleService().addEntity(role);
-            }
-            System.out.println("Done. Adding Roles to the Database");
-
-        }
-    }
 
 
     public void onRegister(ActionEvent event)

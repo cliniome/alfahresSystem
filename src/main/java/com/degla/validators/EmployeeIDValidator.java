@@ -38,6 +38,17 @@ public class EmployeeIDValidator implements Validator {
             throws ValidatorException {
 
 
+        if(systemService == null)
+        {
+            try
+            {
+                systemService = SpringSystemBridge.services();
+
+            }catch (Exception s)
+            {
+                s.printStackTrace();
+            }
+        }
             //Check for the inserted Employee ID
             String employeeID = "";
             if(value != null) employeeID = value.toString();

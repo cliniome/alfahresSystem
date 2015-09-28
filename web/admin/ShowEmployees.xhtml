@@ -35,12 +35,12 @@
                             <b>Available Employees(<font color="red">#{showEmployeeBean.employees.rowCount}</font>)</b>
                         </f:facet>
 
-                        <p:column headerText="First Name">
-                            <p:outputLabel value="#{emp.firstName}"/>
+                        <p:column headerText="Full Name">
+                            <p:outputLabel value="#{emp.firstName} #{emp.lastName}"/>
                         </p:column>
 
-                        <p:column headerText="Last Name">
-                            <p:outputLabel value="#{emp.lastName}"/>
+                        <p:column headerText="Role">
+                            <p:outputLabel value="#{emp.role.name}"/>
                         </p:column>
 
                         <p:column headerText="User Name">

@@ -235,7 +235,7 @@ public class BasicController implements BasicRestfulOperations {
                 this.addNewHistory(file,patientFile,emp,appointment);
 
                 //check if that file has multiple appointments today
-                List<Appointment> todayAppointments = getSystemService().getAppointmentManager().getTodayAppointments();
+                List<Appointment> todayAppointments = getSystemService().getAppointmentManager().getTodayAppointments(patientFile.getFileID());
 
                 if(todayAppointments != null && todayAppointments.size() > 0)
                 {

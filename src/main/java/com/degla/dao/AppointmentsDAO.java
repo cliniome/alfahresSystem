@@ -265,16 +265,17 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
     }
 
 
-    public List<Appointment> getTodayAppointments()
+    public List<Appointment> getTodayAppointments(String fileNumber)
     {
         try
         {
-            String queryString = "select app from Appointment app where app.active = true and app.appointment_Date >= :startDate and " +
+            String queryString = "select app from Appointment app where app.fileNumber = :fileNumber and app.active = true and app.appointment_Date >= :startDate and " +
                     "app.appointment_Date <= :endDate order by app.appointment_Date DESC";
             Date startDate = AlfahresDateUtils.getStartOfDay(new Date());
             Date endDate = AlfahresDateUtils.getEndOfDay(new Date());
 
             Query query = getManager().createQuery(queryString);
+            query.setParameter("fileNumber",fileNumber);
             query.setParameter("startDate",startDate);
             query.setParameter("endDate",endDate);
 

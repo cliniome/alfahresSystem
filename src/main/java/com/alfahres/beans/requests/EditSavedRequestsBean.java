@@ -23,6 +23,7 @@ public class EditSavedRequestsBean implements Serializable {
 
     private SystemService systemService;
     private String appointmentId;
+    private String fileNumber;
     private String patientNumber;
     private String patientName;
     private Employee chosenEmployee;
@@ -86,7 +87,7 @@ public class EditSavedRequestsBean implements Serializable {
             }
 
 
-            this.chosenRequest.setFileNumber(this.getAppointmentId());
+
             this.chosenRequest.setPatientName(this.getPatientName());
             this.chosenRequest.setPatientNumber(this.getPatientNumber());
             this.chosenRequest.setAssignedTo(this.getChosenEmployee());
@@ -137,9 +138,11 @@ public class EditSavedRequestsBean implements Serializable {
         if(this.chosenRequest != null)
         {
             this.chosenEmployee = this.chosenRequest.getAssignedTo();
-            this.setAppointmentId(this.chosenRequest.getFileNumber());
+            this.setAppointmentId(id);
+            this.setFileNumber(this.chosenRequest.getFileNumber());
             this.setPatientName(this.chosenRequest.getPatientName());
             this.setPatientNumber(this.chosenRequest.getPatientNumber());
+
         }
 
     }
@@ -190,5 +193,13 @@ public class EditSavedRequestsBean implements Serializable {
 
     public void setRoute(boolean route) {
         this.route = route;
+    }
+
+    public String getFileNumber() {
+        return fileNumber;
+    }
+
+    public void setFileNumber(String fileNumber) {
+        this.fileNumber = fileNumber;
     }
 }

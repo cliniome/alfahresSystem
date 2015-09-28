@@ -8,10 +8,13 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.springframework.org/security/tags"
       xmlns:h="http://java.sun.com/jsf/html">
 
 <h:body>
 
+
+    <sec:authorize access="hasRole('ADMIN')">
 
     <div class="row-fluid">
         <div class="span3">
@@ -61,6 +64,7 @@
     </div>
 
 
+    </sec:authorize>
 
 </h:body>
 

@@ -55,16 +55,31 @@ public class ViewStatisticsBean implements Serializable {
                 FileStates currentState = FileStates.valueOf(getViewHelper().getCurrentState());
                 systemService.getFilesService().setQueryState(currentState);
                 systemService.getFilesService().setAppointmentDate(getViewHelper().getAppointmentDate());
+
             }
 
             files = new GenericLazyDataModel<PatientFile>(systemService.getFilesService());
-
             states = FileStates.values();
 
         }catch (Exception s)
         {
             s.printStackTrace();
         }
+    }
+
+
+    public void onReset(ActionEvent event)
+    {
+        if(getViewHelper() != null)
+        {
+            getViewHelper().setAppointmentDate(null);
+            getViewHelper().setInWatchList(false);
+            getViewHelper().setCurrentState(null);
+        }
+
+
+        //finally do a default search
+        onSearch(event);
     }
 
     @PreDestroy
@@ -89,8 +104,12 @@ public class ViewStatisticsBean implements Serializable {
 
             systemService.getFilesService().setQueryState(FileStates.valueOf(getViewHelper().getCurrentState()));
             systemService.getFilesService().setAppointmentDate(getViewHelper().getAppointmentDate());
+            systemService.getFilesService().setInWatchList(getViewHelper().isInWatchList());
 
-            this.setFiles(new GenericLazyDataModel<PatientFile>(systemService.getFilesService()));
+
+            GenericLazyDataModel<PatientFile> filterableModel = new GenericLazyDataModel<PatientFile>(systemService.getFilesService());
+            filterableModel.setFilterable(true);
+            this.setFiles(filterableModel);
 
 
 
@@ -143,6 +162,13 @@ public class ViewStatisticsBean implements Serializable {
 
     public GenericLazyDataModel<PatientFile> getFiles() {
         return files;
+    }
+
+    public long totalCount()
+    {
+        if(getFiles() != null)
+            return getFiles().getRowCount();
+        else return 0;
     }
 
     public void setFiles(GenericLazyDataModel<PatientFile> files) {

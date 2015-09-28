@@ -48,7 +48,7 @@
                 </f:facet>
 
                 <p:column exportable="true"
-                          headerText="Request Number" sortable="true" sortBy="#{filerequest.appointmentId}"  filterable="true" filterBy="#{filerequest.appointmentId}">
+                          headerText="Request Number" sortable="true" sortBy="#{filerequest.fileNumber}"  filterable="true" filterBy="#{filerequest.fileNumber}">
                     <p:outputLabel value="#{filerequest.fileNumber}"/>
                 </p:column>
 
@@ -71,8 +71,8 @@
 
                     <f:facet name="filter">
                         <p:calendar id="cal1"   pattern="yyyy-MM-dd" style="width: 100px;">
-                            <p:ajax event="dateSelect" oncomplete="PF('requestsTable').filter()" update="requestsTable"/>
-                            <p:ajax event="change" oncomplete="PF('requestsTable').filter()" update="requestsTable"/>
+                            <p:ajax event="dateSelect" oncomplete="PF('requestsTable').filter()" update="requestsTablePanel"/>
+                            <p:ajax event="change" oncomplete="PF('requestsTable').filter()" update="requestsTablePanel"/>
                         </p:calendar>
                     </f:facet>
                     <p:outputLabel value="#{filerequest.appointment_Date}">

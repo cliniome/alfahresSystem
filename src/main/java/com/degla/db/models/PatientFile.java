@@ -59,6 +59,9 @@ public class PatientFile extends EntityEO {
     @Column(name="Patient_Name",nullable = true)
     private String patientName;
 
+    @Column(name="Processed",nullable = true)
+    private boolean processed = true;
+
 
 	public void setFileID(String fileID) {
 		this.fileID = fileID;
@@ -172,8 +175,18 @@ public class PatientFile extends EntityEO {
         file.setInpatient(this.getCurrentStatus().getAppointment().isInpatient());
         file.setOperationDate(this.getCurrentStatus().getCreatedAt().getTime());
         file.setAppointmentId(this.getCurrentStatus().getAppointment().getId());
+        file.setProcessed(this.isProcessed());
+
 
 
         return file;
+    }
+
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
     }
 }

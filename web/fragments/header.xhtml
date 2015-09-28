@@ -9,6 +9,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:sec="http://www.springframework.org/security/tags"
       xmlns:h="http://java.sun.com/jsf/html">
 
 <h:head>
@@ -31,7 +32,7 @@
                 <a class="brand" href="index.xhtml">Al Fahres System</a>
 
                 <div class="btn-group pull-right">
-                    <a class="btn" href="Account.xhtml"><i class="icon-user"></i> Admin</a>
+                    <a class="btn" href="Account.xhtml"><i class="icon-user"></i> #{dashboardBean.account.userName}</a>
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                         <span class="caret"></span>
                     </a>
@@ -47,6 +48,7 @@
                     <ul class="nav">
                         <li><a href="index.xhtml">Home</a></li>
 
+                        <sec:authorize access="hasRole('ADMIN')">
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">File Requests <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="SubmitFiles.xhtml">Request New Files</a></li>
@@ -60,6 +62,10 @@
                             </ul>
                         </li>
 
+                        </sec:authorize>
+
+
+                        <sec:authorize access="hasRole('ADMIN')">
                         <li class="dropdown"><a href="#"  data-toggle="dropdown">Employees <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="RegisterUser.xhtml">Add New Employee</a></li>
@@ -67,6 +73,9 @@
                                 <li><a href="ShowEmployees.xhtml">Manage Employees</a></li>
                             </ul>
                         </li>
+                        </sec:authorize>
+
+                        <sec:authorize access="hasRole('ADMIN')">
 
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Clinics<b class="caret"></b></a>
                             <ul class="dropdown-menu">
@@ -76,6 +85,9 @@
 
                             </ul>
                         </li>
+                        </sec:authorize>
+
+                        <sec:authorize access="hasRole('ADMIN')">
 
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Patient Files<b class="caret"></b></a>
                             <ul class="dropdown-menu">
@@ -83,7 +95,11 @@
                             </ul>
                         </li>
 
+                        </sec:authorize>
+
                         <!-- The cabinets administration -->
+                        <sec:authorize access="hasRole('ADMIN')">
+
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Cabinets <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="NewCabinet.xhtml">Add New Cabinet</a></li>
@@ -91,6 +107,8 @@
                                 <li><a href="ManageCabinets.xhtml">Manage Cabinets</a></li>
                             </ul>
                         </li>
+
+                        </sec:authorize>
                     </ul>
                 </div>
             </div>

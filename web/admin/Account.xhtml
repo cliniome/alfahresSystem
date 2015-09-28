@@ -53,12 +53,7 @@
                         <div class="control-group">
                             <label class="control-label" for="role">Role</label>
                             <div class="controls">
-                                <h:selectOneMenu required="true" requiredMessage="Role is required"
-                                                 value="#{dashboardBean.account.role}" id="role">
-                                    <f:selectItems  value="#{registrationBean.roles}"
-                                                    var="role" itemLabel="#{role.displayName}"  itemValue="#{role}"/>
-                                    <f:converter converterId="com.degla.converters.RoleConverter"/>
-                                </h:selectOneMenu>
+                                <h:outputLabel value="#{dashboardBean.account.role.name}"/>
                             </div>
                         </div>
                         <div class="control-group">

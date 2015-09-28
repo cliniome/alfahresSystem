@@ -14,7 +14,7 @@ public class FileStateUtils implements Serializable {
 
     private String[] states = {"Archived","Checked Out","Received by Coordinator","Sent out by Coordinator",
     "Received by Clinic","Received by Keeper","New File","Received by Receptionist","Prepared by Keeper",
-    "Transferred by coordinator","Missing"};
+    "Transferred by coordinator","Missing","at Processing Coordinator","at Coding Coordinator","at Analysis Coordinator","at Incomplete Coordinator"};
 
     public FileStateUtils(FileStates state) {
         this.state = state;
@@ -53,6 +53,14 @@ public class FileStateUtils implements Serializable {
             state = FileStates.OUT_OF_CABIN;
         else if (readableState.toLowerCase().equals("Transferred by coordinator".toLowerCase()))
             state = FileStates.TRANSFERRED;
+        else if (readableState.toLowerCase().equals("at Processing Coordinator".toLowerCase()))
+            state = FileStates.PROCESSING_COORDINATOR;
+        else if (readableState.toLowerCase().equals("at Coding Coordinator".toLowerCase()))
+            state = FileStates.CODING_COORDINATOR;
+        else if (readableState.toLowerCase().equals("at Analysis Coordinator".toLowerCase()))
+            state = FileStates.ANALYSIS_COORDINATOR;
+        else if (readableState.toLowerCase().equals("at Incomplete Coordinator".toLowerCase()))
+            state = FileStates.INCOMPLETE_COORDINATOR;
 
 
         return state;
@@ -87,6 +95,14 @@ public class FileStateUtils implements Serializable {
                 return "Prepared by Keeper";
             case TRANSFERRED:
                 return "Transferred by coordinator";
+            case PROCESSING_COORDINATOR:
+                return "at Processing Coordinator";
+            case ANALYSIS_COORDINATOR:
+                return "at Analysis Coordinator";
+            case CODING_COORDINATOR:
+                return "at Coding Coordinator";
+            case INCOMPLETE_COORDINATOR:
+                return "at Incomplete Coordinator";
             default:
                 return readableState;
         }

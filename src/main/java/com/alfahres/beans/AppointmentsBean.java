@@ -1,6 +1,8 @@
 package com.alfahres.beans;
 
 import com.degla.db.models.Appointment;
+import com.degla.db.models.FileStates;
+import com.degla.db.models.PatientFile;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.ExcelFileBuilder;
@@ -11,6 +13,7 @@ import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
+import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
@@ -39,7 +42,9 @@ public class AppointmentsBean implements Serializable {
     private DashboardBean dashboardBean;
 
 
-    public AppointmentsBean()
+
+    @PostConstruct
+    public void onInitialization()
     {
         try
         {
@@ -49,6 +54,28 @@ public class AppointmentsBean implements Serializable {
         }catch (Exception s)
         {
             s.printStackTrace();
+        }
+    }
+
+
+    public String viewFileState(String fileNumber)
+    {
+        try
+        {
+            PatientFile currentFile  = systemService.getFilesService().getFileWithNumber(fileNumber);
+
+            if(currentFile != null)
+            {
+                FileStates currentState = currentFile.getCurrentStatus().getState();
+
+                return currentState.getReadableState();
+
+            }else throw new Exception("There is a problem in the watch-List , the following PatientFile ["+ fileNumber+"] Should not be null");
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return "N/A";
         }
     }
 

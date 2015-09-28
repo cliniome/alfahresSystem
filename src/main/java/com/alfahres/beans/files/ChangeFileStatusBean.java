@@ -139,7 +139,11 @@ public class ChangeFileStatusBean implements Serializable{
         for(String state : states)
         {
             //Exclude the new and checked-in states from the list
-            if(stateUtils.getState(state)== FileStates.NEW || stateUtils.getState(state)==FileStates.CHECKED_IN ) continue;
+            if(stateUtils.getState(state)== FileStates.NEW || stateUtils.getState(state)==FileStates.CHECKED_IN ||
+                    stateUtils.getState(state) == FileStates.PROCESSING_COORDINATOR ||
+            stateUtils.getState(state) == FileStates.CODING_COORDINATOR ||
+                    stateUtils.getState(state) == FileStates.ANALYSIS_COORDINATOR ||
+                    stateUtils.getState(state) == FileStates.INCOMPLETE_COORDINATOR ) continue;
 
             SelectItem item = new SelectItem(state,state);
             items.add(item);

@@ -33,6 +33,10 @@ public class EmployeeUtils {
         {
             //states.add(FileStates.CHECKED_OUT);
             states.add(FileStates.COORDINATOR_OUT);
+            states.add(FileStates.ANALYSIS_COORDINATOR);
+            states.add(FileStates.CODING_COORDINATOR);
+            states.add(FileStates.PROCESSING_COORDINATOR);
+            states.add(FileStates.INCOMPLETE_COORDINATOR);
 
         }
         else if (role.equalsIgnoreCase(RoleTypes.COORDINATOR.toString()))

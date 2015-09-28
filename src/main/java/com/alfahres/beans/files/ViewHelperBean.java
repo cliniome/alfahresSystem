@@ -16,6 +16,8 @@ public class ViewHelperBean implements Serializable {
 
     private String fileNumber;
 
+    private boolean inWatchList;
+
     public String getCurrentState() {
         return currentState;
     }
@@ -40,5 +42,13 @@ public class ViewHelperBean implements Serializable {
 
     public void setFileNumber(String fileNumber) {
         this.fileNumber = fileNumber;
+    }
+
+    public boolean isInWatchList() {
+        return inWatchList;
+    }
+
+    public void setInWatchList(boolean inWatchList) {
+        this.inWatchList = inWatchList;
     }
 }

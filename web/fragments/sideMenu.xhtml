@@ -9,16 +9,17 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:sec="http://www.springframework.org/security/tags"
       xmlns:h="http://java.sun.com/jsf/html">
 
 <h:body>
+
+    <sec:authorize access="hasRole('ADMIN')">
+
     <div class="span3">
         <div class="well sidebar-nav">
            <h:form prependId="false">
                <ul class="nav nav-list">
-
-
-
                    <li class="nav-header"><i class="icon-briefcase"></i>File Requests</li>
 
                    <li class="#{cssBean.setActive('RequestNewFiles')}">
@@ -70,6 +71,22 @@
         <p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server"/>
     </div>
 
+
+    </sec:authorize>
+
+
+    <sec:authorize access="hasAnyRole('PROCESSING_COORDINATOR','CODING_COORDINATOR','ANALYSIS_COORDINATOR','INCOMPLETE_COORDINATOR')">
+
+
+        <div class="span3">
+        <div class="well sidebar-nav">
+        <h:form prependId="false">
+            <!-- Place here, the contents of the side menu for the above mentioned roles -->
+        </h:form>
+        </div>
+        </div>
+
+    </sec:authorize>
 
 </h:body>
 

@@ -20,6 +20,9 @@ public class GenericLazyDataModel<T extends AnnotatingModel> extends LazyDataMod
     private List<T> dataModels = new ArrayList<T>();
     private AbstractDAO<T> paginator;
 
+    private boolean filterable;
+
+
 
    /* public GenericLazyDataModel(List<T> models)
     {
@@ -46,6 +49,7 @@ public class GenericLazyDataModel<T extends AnnotatingModel> extends LazyDataMod
 
     public boolean addModel(T model)
     {
+
         if(dataModels == null) dataModels = new ArrayList<T>();
 
         return dataModels.add(model);
@@ -70,6 +74,13 @@ public class GenericLazyDataModel<T extends AnnotatingModel> extends LazyDataMod
     }
 
     @Override
+    public int getRowCount() {
+        int count =  super.getRowCount();
+
+        return count;
+    }
+
+    @Override
     public void setRowIndex(int rowIndex) {
 
         if(rowIndex == -1 || getPageSize() == 0)
@@ -81,6 +92,14 @@ public class GenericLazyDataModel<T extends AnnotatingModel> extends LazyDataMod
 
 
 
+    public long currentCount()
+    {
+        if(this.dataModels != null) return this.dataModels.size();
+        else return 0;
+    }
+
+
+
     @Override
     public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         try
@@ -88,8 +107,19 @@ public class GenericLazyDataModel<T extends AnnotatingModel> extends LazyDataMod
 
             List<T> data = new ArrayList<T>();
             //select the data
+
             this.dataModels = paginator.getPaginatedResults(first, pageSize);
-            this.setRowCount((int) paginator.getMaxResults());
+
+            if(!filters.isEmpty() && dataModels != null)
+            {
+                this.setRowCount(dataModels.size());
+            }else if(this.isFilterable())
+            {
+                this.setRowCount(dataModels.size());
+            }else
+            {
+                this.setRowCount((int) paginator.getMaxResults());
+            }
 
             //filter
             for(T model : dataModels) {
@@ -129,7 +159,11 @@ public class GenericLazyDataModel<T extends AnnotatingModel> extends LazyDataMod
 
             //rowCount
             int dataSize = data.size();
-            //this.setRowCount(dataSize);
+
+            if(!filters.isEmpty())
+            {
+                this.setRowCount(dataSize);
+            }
 
 
 
@@ -166,4 +200,11 @@ public class GenericLazyDataModel<T extends AnnotatingModel> extends LazyDataMod
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
+    public boolean isFilterable() {
+        return filterable;
+    }
+
+    public void setFilterable(boolean filterable) {
+        this.filterable = filterable;
+    }
 }

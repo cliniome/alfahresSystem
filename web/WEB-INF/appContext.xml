@@ -68,8 +68,10 @@ http://www.springframework.org/schema/jee
     <sec:http  auto-config="true" use-expressions="true" security-context-repository-ref="noSessionContextRepository"
                create-session="always" access-denied-page="/web/NotAuthorized.xhtml">
          <!--<sec:intercept-url pattern="/web/dashboard/**" access="hasRole('ROLE_DOCTOR')"/>-->
-        <sec:intercept-url pattern="/web/admin/**"  access="hasRole('ADMIN')"/>
-        <sec:intercept-url pattern="/web/index.xhtml" access="hasRole('ADMIN')"/>
+        <sec:intercept-url pattern="/web/admin/**"
+            access="hasAnyRole('ADMIN','PROCESSING_COORDINATOR','ANALYSIS_COORDINATOR','CODING_COORDINATOR','INCOMPLETE_COORDINATOR')"/>
+        <sec:intercept-url pattern="/web/index.xhtml"
+                           access="hasAnyRole('ADMIN','PROCESSING_COORDINATOR','ANALYSIS_COORDINATOR','CODING_COORDINATOR','INCOMPLETE_COORDINATOR')"/>
 
 
 

@@ -37,10 +37,19 @@
                                               itemLabel="#{state.readableState}" itemValue="#{state}"/>
                            </p:selectOneMenu>
 
+                           <p:outputLabel value="In Watch-List"/>
+                           <p:selectBooleanButton onLabel="YES" offLabel="NO" value="#{viewstats.viewHelper.inWatchList}"/>
+
                            <br/>
 
-                           <h:commandButton value="View Files" actionListener="#{viewstats.onSearch}"
-                                            styleClass="btn btn-large btn-primary btn-success"/>
+                           <h:panelGrid columns="2" cellpadding="5px">
+                               <h:commandButton value="View Files" actionListener="#{viewstats.onSearch}"
+                                                styleClass="btn btn-large btn-primary btn-success"/>
+                                       <h:commandButton value="Reset" actionListener="#{viewstats.onReset}"
+                                                        styleClass="btn btn-large btn-primary btn-success"/>
+                           </h:panelGrid>
+
+
 
                        </h:panelGrid>
 
@@ -49,18 +58,18 @@
                        <h:panelGrid columns="1" id="tableContainer">
 
                            <p:dataTable stickyHeader="true" var="file" value="#{viewstats.files}" rows="10"
-                                   lazy="true" paginator="true" rowKey="#{file}"
+                                   lazy="true" paginator="true" rowKey="#{file}" emptyMessage="There are no Patient Files matching the Search Query"
                                         paginatorTemplate=" {Exporters}    {CurrentPageReport}  {FirstPageLink}
                          {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
 
 
 
                                <f:facet name="header">
-                                   <b>Available Patient Files (<font color="red">#{viewstats.files.rowCount}</font>)</b>
+                                   <p:outputLabel value="Total Files (#{viewstats.totalCount()})" style="color: red;font-weight: bold;"/>
                                </f:facet>
 
                                <f:facet name="{Exporters}">
-                                   <p:commandLink ajax="false">
+                                   <p:commandLink ajax="false" disabled="#{viewstats.files.rowCount == 0}">
                                        <img src="../img/excel.png" alt="img"/>
                                        <p:fileDownload value="#{viewstats.excelFile}"
                                                        contentDisposition="application/vnd.ms-excel"/>
@@ -76,15 +85,15 @@
                                </p:column>
 
                                <p:column headerText="Appointment Date">
-                                   <p:outputLabel value="#{file.currentStatus.appointment_Date_G}">
-                                       <f:convertDateTime pattern="dd-MM-yyyy hh:mm a"/>
+                                   <p:outputLabel value="#{file.currentStatus.appointment.appointment_Date}">
+
                                    </p:outputLabel>
                                </p:column>
                                <p:column headerText="State">
                                    <p:outputLabel value="#{file.currentStatus.readableState}"/>
                                </p:column>
                                <p:column headerText="Clinic Code">
-                                   <p:outputLabel value="#{file.currentStatus.clinicCode}"/>
+                                   <p:outputLabel value="#{file.currentStatus.appointment.clinicCode}"/>
                                </p:column>
 
                            </p:dataTable>

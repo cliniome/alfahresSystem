@@ -284,11 +284,21 @@
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
 
+    <managed-bean>
+        <managed-bean-name>permissionVerifier</managed-bean-name>
+        <managed-bean-class>com.degla.security.PermissionVerifier</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+        <managed-property>
+            <property-name>dashboardBean</property-name>
+            <value>#{dashboardBean}</value>
+        </managed-property>
+    </managed-bean>
+
 
     <managed-bean>
         <managed-bean-name>viewstats</managed-bean-name>
         <managed-bean-class>com.alfahres.beans.stats.ViewStatisticsBean</managed-bean-class>
-        <managed-bean-scope>view</managed-bean-scope>
+        <managed-bean-scope>session</managed-bean-scope>
         <managed-property>
             <property-name>viewHelper</property-name>
             <value>#{viewHelper}</value>

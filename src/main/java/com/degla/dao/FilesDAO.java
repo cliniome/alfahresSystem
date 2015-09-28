@@ -25,12 +25,14 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
     private Date appointmentDate;
 
+    private boolean inWatchList;
+
     public List<PatientFile> getFilesWithBatchNumber(String batchNumber)
     {
         try
         {
             String queryString = "select f from PatientFile f where " +
-                    "f.currentStatus.batchRequestNumber = :number";
+                    "f.currentStatus.appointment.batchRequestNumber = :number";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("number",batchNumber);
             return currentQuery.getResultList();
@@ -47,11 +49,26 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
     public List<PatientFile> getPaginatedResults(int first, int pageSize) {
 
 
-        if(queryState != null && getAppointmentDate() != null)
+        if(isInWatchList())
+        {
+            String query = "select f from PatientFile f where f.currentStatus.state=:state and " +
+                    "f.currentStatus.appointment.appointment_Date >= :startdate " +
+                    "and f.currentStatus.appointment.appointment_Date <= :enddate and " +
+                    "f.fileID in (select app.fileNumber from Appointment app where app.active=true)";
+
+            Query currentQuery = getManager().createQuery(query);
+            currentQuery.setFirstResult(first);
+            currentQuery.setMaxResults(pageSize);
+            currentQuery.setParameter("state", getQueryState());
+            currentQuery.setParameter("startdate", AlfahresDateUtils.getStartOfDay(getAppointmentDate()));
+            currentQuery.setParameter("enddate",AlfahresDateUtils.getEndOfDay(getAppointmentDate()));
+            return currentQuery.getResultList();
+
+        }else if(queryState != null && getAppointmentDate() != null)
         {
             String query = "select f from PatientFile f where f.currentStatus.state=:state " +
-                    "and f.currentStatus.appointment_Date_G >= :startdate " +
-                    "and f.currentStatus.appointment_Date_G <= :enddate";
+                    "and f.currentStatus.appointment.appointment_Date >= :startdate " +
+                    "and f.currentStatus.appointment.appointment_Date <= :enddate";
             Query currentQuery = getManager().createQuery(query);
             currentQuery.setFirstResult(first);
             currentQuery.setMaxResults(pageSize);
@@ -193,7 +210,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
                 }
             }
 
-            String queryString = "select f from PatientFile f where f.currentStatus.clinicCode IN (:clinics) and " +
+            String queryString = "select f from PatientFile f where f.currentStatus.appointment.clinicCode IN (:clinics) and " +
                     " f.currentStatus.state =:state and f.fileID=:fileNumber";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("clinics",clinics);
@@ -278,7 +295,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         try
         {
             String queryString = "select f from PatientFile f where (f.fileID=:query and " +
-                    "f.currentStatus.state =:state) or (f.fileID = :query and f.currentStatus.state =:anotherstate and f.currentStatus.inpatient=:inpatient)";
+                    "f.currentStatus.state =:state) or (f.fileID = :query and f.currentStatus.state =:anotherstate and f.currentStatus.appointment.inpatient=:inpatient)";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("query",query);
             currentQuery.setParameter("state",FileStates.COORDINATOR_OUT);
@@ -472,11 +489,24 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
     {
         try
         {
-            if(getAppointmentDate() != null && getQueryState() != null)
+            if(isInWatchList())
+            {
+                String query = "select f from PatientFile f where f.currentStatus.state=:state and " +
+                        "f.currentStatus.appointment.appointment_Date >= :startdate " +
+                        "and f.currentStatus.appointment.appointment_Date <= :enddate and " +
+                        "f.fileID in (select app.fileNumber from Appointment app where app.active=true)";
+
+                Query currentQuery = getManager().createQuery(query);
+                currentQuery.setParameter("state", getQueryState());
+                currentQuery.setParameter("startdate", AlfahresDateUtils.getStartOfDay(getAppointmentDate()));
+                currentQuery.setParameter("enddate",AlfahresDateUtils.getEndOfDay(getAppointmentDate()));
+                return currentQuery.getResultList();
+
+            }else if(getAppointmentDate() != null && getQueryState() != null)
             {
                 String query = "select f from PatientFile f where f.currentStatus.state=:state " +
-                        "and f.currentStatus.appointment_Date_G >= :startdate " +
-                        "and f.currentStatus.appointment_Date_G <= :enddate";
+                        "and f.currentStatus.appointment.appointment_Date >= :startdate " +
+                        "and f.currentStatus.appointment.appointment_Date <= :enddate";
 
                 Query currentQuery = getManager().createQuery(query);
                 currentQuery.setParameter("state",getQueryState());
@@ -521,7 +551,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             if(getQueryState() != null && getAppointmentDate() != null)
             {
                 String queryString = "select count(f) from PatientFile f where f.currentStatus.state=:state and " +
-                        "f.currentStatus.appointment_Date_G >= :startdate and f.currentStatus.appointment_Date_G <= :enddate " +
+                        "f.currentStatus.appointment.appointment_Date >= :startdate and f.currentStatus.appointment.appointment_Date <= :enddate " +
                         "ORDER BY f.currentStatus.createdAt DESC";
                 Query currentQuery = getManager().createQuery(queryString);
 
@@ -565,5 +595,13 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
     public void setAppointmentDate(Date appointmentDate) {
         this.appointmentDate = appointmentDate;
+    }
+
+    public boolean isInWatchList() {
+        return inWatchList;
+    }
+
+    public void setInWatchList(boolean inWatchList) {
+        this.inWatchList = inWatchList;
     }
 }

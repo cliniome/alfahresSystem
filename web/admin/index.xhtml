@@ -5,6 +5,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:sec="http://www.springframework.org/security/tags"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <f:view>
     <h:head>
@@ -28,10 +29,15 @@
                     <div class="well hero-unit">
                         <h1>Welcome, <h:outputText value="#{dashboardBean.account.firstName}"/> </h1>
                         <p>You can Manage AlFahres System including Users , Roles , Files , Cabinets....etc</p>
+                        <sec:authorize access="hasRole('ADMIN')">
+
+
                         <h:panelGrid columns="2">
                             <a class="btn btn-success btn-large" href="SubmitFiles.xhtml">Request Out-Patient Files &raquo;</a>
                             <a class="btn btn-success btn-large" href="NewInPatient.xhtml">Request In-Patient Files &raquo;</a>
                         </h:panelGrid>
+
+                        </sec:authorize>
                     </div>
 
                     <!-- Beginning of Admin Statistics Caption -->
@@ -39,9 +45,13 @@
                         <ui:include src="../fragments/admin-Captions.xhtml"/>
                     </ui:insert>
 
+                    <sec:authorize access="hasRole('ADMIN')">
+
                     <ui:insert name="missingFiles">
                         <ui:include src="../fragments/missingFiles.xhtml"/>
                     </ui:insert>
+
+                    </sec:authorize>
 
                 </div>
 

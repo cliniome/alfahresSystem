@@ -86,11 +86,26 @@ public class AppointmentsLazyDataModel<T extends AnnotatingModel> extends LazyDa
             if(watchList)
             {
                 this.dataModels = (List<T>) ((AppointmentsDAO)paginator).getAllWatchListRequests(first,pageSize);
-                this.setRowCount((int) ((AppointmentsDAO)paginator).getCountOfWatchListRequests());
+
+                if(!filters.isEmpty() && dataModels != null)
+                {
+                    this.setRowCount(dataModels.size());
+                }else
+                {
+                    this.setRowCount((int) ((AppointmentsDAO)paginator).getCountOfWatchListRequests());
+                }
             }else
             {
                 this.dataModels = paginator.getPaginatedResults(first, pageSize);
-                this.setRowCount((int) paginator.getMaxResults());
+
+                if(!filters.isEmpty() && dataModels != null)
+                {
+                    this.setRowCount(dataModels.size());
+
+                }else
+                {
+                    this.setRowCount((int) paginator.getMaxResults());
+                }
             }
             //filter
             for(T model : dataModels) {
@@ -151,7 +166,11 @@ public class AppointmentsLazyDataModel<T extends AnnotatingModel> extends LazyDa
 
             //rowCount
             int dataSize = data.size();
-            //this.setRowCount(dataSize);
+
+            if(!filters.isEmpty())
+            {
+                this.setRowCount(dataSize);
+            }
 
 
 

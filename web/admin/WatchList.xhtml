@@ -79,6 +79,10 @@
 
                     </p:outputLabel>
                 </p:column>
+
+                <p:column headerText="State">
+                    <p:outputLabel value="#{requestsBean.viewFileState(filerequest.fileNumber)}"/>
+                </p:column>
                 <p:column exportable="false" headerText="Requested By"
                           sortable="true" sortBy="#{filerequest.userName}">
                     <p:outputLabel value="#{filerequest.userName}"/>
