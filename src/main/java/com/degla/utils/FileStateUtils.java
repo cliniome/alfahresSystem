@@ -14,7 +14,7 @@ public class FileStateUtils implements Serializable {
 
     private String[] states = {"Archived","Checked Out","Received by Coordinator","Sent out by Coordinator",
     "Received by Clinic","Received by Keeper","New File","Received by Receptionist","Prepared by Keeper",
-    "Transferred by coordinator","Missing","at Processing Coordinator","at Coding Coordinator","at Analysis Coordinator","at Incomplete Coordinator"};
+    "Transferred by coordinator","Missing","at Processing Coordinator","at Coding Coordinator","at Analysis Coordinator","at Incomplete Coordinator","Inpatient Submitted"};
 
     public FileStateUtils(FileStates state) {
         this.state = state;
@@ -61,6 +61,8 @@ public class FileStateUtils implements Serializable {
             state = FileStates.ANALYSIS_COORDINATOR;
         else if (readableState.toLowerCase().equals("at Incomplete Coordinator".toLowerCase()))
             state = FileStates.INCOMPLETE_COORDINATOR;
+        else if (readableState.toLowerCase().equals("Inpatient Submitted".toLowerCase()))
+            state = FileStates.INPATIENT_COMPLETED;
 
 
         return state;
@@ -103,6 +105,8 @@ public class FileStateUtils implements Serializable {
                 return "at Coding Coordinator";
             case INCOMPLETE_COORDINATOR:
                 return "at Incomplete Coordinator";
+            case INPATIENT_COMPLETED:
+                return "Inpatient Submitted";
             default:
                 return readableState;
         }

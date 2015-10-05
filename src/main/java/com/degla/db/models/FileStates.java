@@ -19,9 +19,13 @@ public enum FileStates {
 	PROCESSING_COORDINATOR(16),
 	ANALYSIS_COORDINATOR(17),
 	CODING_COORDINATOR(18),
-	INCOMPLETE_COORDINATOR(19);
+	INCOMPLETE_COORDINATOR(19),
+	INPATIENT_COMPLETED(20);
 
 	private int step;
+
+
+	private static FileStates[] inpatientStates = {PROCESSING_COORDINATOR,ANALYSIS_COORDINATOR,CODING_COORDINATOR,INCOMPLETE_COORDINATOR};
 
 	private FileStates(int step)
 	{
@@ -34,6 +38,23 @@ public enum FileStates {
 
 	public void setStep(int step) {
 		this.step = step;
+	}
+
+
+	public boolean isCurrentlyInPatient()
+	{
+		boolean result = false;
+
+		for(FileStates step : inpatientStates)
+		{
+			if(step == this)
+			{
+				result = true;
+				break;
+			}
+		}
+
+		return result;
 	}
 
 

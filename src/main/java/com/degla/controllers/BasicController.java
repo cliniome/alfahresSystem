@@ -105,7 +105,7 @@ public class BasicController implements BasicRestfulOperations {
             Date chosenDate = DateUtils.parseDate(date, SpringSystemBridge.services().getDatePatternsBean().getDatePatterns().toArray(new String[]{}));
             List<RestfulRequest> availableRequests = new ArrayList<RestfulRequest>();
 
-            List<Appointment> appointments = getSystemService().getAppointmentManager().selectAppointmentsByDate(username,chosenDate);
+            List<Appointment> appointments = getSystemService().getAppointmentManager().selectAppointmentsByDate(username, chosenDate);
 
             if (appointments != null) {
 
@@ -187,6 +187,11 @@ public class BasicController implements BasicRestfulOperations {
                         .getFileWithNumber(file.getFileNumber());
 
 
+                //Check to see preemptive Ejection of the patient file from inpatient processing area to MR Room.
+
+                this.checkPreemptiveEjection(patientFile,file);
+
+
 
                 if(patientFile == null) throw new RecordNotFoundException("There is something wrong " +
                         "in the system , Please contact your system administrator");
@@ -221,6 +226,30 @@ public class BasicController implements BasicRestfulOperations {
             s.printStackTrace();
             return false;
         }
+    }
+
+    private void checkPreemptiveEjection(PatientFile patientFile, RestfulFile file) {
+
+        try
+        {
+            FileStates nextState = FileStates.valueOf(file.getState());
+
+            FileStates currentState = patientFile.getCurrentStatus().getState();
+
+            //If the current state is currently inpatient and the upcoming state of the file is not in inpatient , that means
+            if(currentState.isCurrentlyInPatient() && !nextState.isCurrentlyInPatient() && (nextState != FileStates.INPATIENT_COMPLETED))
+            {
+                patientFile.setProcessed(false);
+            }else if (currentState.isCurrentlyInPatient() && !nextState.isCurrentlyInPatient() && (nextState == FileStates.INPATIENT_COMPLETED))
+            {
+                patientFile.setProcessed(true);
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+
     }
 
     private boolean addHistoryToExistingPatientFile(PatientFile patientFile, RestfulFile file, Employee emp, Appointment appointment) throws Exception {
@@ -260,6 +289,7 @@ public class BasicController implements BasicRestfulOperations {
             }
             break;
         }
+
 
         //finally return success
         return true;
