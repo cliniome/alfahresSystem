@@ -180,7 +180,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         try
         {
             String queryString = "select f from PatientFile f where f.fileID=:file AND " +
-                    "f.currentStatus.state=:state";
+                    "f.currentStatus.state=:state and f.currentStatus.appointment.inpatient = false";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("file",fileNumber);
             currentQuery.setParameter("state",state);
@@ -192,6 +192,24 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
             return null;
         }
 
+    }
+
+    public PatientFile getInpatientFileWithNumberAndState(String fileNumber , FileStates state)
+    {
+        try
+        {
+            String queryString = "select f from PatientFile f where f.fileID=:file AND " +
+                    "f.currentStatus.state=:state and f.currentStatus.appointment.inpatient = true";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("file",fileNumber);
+            currentQuery.setParameter("state",state);
+
+            return (PatientFile) currentQuery.getSingleResult();
+
+        }catch (Exception s)
+        {
+            return null;
+        }
     }
 
 
@@ -315,6 +333,24 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         try
         {
             String queryString = "select f from PatientFile f where f.fileID=:query and " +
+                    "f.currentStatus.state IN (:states)";
+            Query currentQuery = getManager().createQuery(queryString);
+            currentQuery.setParameter("query",query);
+            currentQuery.setParameter("states",states);
+
+            return currentQuery.getResultList();
+
+        }catch (Exception s)
+        {
+            return new ArrayList<PatientFile>();
+        }
+    }
+
+    public List<PatientFile> scanForInpatientFiles(String query , List<FileStates> states)
+    {
+        try
+        {
+            String queryString = "select f from PatientFile f where f.fileID=:query and f.currentStatus.appointment.inpatient = true and " +
                     "f.currentStatus.state IN (:states)";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("query",query);

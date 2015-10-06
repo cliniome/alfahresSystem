@@ -154,6 +154,57 @@ public class FilesService extends BasicRestful {
         }
     }
 
+
+    @Path("/sortFileInpatient")
+    @GET
+    @Produces("application/json")
+    public Response getInpatientFiles(@QueryParam("fileNumber") String fileNumber)
+    {
+        try
+        {
+            //get the employee
+            Employee emp = getAccount();
+
+            if(emp == null || !(emp.getRole().getName().equals(RoleTypes.KEEPER.toString())))
+            {
+                return Response.status(UNAUTHORIZED).build();
+
+            }else
+            {
+                SyncBatch batch = new SyncBatch();
+                batch.setCreatedAt(new Date().getTime());
+
+                List<RestfulFile> foundFiles = new ArrayList<RestfulFile>();
+                //get the file
+                PatientFile foundFile = systemService.getFilesService().
+                        getInpatientFileWithNumberAndState(fileNumber, FileStates.OUT_OF_CABIN);
+
+
+                if(foundFile == null)
+                {
+                    return Response.ok(new BooleanResult(false,"This file might not exist or it is not " +
+                            "prepared by keeper yet")).build();
+                }
+
+                if(foundFile != null)
+                {
+                    foundFiles.add(foundFile.toRestfulFile());
+                }
+
+                batch.setFiles(foundFiles);
+                batch.setState(true);
+
+                return Response.ok(batch).build();
+
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
     @Path("/sortFile")
     @GET
     @Produces("application/json")
@@ -182,7 +233,7 @@ public class FilesService extends BasicRestful {
                 if(foundFile == null)
                 {
                     return Response.ok(new BooleanResult(false,"This file might not exist or it is not " +
-                            "prepared by keeper yet")).build();
+                            "prepared by keeper yet or it is an In-Patient Requested File.")).build();
                 }
 
                 if(foundFile != null)
@@ -284,6 +335,58 @@ public class FilesService extends BasicRestful {
                {
                    return Response.status(UNAUTHORIZED).build();
                }
+
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+
+
+    @Path("/receiveInPatient")
+    @GET
+    @Produces("application/json")
+    public Response receiveInpatientFiles(@QueryParam("fileNumber") String fileNumber)
+    {
+        try
+        {
+            //get the employee
+            Employee emp = getAccount();
+
+            if(emp == null)
+            {
+                return Response.status(UNAUTHORIZED).build();
+            }else
+            {
+                SyncBatch batch = new SyncBatch();
+                batch.setCreatedAt(new Date().getTime());
+
+                List<RestfulFile> foundFiles = new ArrayList<RestfulFile>();
+                //get the file
+                List<PatientFile> files = systemService.getFilesService().scanForInpatientFiles(fileNumber,
+                        EmployeeUtils.getScannableStates(emp));
+
+                if(files == null || files.isEmpty())
+                {
+                    return Response.ok(new BooleanResult(false,"This file might not exist or " +
+                            "it is in a wrong Location.")).build();
+                }
+
+                for(PatientFile file : files)
+                {
+                    foundFiles.add(file.toRestfulFile());
+                }
+
+
+                batch.setFiles(foundFiles);
+                batch.setState(true);
+
+                return Response.ok(batch).build();
 
             }
 

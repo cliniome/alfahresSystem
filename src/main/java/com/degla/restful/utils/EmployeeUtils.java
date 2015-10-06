@@ -33,10 +33,7 @@ public class EmployeeUtils {
         {
             //states.add(FileStates.CHECKED_OUT);
             states.add(FileStates.COORDINATOR_OUT);
-            states.add(FileStates.ANALYSIS_COORDINATOR);
-            states.add(FileStates.CODING_COORDINATOR);
-            states.add(FileStates.PROCESSING_COORDINATOR);
-            states.add(FileStates.INCOMPLETE_COORDINATOR);
+            states.add(FileStates.INPATIENT_COMPLETED);
 
         }
         else if (role.equalsIgnoreCase(RoleTypes.COORDINATOR.toString()))
@@ -44,6 +41,29 @@ public class EmployeeUtils {
             states.add(FileStates.RECEPTIONIST_OUT);
             states.add(FileStates.CHECKED_OUT);
             states.add(FileStates.TRANSFERRED);
+
+        }else if (role.equalsIgnoreCase(RoleTypes.ANALYSIS_COORDINATOR.toString()) ||
+                role.equalsIgnoreCase(RoleTypes.CODING_COORDINATOR.toString()) ||
+                role.equalsIgnoreCase(RoleTypes.INCOMPLETE_COORDINATOR.toString()))
+        {
+            states.add(FileStates.ANALYSIS_COORDINATOR);
+            states.add(FileStates.CODING_COORDINATOR);
+            states.add(FileStates.INCOMPLETE_COORDINATOR);
+            states.add(FileStates.PROCESSING_COORDINATOR);
+            states.add(FileStates.CHECKED_IN);
+            states.add(FileStates.TEMPORARY_STORED);
+
+        }else if (role.equalsIgnoreCase(RoleTypes.PROCESSING_COORDINATOR.toString()))
+        {
+            states.add(FileStates.ANALYSIS_COORDINATOR);
+            states.add(FileStates.CODING_COORDINATOR);
+            states.add(FileStates.INCOMPLETE_COORDINATOR);
+            states.add(FileStates.PROCESSING_COORDINATOR);
+            states.add(FileStates.CHECKED_IN);
+            states.add(FileStates.TEMPORARY_STORED);
+            states.add(FileStates.CHECKED_OUT);
+
+
         }
 
         return states;
