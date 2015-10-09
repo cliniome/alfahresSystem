@@ -13,9 +13,9 @@
         <ui:define name="mainContents">
 
 
-            <h:form prependId="false">
+            <h:form prependId="false" id="mainPageForm">
 
-                <h:panelGrid columns="1">
+                <h:panelGrid columns="1" id="mainContentsPane">
 
 
                     <h:inputHidden value="#{changeFileStatusBean.fileNumber}"/>
@@ -45,10 +45,34 @@
                             <p:outputLabel value="Current Status"/>
                             <p:selectOneMenu value="#{changeFileStatusBean.status}" filter="true" filterMatchMode="startsWith">
 
+                                <p:ajax event="change" process="@all" listener="#{changeFileStatusBean.onStatusChange}" update="mainContentsPane"/>
+
                                 <f:selectItems value="#{changeFileStatusBean.items}"
                                                var="state" itemLabel="#{state}"
                                                itemValue="#{state}"/>
                             </p:selectOneMenu>
+
+
+                            <p:outputLabel value="Available Appointments"  rendered="#{changeFileStatusBean.preparedByKeeper}"/>
+                            <p:selectOneMenu value="#{changeFileStatusBean.selectedAppointment}" converter="com.degla.converter.AppointmentConverter"
+                                             rendered="#{changeFileStatusBean.preparedByKeeper}">
+
+
+                                <f:selectItems value="#{changeFileStatusBean.fileAppointments}" var="appointment" itemLabel="#{appointment.appointment_Date}"
+                                         itemValue="#{appointment}"/>
+
+
+
+                                <p:column headerText="#{appointment.appointment_Type}"/>
+
+                                <p:column headerText="#{appointment.appointment_Date}">
+
+                                </p:column>
+
+
+
+                            </p:selectOneMenu>
+
 
 
 

@@ -203,6 +203,10 @@
         <managed-bean-name>changeFileStatusBean</managed-bean-name>
         <managed-bean-class>com.alfahres.beans.files.ChangeFileStatusBean</managed-bean-class>
         <managed-bean-scope>view</managed-bean-scope>
+        <managed-property>
+            <property-name>viewHelper</property-name>
+            <value>#{viewHelper}</value>
+        </managed-property>
     </managed-bean>
 
     <managed-bean>

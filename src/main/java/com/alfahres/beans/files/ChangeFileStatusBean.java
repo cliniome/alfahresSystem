@@ -1,6 +1,7 @@
 package com.alfahres.beans.files;
 
 import com.degla.db.models.*;
+import com.degla.restful.utils.EmployeeUtils;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.FileRouter;
@@ -33,6 +34,12 @@ public class ChangeFileStatusBean implements Serializable{
     private String status;
     private FileStateUtils states;
     private String shelfNumber;
+    private Appointment selectedAppointment;
+
+
+    private ViewHelperBean viewHelper;
+
+    private boolean ok;
 
     @PostConstruct
     public void onInit()
@@ -48,11 +55,11 @@ public class ChangeFileStatusBean implements Serializable{
             if(idValue != null)
             {
                 this.file = systemService.getFilesService().getFileWithNumber(idValue);
-
                 this.setFileNumber(this.file.getFileID());
                 this.setAssignedEmployee(this.file.getCurrentStatus().getOwner());
                 this.setStatus(this.file.getCurrentStatus().getReadableState());
                 this.setShelfNumber(this.file.getShelfId());
+                this.getViewHelper().setTempFile(this.file);
             }
 
         }catch (Exception s)
@@ -60,6 +67,64 @@ public class ChangeFileStatusBean implements Serializable{
             s.printStackTrace();
 
         }
+    }
+
+    public void onStatusChange(){
+
+        try
+        {
+            if(this.getAssignedEmployee() != null && this.getStatus() != null)
+            {
+                List<FileStates> availableStates = EmployeeUtils.getAllowedStatesFor(this.getAssignedEmployee());
+
+                FileStateUtils utils = new FileStateUtils();
+
+                if(!availableStates.contains(utils.getState(this.getStatus())))
+                {
+                    WebUtils.addMessage("Assigned Employee can't process the chosen status,Please either change the status or the chosen employee to proceed");
+                    this.setOk(false);
+                }else
+                {
+                    this.setOk(true);
+                }
+
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+
+    }
+
+
+    public List<Appointment> getFileAppointments()
+    {
+        try
+        {
+            if(this.getViewHelper().getTempFile() != null)
+            {
+                List<Appointment> appointments =  systemService.getAppointmentManager().getMostRecentAppointmentsFor(this.getViewHelper().getTempFile().getFileID());
+
+
+                return appointments;
+
+            }else return new ArrayList<Appointment>();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return new ArrayList<Appointment>();
+        }
+    }
+
+
+    public boolean isPreparedByKeeper()
+    {
+        FileStateUtils utils = new FileStateUtils();
+
+        return (utils.getState(this.getStatus()) == FileStates.OUT_OF_CABIN);
+
     }
 
     public void onUpdate(ActionEvent event)
@@ -202,5 +267,29 @@ public class ChangeFileStatusBean implements Serializable{
 
     public void setShelfNumber(String shelfNumber) {
         this.shelfNumber = shelfNumber;
+    }
+
+    public boolean isOk() {
+        return ok;
+    }
+
+    public void setOk(boolean ok) {
+        this.ok = ok;
+    }
+
+    public Appointment getSelectedAppointment() {
+        return selectedAppointment;
+    }
+
+    public void setSelectedAppointment(Appointment selectedAppointment) {
+        this.selectedAppointment = selectedAppointment;
+    }
+
+    public ViewHelperBean getViewHelper() {
+        return viewHelper;
+    }
+
+    public void setViewHelper(ViewHelperBean viewHelper) {
+        this.viewHelper = viewHelper;
     }
 }

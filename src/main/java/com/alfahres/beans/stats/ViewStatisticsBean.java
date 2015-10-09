@@ -105,6 +105,7 @@ public class ViewStatisticsBean implements Serializable {
             systemService.getFilesService().setQueryState(FileStates.valueOf(getViewHelper().getCurrentState()));
             systemService.getFilesService().setAppointmentDate(getViewHelper().getAppointmentDate());
             systemService.getFilesService().setInWatchList(getViewHelper().isInWatchList());
+            systemService.getFilesService().setAvailableAppointments(systemService.getAppointmentManager().getAppointmentsForDate(getViewHelper().getAppointmentDate()));
 
 
             GenericLazyDataModel<PatientFile> filterableModel = new GenericLazyDataModel<PatientFile>(systemService.getFilesService());

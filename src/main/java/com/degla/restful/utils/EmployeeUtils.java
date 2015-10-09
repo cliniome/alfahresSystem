@@ -18,6 +18,76 @@ public class EmployeeUtils {
     public static final int SEND_OUT = 1;
 
 
+    public static List<FileStates> getAllowedStatesFor(Employee emp)
+    {
+        List<FileStates> allowedStates = new ArrayList<FileStates>();
+
+        String role = emp.getRole().getName();
+
+        RoleTypes type = RoleTypes.valueOf(role);
+
+        switch (type)
+        {
+            case ANALYSIS_COORDINATOR:
+            {
+                allowedStates.add(FileStates.ANALYSIS_COORDINATOR);
+                allowedStates.add(FileStates.INPATIENT_COMPLETED);
+                allowedStates.add(FileStates.TEMPORARY_STORED);
+            }
+            break;
+
+            case CODING_COORDINATOR:
+            {
+                allowedStates.add(FileStates.ANALYSIS_COORDINATOR);
+                allowedStates.add(FileStates.INPATIENT_COMPLETED);
+                allowedStates.add(FileStates.TEMPORARY_STORED);
+            }
+                break;
+            case COORDINATOR:
+            {
+                allowedStates.add(FileStates.COORDINATOR_IN);
+                allowedStates.add(FileStates.COORDINATOR_OUT);
+                allowedStates.add(FileStates.DISTRIBUTED);
+                allowedStates.add(FileStates.MISSING);
+                allowedStates.add(FileStates.TRANSFERRED);
+            }
+                break;
+            case INCOMPLETE_COORDINATOR:
+            {
+                allowedStates.add(FileStates.ANALYSIS_COORDINATOR);
+                allowedStates.add(FileStates.INPATIENT_COMPLETED);
+                allowedStates.add(FileStates.TEMPORARY_STORED);
+            }
+                break;
+            case KEEPER:
+            {
+                allowedStates.add(FileStates.MISSING);
+                allowedStates.add(FileStates.OUT_OF_CABIN);
+                allowedStates.add(FileStates.CHECKED_OUT);
+                allowedStates.add(FileStates.CHECKED_IN);
+
+            }
+                break;
+            case PROCESSING_COORDINATOR:
+            {
+                allowedStates.add(FileStates.ANALYSIS_COORDINATOR);
+                allowedStates.add(FileStates.INPATIENT_COMPLETED);
+                allowedStates.add(FileStates.TEMPORARY_STORED);
+            }
+                break;
+            case RECEPTIONIST:
+            {
+                allowedStates.add(FileStates.RECEPTIONIST_IN);
+                allowedStates.add(FileStates.RECEPTIONIST_OUT);
+                allowedStates.add(FileStates.MISSING);
+            }
+                break;
+        }
+
+
+        return allowedStates;
+    }
+
     public static List<FileStates> getScannableStates(Employee emp)
     {
         List<FileStates> states = new ArrayList<FileStates>();

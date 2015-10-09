@@ -6,6 +6,7 @@ import com.degla.exceptions.WorkflowOutOfBoundException;
 import com.degla.restful.models.*;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
+import com.degla.utils.FileStateUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.text.SimpleDateFormat;
@@ -167,6 +168,10 @@ public class BasicController implements BasicRestfulOperations {
                 newPatientFile.setPatientName(appointment.getPatientName());
                 newPatientFile.setPatientNumber(appointment.getPatientNumber());
 
+
+
+
+
                 //Add the new file History
                 this.addNewHistory(file,newPatientFile,emp,appointment);
 
@@ -283,12 +288,23 @@ public class BasicController implements BasicRestfulOperations {
             }
             break;
 
+            case INPATIENT_COMPLETED:
+            {
+                patientFile.setProcessed(true);
+                this.addNewHistory(file,patientFile,emp,appointment);
+
+            }
+            break;
+
             default:
             {
                 this.addNewHistory(file,patientFile,emp,appointment);
             }
             break;
         }
+
+        if(state.isCurrentlyInPatient())
+            patientFile.setProcessed(file.isProcessed());
 
 
         //finally return success
@@ -315,6 +331,9 @@ public class BasicController implements BasicRestfulOperations {
             FileStates state = FileStates.valueOf(file.getState());
             newFileHistory.setState(state);
             newPatientFile.setCurrentStatus(newFileHistory);
+
+            if(state.isCurrentlyInPatient())
+                newPatientFile.setProcessed(file.isProcessed());
 
         }catch (Exception s)
         {

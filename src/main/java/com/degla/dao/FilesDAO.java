@@ -27,6 +27,8 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
     private boolean inWatchList;
 
+    private List<Appointment> availableAppointments;
+
     public List<PatientFile> getFilesWithBatchNumber(String batchNumber)
     {
         try
@@ -45,6 +47,19 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
     }
 
 
+    private List<String> getFileNumbers()
+    {
+        List<String> fileNumbers = new ArrayList<String>();
+
+        for(Appointment app : getAvailableAppointments())
+        {
+            fileNumbers.add(app.getFileNumber());
+        }
+
+        return fileNumbers;
+    }
+
+
     @Override
     public List<PatientFile> getPaginatedResults(int first, int pageSize) {
 
@@ -52,16 +67,16 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         if(isInWatchList())
         {
             String query = "select f from PatientFile f where f.currentStatus.state=:state and " +
-                    "f.currentStatus.appointment.appointment_Date >= :startdate " +
-                    "and f.currentStatus.appointment.appointment_Date <= :enddate and " +
-                    "f.fileID in (select app.fileNumber from Appointment app where app.active=true)";
+                    "f.fileID in  (:fileNumbers) or (f.currentStatus.appointment.appointment_Date >= :start and f.currentStatus.appointment.appointment_Date <= :end" +
+                    " and f.currentStatus.state = :state)";
 
             Query currentQuery = getManager().createQuery(query);
             currentQuery.setFirstResult(first);
             currentQuery.setMaxResults(pageSize);
             currentQuery.setParameter("state", getQueryState());
-            currentQuery.setParameter("startdate", AlfahresDateUtils.getStartOfDay(getAppointmentDate()));
-            currentQuery.setParameter("enddate",AlfahresDateUtils.getEndOfDay(getAppointmentDate()));
+            currentQuery.setParameter("fileNumbers",getFileNumbers());
+            currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(getAppointmentDate()));
+            currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(getAppointmentDate()));
             return currentQuery.getResultList();
 
         }else if(queryState != null && getAppointmentDate() != null)
@@ -639,5 +654,13 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
 
     public void setInWatchList(boolean inWatchList) {
         this.inWatchList = inWatchList;
+    }
+
+    public List<Appointment> getAvailableAppointments() {
+        return availableAppointments;
+    }
+
+    public void setAvailableAppointments(List<Appointment> availableAppointments) {
+        this.availableAppointments = availableAppointments;
     }
 }

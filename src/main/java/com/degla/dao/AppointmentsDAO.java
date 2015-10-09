@@ -24,11 +24,35 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
     }
 
 
+
+    public List<Appointment> getAppointmentsForDate(Date chosenDate)
+    {
+        String queryString = "select r from Appointment r where r.appointment_Date >= :start and r.appointment_Date <= :end and r.active = true";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(chosenDate));
+        currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(chosenDate));
+
+        return currentQuery.getResultList();
+    }
+
+
     public List<Appointment> searchAppointments(String query)
     {
         String queryString = "select r from Appointment r where r.fileNumber=:query or r.patientNumber =:query";
         Query currentQuery = getManager().createQuery(queryString);
         currentQuery.setParameter("query",query);
+        currentQuery.setMaxResults(300);
+
+        return currentQuery.getResultList();
+    }
+
+
+    public List<Appointment> getMostRecentAppointmentsFor(String fileNumber)
+    {
+        String queryString = "select r from Appointment r where r.fileNumber=:query order by r.appointment_Date DESC";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("query",fileNumber);
+        currentQuery.setMaxResults(10);
 
         return currentQuery.getResultList();
     }

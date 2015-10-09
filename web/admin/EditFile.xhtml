@@ -43,10 +43,13 @@
                             <p:outputLabel value="#{fileDetailsBean.file.currentStatus.readableState}"/>
                             <p:outputLabel value="Archive Cabinet"/>
                             <p:outputLabel value="#{fileDetailsBean.file.archiveCabinet.cabinetID}"/>
-                            <p:outputLabel value="Shelf ID"/>
+                            <p:outputLabel value="Last Known Shelf ID"/>
                             <p:outputLabel value="#{fileDetailsBean.file.shelfId}"/>
                             <p:outputLabel value="Latest Batch Number"/>
                             <p:outputLabel value="#{fileDetailsBean.file.currentStatus.appointment.batchRequestNumber}"/>
+                            <p:outputLabel value="Processing Status"/>
+                            <h:graphicImage url="../img/complete.png" rendered="#{fileDetailsBean.file.processed}"/>
+                            <h:graphicImage url="../img/incomplete.png" rendered="#{!fileDetailsBean.file.processed}"/>
 
 
                         </p:panelGrid>
@@ -70,10 +73,12 @@
 
                             <p:column headerText="Clinic Code" filterable="true" filterMatchMode="contains"
                                       sortable="true">
-                                <h:panelGrid columns="2" rendered="#{history.appointment.inpatient}">
+                                <p:panelGrid columns="2" rendered="#{history.appointment.inpatient}">
                                    <h:graphicImage url="../img/in-patient.png" rendered="#{history.appointment.inpatient}"/>
+
                                 <p:outputLabel value="#{history.appointment.clinicCode}"/>
-                                </h:panelGrid>
+                                </p:panelGrid>
+
                                 <p:outputLabel value="#{history.appointment.clinicCode}" rendered="#{!history.appointment.inpatient}"/>
                             </p:column>
 

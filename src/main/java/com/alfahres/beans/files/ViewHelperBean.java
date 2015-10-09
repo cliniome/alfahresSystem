@@ -1,6 +1,7 @@
 package com.alfahres.beans.files;
 
 import com.degla.db.models.FileStates;
+import com.degla.db.models.PatientFile;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,6 +16,8 @@ public class ViewHelperBean implements Serializable {
     private Date appointmentDate;
 
     private String fileNumber;
+
+    private PatientFile tempFile;
 
     private boolean inWatchList;
 
@@ -50,5 +53,13 @@ public class ViewHelperBean implements Serializable {
 
     public void setInWatchList(boolean inWatchList) {
         this.inWatchList = inWatchList;
+    }
+
+    public PatientFile getTempFile() {
+        return tempFile;
+    }
+
+    public void setTempFile(PatientFile tempFile) {
+        this.tempFile = tempFile;
     }
 }

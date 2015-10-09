@@ -54,7 +54,7 @@
                                  rowKey="#{filerequest}"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                          {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 var="filerequest" value="#{searchRequestsBean.searchedRequests}"
+                                 var="filerequest" value="#{searchRequestsBean.searchedAppointments}"
                                   emptyMessage="There are no Available Requests"
                                  widgetVar="requestsTable">
 
@@ -64,11 +64,11 @@
                         </f:facet>
 
                         <p:column headerText="..">
-                          <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.appointmentId}">Edit Request</a>
+                          <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.id}&amp;route=0">Edit Request</a>
                         </p:column>
 
                         <p:column headerText="Request Number">
-                            <p:outputLabel value="#{filerequest.appointmentId}"/>
+                            <p:outputLabel value="#{filerequest.fileNumber}"/>
                         </p:column>
 
                         <p:column headerText="Patient Number">
