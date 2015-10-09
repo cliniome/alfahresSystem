@@ -18,6 +18,9 @@
             <h:form prependId="false">
 
 
+                <p:messages id="myempgrowl" showDetail="false"/>
+
+
                 <p:panelGrid columns="1" id="ShowClinicsPane">
 
                     <p:dataTable rows="100" paginator="true" lazy="true"
@@ -29,7 +32,7 @@
                          {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  value="#{showEmployeeBean.employees}" var="emp">
 
-                        <p:ajax event="rowSelect" update=":ShowClinicsPane"/>
+
 
                         <f:facet name="header">
                             <b>Available Employees(<font color="red">#{showEmployeeBean.employees.rowCount}</font>)</b>
@@ -49,7 +52,12 @@
 
                         <p:column headerText="Options...">
 
-                            <a class="btn btn-success" href="UpdateEmployee.xhtml?id=#{emp.id}">Edit Employee</a>
+                           <a class="btn btn-success" href="UpdateEmployee.xhtml?id=#{emp.id}">Edit Employee</a>
+                           <p:commandButton update="ShowClinicsPane" ajax="false" value="Activate/Deactivate" actionListener="#{showEmployeeBean.toggleActivation}">
+                              <f:param name="empID" value="#{emp.id}"/>
+                           </p:commandButton>
+
+
 
                         </p:column>
                     </p:dataTable>

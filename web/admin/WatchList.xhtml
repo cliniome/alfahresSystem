@@ -25,7 +25,7 @@
             <p:dataTable lazy="true" paginator="true" rows="20" id="requestsTable"
                          rowKey="#{filerequest}"
                          selectionMode="single" selection="#{filerequest}"
-                         paginatorTemplate=" {Exporters}    {CurrentPageReport}  {FirstPageLink}
+                         paginatorTemplate=" {Slips} {Exporters}    {CurrentPageReport}  {FirstPageLink}
                          {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          var="filerequest" value="#{requestsBean.watchListAppointments}"
                          stickyHeader="true" emptyMessage="There are no Available Watch-List Requests for the moment"
@@ -37,6 +37,14 @@
 
                 <f:facet name="header">
                     <b>Watch-List Requests(<font color="red">#{requestsBean.totalWatchList}</font>)</b>
+                </f:facet>
+
+                <f:facet name="{Slips}">
+
+                    <p:commandLink ajax="false" actionListener="#{slips.chooseSlips}">
+                        <img src="../img/pdf.png" alt="img"/>
+                    </p:commandLink>
+
                 </f:facet>
 
                 <f:facet name="{Exporters}">

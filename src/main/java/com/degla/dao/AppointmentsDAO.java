@@ -35,6 +35,16 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
         return currentQuery.getResultList();
     }
 
+    public List<Appointment> getAppointmentsForDateRange(Date start,Date end)
+    {
+        String queryString = "select r from Appointment r where r.appointment_Date >= :start and r.appointment_Date <= :end and r.active = true";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(start));
+        currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(end));
+
+        return currentQuery.getResultList();
+    }
+
 
     public List<Appointment> searchAppointments(String query)
     {

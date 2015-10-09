@@ -32,7 +32,7 @@ public class FileStateUtils implements Serializable {
             return state;
 
 
-        if(readableState.toLowerCase().equals("Archived".toLowerCase()))
+        if(readableState.toLowerCase().equals("Stored in Cabin".toLowerCase()))
             state = FileStates.CHECKED_IN;
         else if (readableState.toLowerCase().equals("Checked Out".toLowerCase()))
             state = FileStates.CHECKED_OUT;
@@ -40,7 +40,7 @@ public class FileStateUtils implements Serializable {
             state = FileStates.COORDINATOR_IN;
         else if (readableState.toLowerCase().equals("Sent out by Coordinator".toLowerCase()))
             state = FileStates.COORDINATOR_OUT;
-        else if (readableState.toLowerCase().equals("Received by Clinic".toLowerCase()))
+        else if (readableState.toLowerCase().equals("Distributed To Clinics".toLowerCase()))
             state = FileStates.DISTRIBUTED;
         else if (readableState.toLowerCase().equals("Received by Keeper".toLowerCase()))
             state = FileStates.KEEPER_IN;
@@ -50,7 +50,7 @@ public class FileStateUtils implements Serializable {
             state = FileStates.RECEPTIONIST_IN;
         else if (readableState.toLowerCase().equals("Sent out by Receptionist".toLowerCase()))
             state = FileStates.RECEPTIONIST_OUT;
-        else if (readableState.toLowerCase().equals("Prepared by Keeper".toLowerCase()))
+        else if (readableState.toLowerCase().equals("Prepared by Clerk".toLowerCase()))
             state = FileStates.OUT_OF_CABIN;
         else if (readableState.toLowerCase().equals("Transferred by coordinator".toLowerCase()))
             state = FileStates.TRANSFERRED;
@@ -79,7 +79,7 @@ public class FileStateUtils implements Serializable {
         switch (state)
         {
             case CHECKED_IN:
-                return "Archived";
+                return "Stored in Cabin";
             case CHECKED_OUT:
                 return "Checked Out";
             case COORDINATOR_IN:
@@ -87,7 +87,7 @@ public class FileStateUtils implements Serializable {
             case COORDINATOR_OUT:
                 return "Sent out by Coordinator";
             case DISTRIBUTED:
-                return "Received by Clinic";
+                return "Distributed To Clinics";
             case KEEPER_IN:
                 return "Received by Keeper";
             case NEW:
@@ -97,7 +97,7 @@ public class FileStateUtils implements Serializable {
             case RECEPTIONIST_OUT:
                 return "Sent out by Receptionist";
             case OUT_OF_CABIN:
-                return "Prepared by Keeper";
+                return "Prepared by Clerk";
             case TRANSFERRED:
                 return "Transferred by coordinator";
             case PROCESSING_COORDINATOR:

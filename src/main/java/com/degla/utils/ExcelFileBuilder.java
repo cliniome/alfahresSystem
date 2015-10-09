@@ -66,7 +66,7 @@ public class ExcelFileBuilder {
             for(int i = 0 ; i < availableFiles.size() ;i++)
             {
                 PatientFile patientFile = availableFiles.get(i);
-                Row currentRow = currentSheet.createRow(i+1);
+                Row currentRow = currentSheet.createRow(i + 1);
 
                 //File Number
                 Cell fileNumberCell = currentRow.createCell(0);
@@ -86,6 +86,13 @@ public class ExcelFileBuilder {
                 //Clinic Code
                 Cell clinicCodeCell = currentRow.createCell(4);
                 clinicCodeCell.setCellValue(patientFile.getCurrentStatus().getAppointment().getClinicCode());
+
+
+                //Cabin number
+
+                Cell cabinCell = currentRow.createCell(5);
+                BarcodeUtils utils = new BarcodeUtils(patientFile.getFileID());
+                cabinCell.setCellValue(utils.getCabinID());
             }
 
 
@@ -118,7 +125,7 @@ public class ExcelFileBuilder {
             for(int i = 0 ; i < availableFiles.size() ;i++)
             {
                 PatientFile patientFile = availableFiles.get(i);
-                Row currentRow = currentSheet.createRow(i+1);
+                Row currentRow = currentSheet.createRow(i + 1);
 
                 //File Number
                 Cell fileNumberCell = currentRow.createCell(0);
@@ -138,6 +145,13 @@ public class ExcelFileBuilder {
                 //Clinic Code
                 Cell clinicCodeCell = currentRow.createCell(4);
                 clinicCodeCell.setCellValue(patientFile.getCurrentStatus().getAppointment().getClinicCode());
+
+
+                //Cabin number
+
+                Cell cabinCell = currentRow.createCell(5);
+                BarcodeUtils utils = new BarcodeUtils(patientFile.getFileID());
+                cabinCell.setCellValue(utils.getCabinID());
             }
 
 
@@ -218,6 +232,15 @@ public class ExcelFileBuilder {
                 //Appointment Date
                 Cell dateCell = currentRow.createCell(2);
                 dateCell.setCellValue(formatter.format(watchRequest.getAppointment_Date()));
+
+
+                //Cabin Cell
+                BarcodeUtils barcodeUtils = new BarcodeUtils(watchRequest.getFileNumber());
+
+                Cell cabinCell = currentRow.createCell(3);
+                cabinCell.setCellValue(barcodeUtils.getCabinID());
+
+
 
             }
 
@@ -304,6 +327,13 @@ public class ExcelFileBuilder {
                     Cell dateCell = currentRow.createCell(2);
                     dateCell.setCellValue(formatter.format(assignedRequests.get(i).getAppointment_Date()));
 
+
+                    //Cabin Cell
+                    BarcodeUtils barcodeUtils = new BarcodeUtils(req.getFileNumber());
+
+                    Cell cabinCell = currentRow.createCell(3);
+                    cabinCell.setCellValue(barcodeUtils.getCabinID());
+
                 }
 
 
@@ -334,6 +364,9 @@ public class ExcelFileBuilder {
             Cell date = headerRow.createCell(2);
             date.setCellValue("Appointment_Date");
 
+            Cell cabin = headerRow.createCell(3);
+            cabin.setCellValue("Cabin");
+
         }catch (Exception s)
         {
             s.printStackTrace();
@@ -358,6 +391,9 @@ public class ExcelFileBuilder {
             //Clinic Code
             Cell clinicCell = headerRow.createCell(4);
             clinicCell.setCellValue("Clinic Code");
+
+            Cell cabinCell = headerRow.createCell(5);
+            cabinCell.setCellValue("Cabin Number");
 
         }catch (Exception s)
         {

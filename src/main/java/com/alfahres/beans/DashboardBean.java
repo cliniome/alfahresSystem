@@ -105,6 +105,22 @@ public class DashboardBean {
     }
 
 
+    public long getTotalReceivedByReceptionist()
+    {
+        try
+        {
+            long receivedFilesCount = systemService.getFilesService().getFilesCountForState(FileStates.RECEPTIONIST_IN);
+
+            return receivedFilesCount;
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return 0L;
+        }
+    }
+
+
     public List<PatientFile> getMissingFiles()
     {
         try

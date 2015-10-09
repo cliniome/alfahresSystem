@@ -120,6 +120,8 @@ public class AppointmentsBean implements Serializable {
 
 
 
+
+
     public StreamedContent getExcelFile(boolean watchList) {
         try
         {

@@ -53,22 +53,12 @@
                             </p:selectOneMenu>
 
 
-                            <p:outputLabel value="Available Appointments"  rendered="#{changeFileStatusBean.preparedByKeeper}"/>
-                            <p:selectOneMenu value="#{changeFileStatusBean.selectedAppointment}" converter="com.degla.converter.AppointmentConverter"
-                                             rendered="#{changeFileStatusBean.preparedByKeeper}">
+                            <p:outputLabel value="Available Appointments"  rendered="#{changeFileStatusBean.requiresAppointmentDate}"/>
+                            <p:selectOneMenu value="#{changeFileStatusBean.selectedAppointment}"
+                                             rendered="#{changeFileStatusBean.requiresAppointmentDate}">
 
-
-                                <f:selectItems value="#{changeFileStatusBean.fileAppointments}" var="appointment" itemLabel="#{appointment.appointment_Date}"
-                                         itemValue="#{appointment}"/>
-
-
-
-                                <p:column headerText="#{appointment.appointment_Type}"/>
-
-                                <p:column headerText="#{appointment.appointment_Date}">
-
-                                </p:column>
-
+                                <f:selectItems value="#{changeFileStatusBean.appointments}" var="appointment" itemLabel="#{appointment.appointment_Date}(#{appointment.clinicName},#{appointment.clinicCode} , #{appointment.inpatient == true ? 'OutPatient':'InPatient'})"
+                                         itemValue="#{appointment.id}"/>
 
 
                             </p:selectOneMenu>

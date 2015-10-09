@@ -3,6 +3,7 @@ package com.alfahres.beans.stats;
 import com.alfahres.beans.dashboard.DashboardMetrics;
 import com.alfahres.beans.files.ViewHelperBean;
 import com.degla.dao.utils.SearchSettings;
+import com.degla.db.models.Appointment;
 import com.degla.db.models.FileStates;
 import com.degla.db.models.PatientFile;
 import com.degla.system.SpringSystemBridge;
@@ -20,6 +21,7 @@ import javax.faces.event.ActionEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,12 +34,13 @@ public class ViewStatisticsBean implements Serializable {
 
     public static final int DISPLAY_ALL = 0;
     public static final int DISPLAY_BY_APPOINTMENT=1;
-
     private SystemService systemService;
     private GenericLazyDataModel<PatientFile> files;
     private ViewHelperBean viewHelper;
     private FileStates[] states;
     private int displayType;
+
+
 
 
 
@@ -61,6 +64,8 @@ public class ViewStatisticsBean implements Serializable {
                 systemService.getFilesService().setAppointmentDate(getViewHelper().getAppointmentDate());
 
             }
+
+
 
             SearchSettings searchSettings = new SearchSettings();
             searchSettings.setAppointmentDate(getViewHelper().getAppointmentDate());
@@ -277,4 +282,6 @@ public class ViewStatisticsBean implements Serializable {
     public void setDisplayType(int displayType) {
         this.displayType = displayType;
     }
+
+
 }

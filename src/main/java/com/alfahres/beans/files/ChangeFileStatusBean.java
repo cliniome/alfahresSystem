@@ -4,13 +4,10 @@ import com.degla.db.models.*;
 import com.degla.restful.utils.EmployeeUtils;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
-import com.degla.utils.FileRouter;
 import com.degla.utils.FileStateUtils;
 import com.degla.utils.WebUtils;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
@@ -34,12 +31,16 @@ public class ChangeFileStatusBean implements Serializable{
     private String status;
     private FileStateUtils states;
     private String shelfNumber;
-    private Appointment selectedAppointment;
-
+    private String selectedAppointment;
 
     private ViewHelperBean viewHelper;
 
     private boolean ok;
+
+    private List<Appointment> appointments;
+
+
+    private boolean requiresAppointmentDate;
 
     @PostConstruct
     public void onInit()
@@ -47,19 +48,25 @@ public class ChangeFileStatusBean implements Serializable{
         try
         {
             systemService = SpringSystemBridge.services();
+            this.setAppointments(new ArrayList<Appointment>());
             //get the id from the request parameter
             FacesContext context = FacesContext.getCurrentInstance();
             String idValue = context.getExternalContext().getRequestParameterMap().get("id");
             setStates(new FileStateUtils());
 
-            if(idValue != null)
-            {
+            if(idValue != null) {
                 this.file = systemService.getFilesService().getFileWithNumber(idValue);
                 this.setFileNumber(this.file.getFileID());
                 this.setAssignedEmployee(this.file.getCurrentStatus().getOwner());
                 this.setStatus(this.file.getCurrentStatus().getReadableState());
                 this.setShelfNumber(this.file.getShelfId());
                 this.getViewHelper().setTempFile(this.file);
+                this.setSelectedAppointment(String.valueOf(this.file.getCurrentStatus().getAppointment().getId()));
+
+                if (this.getViewHelper().getTempFile() != null) {
+                    this.setAppointments(systemService.getAppointmentManager().getMostRecentAppointmentsFor(this.getViewHelper().getTempFile().getFileID()));
+
+                }
             }
 
         }catch (Exception s)
@@ -88,6 +95,8 @@ public class ChangeFileStatusBean implements Serializable{
                     this.setOk(true);
                 }
 
+                this.checkRequiresAppointmentDate();
+
             }
 
         }catch (Exception s)
@@ -97,33 +106,14 @@ public class ChangeFileStatusBean implements Serializable{
 
     }
 
-
-    public List<Appointment> getFileAppointments()
-    {
-        try
-        {
-            if(this.getViewHelper().getTempFile() != null)
-            {
-                List<Appointment> appointments =  systemService.getAppointmentManager().getMostRecentAppointmentsFor(this.getViewHelper().getTempFile().getFileID());
-
-
-                return appointments;
-
-            }else return new ArrayList<Appointment>();
-
-        }catch (Exception s)
-        {
-            s.printStackTrace();
-            return new ArrayList<Appointment>();
-        }
-    }
-
-
-    public boolean isPreparedByKeeper()
+    public void checkRequiresAppointmentDate()
     {
         FileStateUtils utils = new FileStateUtils();
 
-        return (utils.getState(this.getStatus()) == FileStates.OUT_OF_CABIN);
+        this.setRequiresAppointmentDate(utils.getState(this.getStatus()) == FileStates.OUT_OF_CABIN ||
+                utils.getState(this.getStatus()) == FileStates.CHECKED_OUT ||
+                utils.getState(this.getStatus()) == FileStates.DISTRIBUTED ||
+                utils.getState(this.getStatus()) == FileStates.COORDINATOR_IN);
 
     }
 
@@ -134,11 +124,7 @@ public class ChangeFileStatusBean implements Serializable{
 
             FileStates chosenState = getStates().getState(this.getStatus());
 
-            if(chosenState == FileStates.CHECKED_IN && (this.getShelfNumber() == null || this.getShelfNumber().isEmpty()))
-            {
-                WebUtils.addMessage("You have to select a shelf number for archiving that file ");
-                return;
-            }
+
 
             if(this.file == null)
             {
@@ -152,8 +138,14 @@ public class ChangeFileStatusBean implements Serializable{
             FileHistory newStatus = new FileHistory();
 
 
+            if(getSelectedAppointment() == null) return;
+
+            Appointment selectedOne = systemService.getAppointmentManager().getEntity(Integer.parseInt(getSelectedAppointment()));
+            if(selectedOne == null) return;
             //Set the same appointment for that file
-            newStatus.setAppointment(currentStatus.getAppointment());
+            selectedOne.setActive(false);
+            systemService.getAppointmentManager().updateEntity(selectedOne);
+            newStatus.setAppointment(selectedOne);
             newStatus.setContainerId(currentStatus.getContainerId());
             newStatus.setCreatedAt(new Date());
             newStatus.setOwner(this.getAssignedEmployee());
@@ -278,13 +270,7 @@ public class ChangeFileStatusBean implements Serializable{
         this.ok = ok;
     }
 
-    public Appointment getSelectedAppointment() {
-        return selectedAppointment;
-    }
 
-    public void setSelectedAppointment(Appointment selectedAppointment) {
-        this.selectedAppointment = selectedAppointment;
-    }
 
     public ViewHelperBean getViewHelper() {
         return viewHelper;
@@ -292,5 +278,30 @@ public class ChangeFileStatusBean implements Serializable{
 
     public void setViewHelper(ViewHelperBean viewHelper) {
         this.viewHelper = viewHelper;
+    }
+
+
+    public String getSelectedAppointment() {
+        return selectedAppointment;
+    }
+
+    public void setSelectedAppointment(String selectedAppointment) {
+        this.selectedAppointment = selectedAppointment;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+
+    public boolean isRequiresAppointmentDate() {
+        return requiresAppointmentDate;
+    }
+
+    public void setRequiresAppointmentDate(boolean requiresAppointmentDate) {
+        this.requiresAppointmentDate = requiresAppointmentDate;
     }
 }

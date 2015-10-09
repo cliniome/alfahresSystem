@@ -173,7 +173,7 @@
     <managed-bean>
         <managed-bean-name>showEmployeeBean</managed-bean-name>
         <managed-bean-class>com.alfahres.beans.ShowEmployeeBean</managed-bean-class>
-        <managed-bean-scope>view</managed-bean-scope>
+        <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
 
     <managed-bean>
@@ -202,7 +202,7 @@
     <managed-bean>
         <managed-bean-name>changeFileStatusBean</managed-bean-name>
         <managed-bean-class>com.alfahres.beans.files.ChangeFileStatusBean</managed-bean-class>
-        <managed-bean-scope>view</managed-bean-scope>
+        <managed-bean-scope>session</managed-bean-scope>
         <managed-property>
             <property-name>viewHelper</property-name>
             <value>#{viewHelper}</value>
@@ -316,6 +316,13 @@
         <managed-bean-name>metrics</managed-bean-name>
         <managed-bean-class>com.alfahres.beans.dashboard.DashboardMetrics</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
+
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>slips</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.clinics.ClinicsSlipsBean</managed-bean-class>
+        <managed-bean-scope>view</managed-bean-scope>
 
     </managed-bean>
 

@@ -41,6 +41,7 @@ public class DashboardMetrics implements Serializable {
     private long atCoordinator;
     private long atClinics;
     private long missingFiles;
+    private long receivedByReceptionist;
 
 
     public DashboardMetrics(){
@@ -159,6 +160,7 @@ public class DashboardMetrics implements Serializable {
                    this.setAtCoordinator(systemService.getFilesService().getFilesCountForState_AppointmentDate(FileStates.COORDINATOR_IN, getAppointmentDate()));
                    this.setAtClinics(systemService.getFilesService().getFilesCountForState_AppointmentDate(FileStates.DISTRIBUTED, getAppointmentDate()));
                    this.setMissingFiles(systemService.getFilesService().getFilesCountForState_AppointmentDate(FileStates.MISSING, getAppointmentDate()));
+                   this.setReceivedByReceptionist(systemService.getFilesService().getFilesCountForState_AppointmentDate(FileStates.RECEPTIONIST_IN, getAppointmentDate()));
                }
                break;
                case OPERATION_DATE:
@@ -171,6 +173,7 @@ public class DashboardMetrics implements Serializable {
                    this.setAtCoordinator(systemService.getFilesService().getFilesCountForState_OperationDate(FileStates.COORDINATOR_IN, getOperationDate()));
                    this.setAtClinics(systemService.getFilesService().getFilesCountForState_OperationDate(FileStates.DISTRIBUTED, getOperationDate()));
                    this.setMissingFiles(systemService.getFilesService().getFilesCountForState_OperationDate(FileStates.MISSING, getOperationDate()));
+                   this.setReceivedByReceptionist(systemService.getFilesService().getFilesCountForState_OperationDate(FileStates.RECEPTIONIST_IN, getOperationDate()));
 
                }
                break;
@@ -292,5 +295,13 @@ public class DashboardMetrics implements Serializable {
 
     public void setMissingFiles(long missingFiles) {
         this.missingFiles = missingFiles;
+    }
+
+    public long getReceivedByReceptionist() {
+        return receivedByReceptionist;
+    }
+
+    public void setReceivedByReceptionist(long receivedByReceptionist) {
+        this.receivedByReceptionist = receivedByReceptionist;
     }
 }
