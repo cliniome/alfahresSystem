@@ -1,5 +1,6 @@
 package com.degla.system;
 
+import com.degla.dao.PrintFilesDAO;
 import com.degla.api.Authenticator;
 import com.degla.dao.*;
 import com.degla.security.LoginService;
@@ -40,6 +41,9 @@ public class SystemService {
     private ClinicDAO clinicManager;
     @Autowired
     private FileHistoryDAO fileHistoryDAO;
+
+    @Autowired
+    private PrintFilesDAO printFilesDAO;
 
 
     @Autowired
@@ -148,5 +152,13 @@ public class SystemService {
 
     public void setAppointmentManager(AppointmentsDAO appointmentManager) {
         this.appointmentManager = appointmentManager;
+    }
+
+    public PrintFilesDAO getPrintFilesDAO() {
+        return printFilesDAO;
+    }
+
+    public void setPrintFilesDAO(PrintFilesDAO printFilesDAO) {
+        this.printFilesDAO = printFilesDAO;
     }
 }

@@ -34,6 +34,10 @@ public class Employee extends ActorEO implements UserDetails {
     private List<Clinic> clinics;
 
 
+    @Column(name = "deleted",nullable = true)
+    private boolean deleted = false;
+
+
     public Employee(){
 
         clinics = new ArrayList<Clinic>();
@@ -89,7 +93,7 @@ public class Employee extends ActorEO implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !deleted;
     }
 
     @Override
@@ -117,5 +121,13 @@ public class Employee extends ActorEO implements UserDetails {
 
     public void setClinics(List<Clinic> clinics) {
         this.clinics = clinics;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

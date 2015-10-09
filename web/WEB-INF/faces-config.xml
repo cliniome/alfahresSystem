@@ -308,6 +308,15 @@
             <value>#{viewHelper}</value>
         </managed-property>
 
+
+    </managed-bean>
+
+
+    <managed-bean>
+        <managed-bean-name>metrics</managed-bean-name>
+        <managed-bean-class>com.alfahres.beans.dashboard.DashboardMetrics</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+
     </managed-bean>
 
 

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+
+<ui:composition template="../fragments/masterLayout.xhtml">
+
+
+   <ui:define name="mainContents">
+
+       <c:set target="#{cssBean}" property="currentPageName" value="viewstats"/>
+
+       <h:panelGrid columns="1">
+
+           <p:panel header="Search and Print Patient Files">
+
+               <h:form prependId="false">
+
+                   <h:panelGrid columns="1" id="parentContainer">
+
+                       <h:panelGrid columns="2" id="controlsContainer" cellpadding="5px">
+
+                           <p:outputLabel value="Appointment Date"/>
+                           <p:calendar showOn="button" value="#{viewstats.viewHelper.appointmentDate}"/>
+
+                           <p:outputLabel value="File Status"/>
+                           <p:selectOneMenu value="#{viewstats.viewHelper.currentState}">
+                               <f:selectItems value="#{viewstats.states}" var="state"
+                                              itemLabel="#{state.readableState}" itemValue="#{state}"/>
+                           </p:selectOneMenu>
+
+                           <p:outputLabel value="In Watch-List"/>
+                           <p:selectBooleanButton onLabel="YES" offLabel="NO" value="#{viewstats.viewHelper.inWatchList}"/>
+
+                           <br/>
+
+                           <h:panelGrid columns="2" cellpadding="5px">
+                               <h:commandButton value="View Files" actionListener="#{viewstats.onSearch}"
+                                                styleClass="btn btn-large btn-primary btn-success"/>
+                                       <h:commandButton value="Reset" actionListener="#{viewstats.onReset}"
+                                                        styleClass="btn btn-large btn-primary btn-success"/>
+                           </h:panelGrid>
+
+
+
+                       </h:panelGrid>
+
+                       <p:separator />
+
+                       <h:panelGrid columns="1" id="tableContainer">
+
+                           <p:dataTable stickyHeader="true" var="file" value="#{viewstats.files}" rows="10"
+                                   lazy="true" paginator="true" rowKey="#{file}" emptyMessage="There are no Patient Files matching the Search Query"
+                                        paginatorTemplate=" {Exporters}    {CurrentPageReport}  {FirstPageLink}
+                         {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+
+
+
+                               <f:facet name="header">
+                                   <p:outputLabel value="Total Files (#{viewstats.totalCount()})" style="color: red;font-weight: bold;"/>
+                               </f:facet>
+
+                               <f:facet name="{Exporters}">
+                                   <p:commandLink ajax="false" disabled="#{viewstats.files.rowCount == 0}">
+                                       <img src="../img/excel.png" alt="img"/>
+                                       <p:fileDownload value="#{viewstats.excelFile}"
+                                                       contentDisposition="application/vnd.ms-excel"/>
+                                   </p:commandLink>
+                               </f:facet>
+
+                               <p:column headerText="File Number">
+                                   <p:outputLabel value="#{file.fileID}"/>
+                               </p:column>
+
+                               <p:column headerText="Patient Name">
+                                   <p:outputLabel  value="#{file.patientName}"/>
+                               </p:column>
+
+                               <p:column headerText="Appointment Date">
+                                   <p:outputLabel value="#{file.currentStatus.appointment.appointment_Date}">
+
+                                   </p:outputLabel>
+                               </p:column>
+                               <p:column headerText="State">
+                                   <p:outputLabel value="#{file.currentStatus.readableState}"/>
+                               </p:column>
+                               <p:column headerText="Clinic Code">
+                                   <p:outputLabel value="#{file.currentStatus.appointment.clinicCode}"/>
+                               </p:column>
+
+                           </p:dataTable>
+
+                       </h:panelGrid>
+
+                   </h:panelGrid>
+
+
+               </h:form>
+
+
+           </p:panel>
+
+       </h:panelGrid>
+
+   </ui:define>
+
+
+</ui:composition>
+
+
+</html>

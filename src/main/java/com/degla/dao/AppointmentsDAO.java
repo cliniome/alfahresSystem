@@ -208,6 +208,31 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
     }
 
 
+    public long getTotalNewAppointments_ByClinicCode(String clinicCode)
+    {
+        String queryString = "select count(r) from Appointment r where r.active = true and " +
+                " r.fileNumber in (select p.fileID from PatientFile p where p.currentStatus.state =:filestate) or " +
+                " r.fileNumber not in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber) and r.clinicCode = :code";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
+        currentQuery.setParameter("code",clinicCode);
+        return (Long)currentQuery.getSingleResult();
+    }
+
+    public long getTotalNewAppointments_AppointmentDate(Date date)
+    {
+        String queryString = "select count(r) from Appointment r where r.active = true and " +
+                " r.fileNumber in (select p.fileID from PatientFile p where p.currentStatus.state =:filestate) or " +
+                " r.fileNumber not in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber) and " +
+                "r.appointment_Date >= :start and r.appointment_Date <= :end";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
+        currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(date));
+        currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(date));
+        return (Long)currentQuery.getSingleResult();
+    }
+
+
     public long getMaxResultsByDate(Date chosenDate)
     {
         try {
@@ -264,6 +289,29 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
                 "p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber)";
         Query currentQuery = getManager().createQuery(queryString);
         currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
+
+        return Long.parseLong(currentQuery.getSingleResult().toString());
+    }
+
+    public long getCountOfWatchListRequests_ByClinicCode(String code)
+    {
+        String queryString = "select count(r) from Appointment r where r.active=true and r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate and " +
+                "p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber) and r.clinicCode = :code";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
+        currentQuery.setParameter("code",code);
+        return Long.parseLong(currentQuery.getSingleResult().toString());
+    }
+
+    public long getCountOfWatchListRequests_AppointmentDate(Date date)
+    {
+        String queryString = "select count(r) from Appointment r where r.active=true and r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate and " +
+                "p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber) and " +
+                "r.appointment_Date >= :start and r.appointment_Date <= :end";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
+        currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(date));
+        currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(date));
 
         return Long.parseLong(currentQuery.getSingleResult().toString());
     }

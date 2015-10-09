@@ -6,6 +6,7 @@ import com.degla.restful.models.RestfulFile;
 import com.degla.restful.utils.AlfahresDateUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import test.AlfahresJsonBuilder;
 
 import javax.persistence.Query;
 import java.io.FileNotFoundException;
@@ -455,6 +456,66 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         }
     }
 
+    public Long getFilesCountForState_ByClinic(FileStates state,String clinicCode)
+    {
+        try
+        {
+            String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state and " +
+                    "f.currentStatus.appointment.clinicCode = :code";
+            Query currentQuery = getManager().createQuery(query);
+            currentQuery.setParameter("state",state);
+            currentQuery.setParameter("code",clinicCode);
+            return (Long)currentQuery.getSingleResult();
+
+        }catch(Exception s)
+        {
+            s.printStackTrace();;
+            return null;
+        }
+    }
+
+
+
+    public Long getFilesCountForState_AppointmentDate(FileStates state,Date date)
+    {
+        try
+        {
+            String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state and " +
+                    "f.currentStatus.appointment.appointment_Date >= :start and f.currentStatus.appointment.appointment_Date <= :end";
+            Query currentQuery = getManager().createQuery(query);
+            currentQuery.setParameter("state",state);
+            currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(date));
+            currentQuery.setParameter("end", AlfahresDateUtils.getEndOfDay(date));
+
+            return (Long)currentQuery.getSingleResult();
+
+        }catch(Exception s)
+        {
+            s.printStackTrace();;
+            return null;
+        }
+    }
+
+    public Long getFilesCountForState_OperationDate(FileStates state,Date date)
+    {
+        try
+        {
+            String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state and " +
+                    "f.currentStatus.createdAt >= :start and f.currentStatus.createdAt <= :end";
+            Query currentQuery = getManager().createQuery(query);
+            currentQuery.setParameter("state",state);
+            currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(date));
+            currentQuery.setParameter("end", AlfahresDateUtils.getEndOfDay(date));
+
+            return (Long)currentQuery.getSingleResult();
+
+        }catch(Exception s)
+        {
+            s.printStackTrace();;
+            return null;
+        }
+    }
+
 
     public List<PatientFile> searchFiles(String query) throws Exception
     {
@@ -492,6 +553,28 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         return (Long)currentQuery.getSingleResult();
     }
 
+    public long getTotalCheckedOutFiles_AppointmentDate(Date date)
+    {
+        String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state and " +
+                "f.currentStatus.appointment.appointment_Date >= :start and f.currentStatus.appointment.appointment_Date <= :end";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state",FileStates.CHECKED_OUT);
+        currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(date));
+        currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(date));
+        return (Long)currentQuery.getSingleResult();
+    }
+
+    public long getTotalCheckedOutFiles_OperationDate(Date date)
+    {
+        String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state and " +
+                "f.currentStatus.createdAt >= :start and f.currentStatus.createdAt <= :end";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state",FileStates.CHECKED_OUT);
+        currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(date));
+        currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(date));
+        return (Long)currentQuery.getSingleResult();
+    }
+
     public long getTotalCheckedInFiles()
     {
         String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state";
@@ -499,6 +582,39 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         currentQuery.setParameter("state",FileStates.CHECKED_IN);
         return (Long)currentQuery.getSingleResult();
     }
+
+
+    public long getTotalCheckedInFiles_OperationDate(Date operationDate)
+    {
+        String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state and f.currentStatus.createdAt >= :start and f.currentStatus.createdAt <= :end";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state",FileStates.CHECKED_IN);
+        currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(operationDate));
+        currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(operationDate));
+        return (Long)currentQuery.getSingleResult();
+    }
+
+    public long getTotalCheckedInFiles_AppointmentDate(Date appointmentDate)
+    {
+        String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state and f.currentStatus.appointment.appointment_Date >= :start and " +
+                "f.currentStatus.appointment.appointment_Date <= :end";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state",FileStates.CHECKED_IN);
+        currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(appointmentDate));
+        currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(appointmentDate));
+        return (Long)currentQuery.getSingleResult();
+    }
+
+    public long getTotalCheckedInFiles_ByClinic(String clinicCode)
+    {
+        String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state and f.currentStatus.appointment.clinicCode = :code";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state",FileStates.CHECKED_IN);
+        currentQuery.setParameter("code",clinicCode);
+        return (Long)currentQuery.getSingleResult();
+    }
+
+
 
     public long getTotalTransferredFiles()
     {

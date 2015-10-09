@@ -15,7 +15,7 @@
 
             <h:form prependId="false">
 
-                <h:panelGrid columns="1">
+                <h:panelGrid columns="1" id="containerPane">
                     <p:messages id="growl" showSummary="true" showIcon="true" closable="true"/>
                 <p:panel header="Re-Distribute Requests">
 
@@ -30,6 +30,7 @@
                         <p:outputLabel value="From Keeper : "/>
                         <p:selectOneMenu id="fromkeeper_search" converter="com.degla.converter.EmployeeConverter"
                                          value="#{redistributeRequestsBean.fromKeeper}">
+                            <p:ajax event="change" listener="#{redistributeRequestsBean.ajaxListener}" update="containerPane"/>
                             <f:selectItem itemLabel="Please Select"/>
                             <f:selectItems var="emp" value="#{redistributeRequestsBean.keepers}"
                                            itemValue="#{emp}" itemLabel="#{emp.getfullName()}"/>
@@ -48,7 +49,8 @@
 
                         <h:panelGrid columns="2">
 
-                            <h:commandButton styleClass="btn btn-large btn-primary" value="Re-distribute Requests"
+                            <h:commandButton styleClass="btn btn-large btn-primary" rendered="#{redistributeRequestsBean.distributionEnabled}"
+                                             value="Re-distribute Requests"
                                              actionListener="#{redistributeRequestsBean.redistributeRequests}"
                                              />
                             <h:commandButton styleClass="btn btn-large btn-warning" value="Cancel" immediate="true" action="HOMESCREEN"/>

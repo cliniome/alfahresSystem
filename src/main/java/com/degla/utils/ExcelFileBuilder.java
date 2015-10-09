@@ -48,6 +48,58 @@ public class ExcelFileBuilder {
         }
     }
 
+    public Workbook extractOnly(String status , List<PatientFile> availableFiles)
+    {
+        try
+        {
+            if(availableFiles == null || availableFiles.size() <= 0 )
+                return null;
+
+            Workbook wb = new HSSFWorkbook();
+
+
+
+            Sheet currentSheet = wb.createSheet(status);
+
+            this.addFileHeaders(currentSheet);
+
+            for(int i = 0 ; i < availableFiles.size() ;i++)
+            {
+                PatientFile patientFile = availableFiles.get(i);
+                Row currentRow = currentSheet.createRow(i+1);
+
+                //File Number
+                Cell fileNumberCell = currentRow.createCell(0);
+                fileNumberCell.setCellValue(patientFile.getFileID());
+                //Patient Name
+                Cell patientNameCell = currentRow.createCell(1);
+                patientNameCell.setCellValue(patientFile.getPatientName());
+                //Appointment Date
+                Cell appointmentDateCell = currentRow.createCell(2);
+                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                appointmentDateCell.setCellValue(formatter.format(patientFile.getCurrentStatus().getAppointment().getAppointment_Date()));
+
+                //State
+                Cell stateCell = currentRow.createCell(3);
+                stateCell.setCellValue(patientFile.getCurrentStatus().getState().toString());
+
+                //Clinic Code
+                Cell clinicCodeCell = currentRow.createCell(4);
+                clinicCodeCell.setCellValue(patientFile.getCurrentStatus().getAppointment().getClinicCode());
+            }
+
+
+            return wb;
+
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return null;
+        }
+    }
+
     public Workbook extractOnly(Date appointmentDate , List<PatientFile> availableFiles)
     {
         try

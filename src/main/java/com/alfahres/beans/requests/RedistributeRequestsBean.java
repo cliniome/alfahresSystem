@@ -29,6 +29,8 @@ public class RedistributeRequestsBean implements Serializable {
     private List<Employee> picker_toEmployees;
     private List<Employee> picker_fromEmployees;
 
+    private boolean distributionEnabled = true;
+
     @PostConstruct
     public void onInit()
     {
@@ -38,6 +40,24 @@ public class RedistributeRequestsBean implements Serializable {
             this.setPicker_fromEmployees(systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString()));
             this.setPicker_toEmployees(new ArrayList<Employee>());
             this.setToKeepersList(new DualListModel<Employee>(getPicker_fromEmployees(), getPicker_toEmployees()));
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+    }
+
+
+    public void ajaxListener()
+    {
+        try
+        {
+            if(this.getFromKeeper() != null)
+            {
+                if(!getFromKeeper().isActive())
+                    setDistributionEnabled(false);
+                else setDistributionEnabled(true);
+            }
 
         }catch (Exception s)
         {
@@ -185,5 +205,13 @@ public class RedistributeRequestsBean implements Serializable {
 
     public void setPicker_fromEmployees(List<Employee> picker_fromEmployees) {
         this.picker_fromEmployees = picker_fromEmployees;
+    }
+
+    public boolean isDistributionEnabled() {
+        return distributionEnabled;
+    }
+
+    public void setDistributionEnabled(boolean distributionEnabled) {
+        this.distributionEnabled = distributionEnabled;
     }
 }

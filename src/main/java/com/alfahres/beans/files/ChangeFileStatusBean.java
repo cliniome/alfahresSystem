@@ -208,7 +208,8 @@ public class ChangeFileStatusBean implements Serializable{
                     stateUtils.getState(state) == FileStates.PROCESSING_COORDINATOR ||
             stateUtils.getState(state) == FileStates.CODING_COORDINATOR ||
                     stateUtils.getState(state) == FileStates.ANALYSIS_COORDINATOR ||
-                    stateUtils.getState(state) == FileStates.INCOMPLETE_COORDINATOR ) continue;
+                    stateUtils.getState(state) == FileStates.INCOMPLETE_COORDINATOR ||
+                    stateUtils.getState(state) == FileStates.KEEPER_IN ) continue;
 
             SelectItem item = new SelectItem(state,state);
             items.add(item);

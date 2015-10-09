@@ -26,6 +26,11 @@ public class BasicRestful {
             if(emp == null) return null;
 
 
+            //Don't allow deleted or inactive employees to login to mobile devices
+            if(!emp.isAccountNonLocked()) return null;
+            if(!emp.isActive()) return null;
+
+
             return emp;
 
 

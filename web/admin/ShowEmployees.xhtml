@@ -20,7 +20,7 @@
 
                 <p:panelGrid columns="1" id="ShowClinicsPane">
 
-                    <p:dataTable rows="20" paginator="true" lazy="true"
+                    <p:dataTable rows="100" paginator="true" lazy="true"
                                  editable="true"
                                  selectionMode="single"
                                  selection="#{emp}"
@@ -35,7 +35,7 @@
                             <b>Available Employees(<font color="red">#{showEmployeeBean.employees.rowCount}</font>)</b>
                         </f:facet>
 
-                        <p:column headerText="Full Name">
+                        <p:column headerText="Full Name" filterable="true" filterBy="#{emp.firstName}">
                             <p:outputLabel value="#{emp.firstName} #{emp.lastName}"/>
                         </p:column>
 
@@ -43,7 +43,7 @@
                             <p:outputLabel value="#{emp.role.name}"/>
                         </p:column>
 
-                        <p:column headerText="User Name">
+                        <p:column headerText="User Name" filterable="true" filterBy="#{emp.userName}">
                             <p:outputLabel value="#{emp.userName}"/>
                         </p:column>
 

@@ -14,6 +14,14 @@
 <ui:composition template="../fragments/masterLayout.xhtml">
 
 
+
+    <f:metadata>
+        <f:viewParam name="type" value="#{viewstats.displayType}" converter="javax.faces.Integer"/>
+        <f:viewParam name="status" value="#{viewHelper.currentState}" />
+        <f:viewAction action="#{viewstats.onLoadParameters}"/>
+    </f:metadata>
+
+
    <ui:define name="mainContents">
 
        <c:set target="#{cssBean}" property="currentPageName" value="viewstats"/>
@@ -24,84 +32,119 @@
 
                <h:form prependId="false">
 
-                   <h:panelGrid columns="1" id="parentContainer">
+                  <h:panelGrid columns="1">
 
-                       <h:panelGrid columns="2" id="controlsContainer" cellpadding="5px">
-
-                           <p:outputLabel value="Appointment Date"/>
-                           <p:calendar showOn="button" value="#{viewstats.viewHelper.appointmentDate}"/>
-
-                           <p:outputLabel value="File Status"/>
-                           <p:selectOneMenu value="#{viewstats.viewHelper.currentState}">
-                               <f:selectItems value="#{viewstats.states}" var="state"
-                                              itemLabel="#{state.readableState}" itemValue="#{state}"/>
-                           </p:selectOneMenu>
-
-                           <p:outputLabel value="In Watch-List"/>
-                           <p:selectBooleanButton onLabel="YES" offLabel="NO" value="#{viewstats.viewHelper.inWatchList}"/>
-
-                           <br/>
-
-                           <h:panelGrid columns="2" cellpadding="5px">
-                               <h:commandButton value="View Files" actionListener="#{viewstats.onSearch}"
-                                                styleClass="btn btn-large btn-primary btn-success"/>
-                                       <h:commandButton value="Reset" actionListener="#{viewstats.onReset}"
-                                                        styleClass="btn btn-large btn-primary btn-success"/>
-                           </h:panelGrid>
+                      <p:outputPanel  id="customPanel" style="margin-bottom:10px">
+                          <p:selectOneRadio  id="customRadio" value="#{viewstats.displayType}" converter="javax.faces.Integer" layout="custom">
+                              <f:selectItem itemLabel="All" itemValue="0" />
+                              <f:selectItem itemLabel="By Appointment Date" itemValue="1" />
+                          </p:selectOneRadio>
 
 
+                          <h:panelGrid columns="3"  cellpadding="5">
+                              <p:radioButton id="opt1"  for="customRadio" itemIndex="0" />
+                              <h:outputLabel for="opt1" value="All" />
+                              <h:panelGrid columns="2" cellpadding="5">
+                                  <h:outputLabel value="Status"/>
+                                  <p:selectOneMenu value="#{viewstats.viewHelper.currentState}">
+                                      <f:selectItems value="#{viewstats.states}" var="state"
+                                                     itemLabel="#{state.readableState}" itemValue="#{state}"/>
+                                  </p:selectOneMenu>
 
-                       </h:panelGrid>
 
-                       <p:separator />
+                              </h:panelGrid>
 
-                       <h:panelGrid columns="1" id="tableContainer">
+                              <p:radioButton id="opt2"  for="customRadio" itemIndex="1" />
+                              <h:outputLabel for="opt2" value="Appointment Date" />
+                              <h:panelGrid columns="2" cellpadding="5">
+                                  <h:outputLabel value="Date"/>
+                                  <p:calendar showOn="button" value="#{viewstats.viewHelper.appointmentDate}"/>
 
-                           <p:dataTable stickyHeader="true" var="file" value="#{viewstats.files}" rows="10"
-                                   lazy="true" paginator="true" rowKey="#{file}" emptyMessage="There are no Patient Files matching the Search Query"
-                                        paginatorTemplate=" {Exporters}    {CurrentPageReport}  {FirstPageLink}
+
+                                  <h:outputLabel value="Status"/>
+                                  <p:selectOneMenu value="#{viewstats.viewHelper.secondState}">
+                                      <f:selectItems value="#{viewstats.states}" var="state"
+                                                     itemLabel="#{state.readableState}" itemValue="#{state}"/>
+                                  </p:selectOneMenu>
+
+
+                                  <p:outputLabel value="Watch-List"/>
+                                  <p:selectBooleanButton onLabel="YES" offLabel="NO" value="#{viewstats.viewHelper.inWatchList}"/>
+
+                              </h:panelGrid>
+
+
+
+                          </h:panelGrid>
+
+
+
+
+                      </p:outputPanel>
+
+
+                      <h:panelGrid columns="2" cellpadding="5px">
+                          <h:commandButton value="View Files" actionListener="#{viewstats.onSearch}"
+                                           styleClass="btn btn-large btn-primary btn-success"/>
+                          <h:commandButton value="Reset" actionListener="#{viewstats.onReset}"
+                                           styleClass="btn btn-large btn-primary btn-success"/>
+                      </h:panelGrid>
+
+
+
+                      <p:separator />
+
+                      <h:panelGrid columns="1" id="tableContainer">
+
+                          <p:dataTable stickyHeader="true" var="file" value="#{viewstats.files}" rows="10"
+                                       lazy="true" paginator="true" rowKey="#{file}" emptyMessage="There are no Patient Files matching the Search Query"
+                                       paginatorTemplate=" {Exporters}    {CurrentPageReport}  {FirstPageLink}
                          {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
 
 
 
-                               <f:facet name="header">
-                                   <p:outputLabel value="Total Files (#{viewstats.totalCount()})" style="color: red;font-weight: bold;"/>
-                               </f:facet>
+                              <f:facet name="header">
+                                  <p:outputLabel value="Total Files (#{viewstats.totalCount()})" style="color: red;font-weight: bold;"/>
+                              </f:facet>
 
-                               <f:facet name="{Exporters}">
-                                   <p:commandLink ajax="false" disabled="#{viewstats.files.rowCount == 0}">
-                                       <img src="../img/excel.png" alt="img"/>
-                                       <p:fileDownload value="#{viewstats.excelFile}"
-                                                       contentDisposition="application/vnd.ms-excel"/>
-                                   </p:commandLink>
-                               </f:facet>
+                              <f:facet name="{Exporters}">
+                                  <p:commandLink ajax="false" disabled="#{viewstats.files.rowCount == 0}">
+                                      <img src="../img/excel.png" alt="img"/>
+                                      <p:fileDownload value="#{viewstats.excelFile}"
+                                                      contentDisposition="application/vnd.ms-excel"/>
+                                  </p:commandLink>
+                              </f:facet>
 
-                               <p:column headerText="File Number">
-                                   <p:outputLabel value="#{file.fileID}"/>
-                               </p:column>
+                              <p:column headerText="File Number">
+                                  <p:outputLabel value="#{file.fileID}"/>
+                              </p:column>
 
-                               <p:column headerText="Patient Name">
-                                   <p:outputLabel  value="#{file.patientName}"/>
-                               </p:column>
+                              <p:column headerText="Patient Name">
+                                  <p:outputLabel  value="#{file.patientName}"/>
+                              </p:column>
 
-                               <p:column headerText="Appointment Date">
-                                   <p:outputLabel value="#{file.currentStatus.appointment.appointment_Date}">
+                              <p:column headerText="Appointment Date">
+                                  <p:outputLabel value="#{file.currentStatus.appointment.appointment_Date}">
 
-                                   </p:outputLabel>
-                               </p:column>
-                               <p:column headerText="State">
-                                   <p:outputLabel value="#{file.currentStatus.readableState}"/>
-                               </p:column>
-                               <p:column headerText="Clinic Code">
-                                   <p:outputLabel value="#{file.currentStatus.appointment.clinicCode}"/>
-                               </p:column>
+                                  </p:outputLabel>
+                              </p:column>
+                              <p:column headerText="State">
+                                  <p:outputLabel value="#{file.currentStatus.readableState}"/>
+                              </p:column>
+                              <p:column headerText="Clinic Code">
+                                  <p:outputLabel value="#{file.currentStatus.appointment.clinicCode}"/>
+                              </p:column>
 
-                           </p:dataTable>
 
-                       </h:panelGrid>
+                              <p:column headerText="....">
+                                  <a href="EditFile.xhtml?fileNumber=#{file.fileID}" class="btn btn-success">Edit File</a>
+                              </p:column>
 
-                   </h:panelGrid>
+                          </p:dataTable>
 
+                      </h:panelGrid>
+
+                  </h:panelGrid>
 
                </h:form>
 

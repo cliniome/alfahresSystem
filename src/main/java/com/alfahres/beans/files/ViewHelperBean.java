@@ -1,5 +1,6 @@
 package com.alfahres.beans.files;
 
+import com.degla.dao.utils.SearchSettings;
 import com.degla.db.models.FileStates;
 import com.degla.db.models.PatientFile;
 
@@ -11,7 +12,9 @@ import java.util.Date;
  */
 public class ViewHelperBean implements Serializable {
 
-    private String currentState;
+    private String currentState = FileStates.MISSING.toString();
+
+    private String secondState = FileStates.MISSING.toString();
 
     private Date appointmentDate;
 
@@ -20,6 +23,10 @@ public class ViewHelperBean implements Serializable {
     private PatientFile tempFile;
 
     private boolean inWatchList;
+
+
+    private SearchSettings printSearchSettings;
+
 
     public String getCurrentState() {
         return currentState;
@@ -61,5 +68,21 @@ public class ViewHelperBean implements Serializable {
 
     public void setTempFile(PatientFile tempFile) {
         this.tempFile = tempFile;
+    }
+
+    public SearchSettings getPrintSearchSettings() {
+        return printSearchSettings;
+    }
+
+    public void setPrintSearchSettings(SearchSettings printSearchSettings) {
+        this.printSearchSettings = printSearchSettings;
+    }
+
+    public String getSecondState() {
+        return secondState;
+    }
+
+    public void setSecondState(String secondState) {
+        this.secondState = secondState;
     }
 }

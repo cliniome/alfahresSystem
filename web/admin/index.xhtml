@@ -40,10 +40,12 @@
                         </sec:authorize>
                     </div>
 
+                    <h:form>
                     <!-- Beginning of Admin Statistics Caption -->
                     <ui:insert name="adminCaptions">
                         <ui:include src="../fragments/admin-Captions.xhtml"/>
                     </ui:insert>
+                    </h:form>
 
                     <sec:authorize access="hasRole('ADMIN')">
 

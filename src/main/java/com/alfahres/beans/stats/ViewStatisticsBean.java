@@ -1,6 +1,8 @@
 package com.alfahres.beans.stats;
 
+import com.alfahres.beans.dashboard.DashboardMetrics;
 import com.alfahres.beans.files.ViewHelperBean;
+import com.degla.dao.utils.SearchSettings;
 import com.degla.db.models.FileStates;
 import com.degla.db.models.PatientFile;
 import com.degla.system.SpringSystemBridge;
@@ -13,12 +15,14 @@ import org.primefaces.model.StreamedContent;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by snouto on 13/08/15.
@@ -26,14 +30,14 @@ import java.util.List;
 public class ViewStatisticsBean implements Serializable {
 
 
+    public static final int DISPLAY_ALL = 0;
+    public static final int DISPLAY_BY_APPOINTMENT=1;
 
     private SystemService systemService;
-
     private GenericLazyDataModel<PatientFile> files;
-
     private ViewHelperBean viewHelper;
-
     private FileStates[] states;
+    private int displayType;
 
 
 
@@ -58,7 +62,20 @@ public class ViewStatisticsBean implements Serializable {
 
             }
 
-            files = new GenericLazyDataModel<PatientFile>(systemService.getFilesService());
+            SearchSettings searchSettings = new SearchSettings();
+            searchSettings.setAppointmentDate(getViewHelper().getAppointmentDate());
+
+            if(getViewHelper().getCurrentState() != null && !getViewHelper().getCurrentState().isEmpty())
+               searchSettings.setStatus(FileStates.valueOf(getViewHelper().getCurrentState()));
+
+
+            searchSettings.setType(this.getDisplayType());
+            searchSettings.setWatchlist(getViewHelper().isInWatchList());
+
+            systemService.getPrintFilesDAO().setSearchSettings(searchSettings);
+            getViewHelper().setPrintSearchSettings(searchSettings);
+
+            files = new GenericLazyDataModel<PatientFile>(systemService.getPrintFilesDAO());
             states = FileStates.values();
 
         }catch (Exception s)
@@ -94,6 +111,39 @@ public class ViewStatisticsBean implements Serializable {
         }
     }
 
+    public String onLoadParameters(){
+
+
+        this.clear();
+
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        Map<String,String> parameters = context.getExternalContext().getRequestParameterMap();
+
+        if(parameters != null && parameters.size() > 0)
+        {
+            String type = parameters.get("type");
+            String status = parameters.get("status");
+
+            if(type != null && status != null)
+            {
+                this.setDisplayType(Integer.parseInt(type));
+                getViewHelper().setCurrentState(status);
+            }
+
+        }
+
+        //Do the search again
+        onSearch(null);
+        return "";
+    }
+
+    private void clear() {
+
+        getViewHelper().setAppointmentDate(null);
+        getViewHelper().setInWatchList(false);
+    }
+
 
     public void onSearch(ActionEvent event)
     {
@@ -102,13 +152,32 @@ public class ViewStatisticsBean implements Serializable {
             if(systemService == null)
                 systemService = SpringSystemBridge.services();
 
-            systemService.getFilesService().setQueryState(FileStates.valueOf(getViewHelper().getCurrentState()));
+            SearchSettings searchSettings = new SearchSettings();
+            searchSettings.setAppointmentDate(getViewHelper().getAppointmentDate());
+
+            if(getDisplayType() == DISPLAY_ALL)
+                searchSettings.setStatus(FileStates.valueOf(getViewHelper().getCurrentState()));
+            else
+                searchSettings.setStatus(FileStates.valueOf(getViewHelper().getSecondState()));
+
+            searchSettings.setType(this.getDisplayType());
+            searchSettings.setWatchlist(getViewHelper().isInWatchList());
+            getViewHelper().setPrintSearchSettings(searchSettings);
+
+
+           /* systemService.getFilesService().setQueryState(FileStates.valueOf(getViewHelper().getCurrentState()));
             systemService.getFilesService().setAppointmentDate(getViewHelper().getAppointmentDate());
             systemService.getFilesService().setInWatchList(getViewHelper().isInWatchList());
-            systemService.getFilesService().setAvailableAppointments(systemService.getAppointmentManager().getAppointmentsForDate(getViewHelper().getAppointmentDate()));
+            systemService.getFilesService().setAvailableAppointments(systemService.getAppointmentManager().getAppointmentsForDate(getViewHelper().getAppointmentDate()));*/
+
+            systemService.getPrintFilesDAO().setSearchSettings(searchSettings);
+
+            if(searchSettings.isWatchlist())
+                systemService.getPrintFilesDAO().setAvailableAppointments(systemService.getAppointmentManager().getAppointmentsForDate(getViewHelper().getAppointmentDate()));
 
 
-            GenericLazyDataModel<PatientFile> filterableModel = new GenericLazyDataModel<PatientFile>(systemService.getFilesService());
+
+            GenericLazyDataModel<PatientFile> filterableModel = new GenericLazyDataModel<PatientFile>(systemService.getPrintFilesDAO());
             filterableModel.setFilterable(true);
             this.setFiles(filterableModel);
 
@@ -128,8 +197,16 @@ public class ViewStatisticsBean implements Serializable {
 
             ExcelFileBuilder builder = new ExcelFileBuilder(systemService);
 
-            Workbook wb = builder.extractOnly(getViewHelper().getAppointmentDate(),
-                    systemService.getFilesService().getPaginatedWrappedData());
+            systemService.getPrintFilesDAO().setSearchSettings(getViewHelper().getPrintSearchSettings());
+
+            Workbook wb = null;
+
+            if(getViewHelper().getAppointmentDate() == null)
+                wb = builder.extractOnly(getViewHelper().getPrintSearchSettings().getStatus().toString(),
+                        systemService.getPrintFilesDAO().getPaginatedWrappedData());
+            else
+                wb = builder.extractOnly(getViewHelper().getAppointmentDate(),
+                        systemService.getPrintFilesDAO().getPaginatedWrappedData());
 
             if(wb == null) return null;
 
@@ -193,4 +270,11 @@ public class ViewStatisticsBean implements Serializable {
     }
 
 
+    public int getDisplayType() {
+        return displayType;
+    }
+
+    public void setDisplayType(int displayType) {
+        this.displayType = displayType;
+    }
 }

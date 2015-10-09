@@ -93,7 +93,7 @@ public class EmployeeDAO extends AbstractDAO<Employee> {
     {
         try
         {
-            String query = "select e from Employee e where e.userName=:username";
+            String query = "select e from Employee e where e.userName=:username and e.active = true and e.deleted = false";
             Query currentQuery = getManager().createQuery(query);
             currentQuery.setParameter("username",username);
 

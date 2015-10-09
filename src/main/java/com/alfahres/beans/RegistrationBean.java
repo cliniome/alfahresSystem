@@ -148,8 +148,10 @@ public class RegistrationBean {
 
             if(!this.isCanDeleteEmployee()) return;
 
+            emp.setDeleted(true);
+
             //Now try to remove that employee
-            systemService.getEmployeeService().removeEntity(emp);
+            systemService.getEmployeeService().updateEntity(emp);
 
         }catch (Exception s)
         {
