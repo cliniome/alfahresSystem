@@ -691,11 +691,17 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         }
     }
 
-    public List<PatientFile> getMissingFiles()
+    public List<PatientFile> getMissingFiles(boolean inpatient)
     {
         try
         {
-            String query = "select f from PatientFile f where f.currentStatus.state=:missing ORDER BY f.currentStatus.createdAt DESC";
+            String query = null;
+
+            if(inpatient)
+                query = "select f from PatientFile f where f.currentStatus.state=:missing and f.currentStatus.appointment.inpatient = true" +
+                        " ORDER BY f.currentStatus.createdAt DESC";
+            else
+             query = "select f from PatientFile f where f.currentStatus.state=:missing ORDER BY f.currentStatus.createdAt DESC";
 
             Query currentQuery = getManager().createQuery(query);
             currentQuery.setParameter("missing", FileStates.MISSING);

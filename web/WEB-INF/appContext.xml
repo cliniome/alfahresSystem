@@ -65,11 +65,14 @@ http://www.springframework.org/schema/jee
     </sec:http>
 
 
-    <sec:http  auto-config="true" use-expressions="true" security-context-repository-ref="noSessionContextRepository"
+    <sec:http
+              auto-config="true" use-expressions="true" security-context-repository-ref="noSessionContextRepository"
                create-session="always" access-denied-page="/web/NotAuthorized.xhtml">
          <!--<sec:intercept-url pattern="/web/dashboard/**" access="hasRole('ROLE_DOCTOR')"/>-->
         <sec:intercept-url pattern="/web/admin/**"
-            access="hasAnyRole('ADMIN','PROCESSING_COORDINATOR','ANALYSIS_COORDINATOR','CODING_COORDINATOR','INCOMPLETE_COORDINATOR')"/>
+            access="hasAnyRole('ADMIN')"/>
+        <sec:intercept-url pattern="/web/coordinator/**" access="hasAnyRole('PROCESSING_COORDINATOR','ANALYSIS_COORDINATOR','CODING_COORDINATOR','INCOMPLETE_COORDINATOR')"/>
+
         <sec:intercept-url pattern="/web/index.xhtml"
                            access="hasAnyRole('ADMIN','PROCESSING_COORDINATOR','ANALYSIS_COORDINATOR','CODING_COORDINATOR','INCOMPLETE_COORDINATOR')"/>
 
@@ -116,6 +119,7 @@ http://www.springframework.org/schema/jee
 
     </bean>
 
+    <!-- We modified the alfahresPro JNDI and the jndi name in the web.xml -->
     <bean id="datasource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="alfahresjndi"></property>
         <property name="lookupOnStartup" value="true"/>

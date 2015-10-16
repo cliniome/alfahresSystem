@@ -38,6 +38,13 @@
                             <b>Available Employees(<font color="red">#{showEmployeeBean.employees.rowCount}</font>)</b>
                         </f:facet>
 
+
+
+                        <p:column headerText="...." width="64">
+                            <p:graphicImage value="../img/active.png" rendered="#{emp.active}" alt="Employee is active"/>
+                            <p:graphicImage value="../img/inactive.png" rendered="#{!emp.active}" alt="Employee is inactive"/>
+                        </p:column>
+
                         <p:column headerText="Full Name" filterable="true" filterBy="#{emp.firstName}">
                             <p:outputLabel value="#{emp.firstName} #{emp.lastName}"/>
                         </p:column>

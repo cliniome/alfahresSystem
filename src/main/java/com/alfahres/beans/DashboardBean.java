@@ -1,9 +1,6 @@
 package com.alfahres.beans;
 
-import com.degla.db.models.ActorEO;
-import com.degla.db.models.Employee;
-import com.degla.db.models.FileStates;
-import com.degla.db.models.PatientFile;
+import com.degla.db.models.*;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.WebUtils;
@@ -121,11 +118,21 @@ public class DashboardBean {
     }
 
 
+    public boolean is_InpatientCoordinator(){
+
+        RoleTypes role_Type = RoleTypes.valueOf(getAccount().getRole().getName());
+
+        return role_Type.isInPatientActor();
+    }
+
+
     public List<PatientFile> getMissingFiles()
     {
         try
         {
-            List<PatientFile> missingFiles = systemService.getFilesService().getMissingFiles();
+            RoleTypes currentType = RoleTypes.valueOf(getAccount().getRole().getName());
+
+            List<PatientFile> missingFiles = systemService.getFilesService().getMissingFiles(currentType.isInPatientActor());
 
             if(missingFiles != null && missingFiles.size() > 0) return missingFiles;
             else return new ArrayList<PatientFile>();

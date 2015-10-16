@@ -83,8 +83,10 @@ public class ShowEmployeeBean {
                     //now update the employee
                     boolean result = systemService.getEmployeeService().updateEntity(currentEmployee);
 
+                    String action = (currentEmployee.isActive() == true) ? "Activated" : "Deactived";
+
                     if (result) {
-                        WebUtils.addMessage("Employee has been Activated/Deactivated Successfully");
+                        WebUtils.addMessage(String.format("Employee has been %s Successfully",action));
                     } else
                         WebUtils.addMessage("There is a problem , please try again !");
                 }

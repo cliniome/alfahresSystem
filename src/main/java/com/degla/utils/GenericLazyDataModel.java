@@ -132,7 +132,7 @@ public class GenericLazyDataModel<T extends AnnotatingModel> extends LazyDataMod
                         String methodName = "get"+Capitalize(filterProperty);
                         String fieldValue = String.valueOf(model.getClass().getMethod(methodName).invoke(model));
 
-                        if(filterValue == null || fieldValue.startsWith(filterValue)) {
+                        if(filterValue == null || fieldValue.toLowerCase().startsWith(filterValue.toLowerCase())) {
                             match = true;
                         }
                         else {

@@ -3,6 +3,7 @@ package com.alfahres.beans;
 import com.degla.db.models.Employee;
 import com.degla.db.models.RoleEO;
 import com.degla.db.models.RoleTypes;
+import com.degla.security.JSFUtils;
 import com.degla.system.SpringSystemBridge;
 import com.degla.system.SystemService;
 import com.degla.utils.WebUtils;
@@ -24,9 +25,15 @@ public class LoginBean {
     public static final String FAILURE="failure";
     public static final String LOGOUT = "LOGOUT";
 
+    public static final String ADMIN_PATH="/admin/index.xhtml";
+    public static final String COORDINATOR_PATH = "/coordinator/index.xhtml";
+
     private String username;
     private String password;
 
+
+
+    private String routePath;
 
     protected SystemService systemService;
 
@@ -82,6 +89,7 @@ public class LoginBean {
 
             if(systemService.getLoginService().dologin(this.getUsername(), this.getPassword()))
             {
+                setAccessDecision();
                 return SUCCESS;
 
             }else throw new Exception("Login failed");
@@ -93,6 +101,26 @@ public class LoginBean {
             return FAILURE;
         }
     }
+
+
+    private void setAccessDecision()
+    {
+        DashboardBean dashboardBean = (DashboardBean) JSFUtils.getAnyBeanByName("dashboardBean",DashboardBean.class);
+
+        if(dashboardBean != null && dashboardBean.getAccount() != null)
+        {
+            RoleTypes type = RoleTypes.valueOf(dashboardBean.getAccount().getRole().getName());
+
+            if(type.isInPatientActor())
+                setRoutePath(COORDINATOR_PATH);
+            else
+                setRoutePath(ADMIN_PATH);
+
+
+        }
+    }
+
+
 
 
     public String getUsername() {
@@ -109,5 +137,13 @@ public class LoginBean {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRoutePath() {
+        return routePath;
+    }
+
+    public void setRoutePath(String routePath) {
+        this.routePath = routePath;
     }
 }

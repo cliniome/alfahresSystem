@@ -13,7 +13,7 @@ public class FileStateUtils implements Serializable {
     private FileStates state;
 
     private String[] states = {"Archived","Checked Out","Received by Coordinator","Sent out by Coordinator",
-    "Received by Clinic","Received by Keeper","New File","Received by Receptionist","Prepared by Keeper",
+    "Received by Clinic","New File","Received by Receptionist","Prepared by Clerk",
     "Transferred by coordinator","Missing","at Processing Coordinator","at Coding Coordinator","at Analysis Coordinator","at Incomplete Coordinator","Inpatient Submitted",
     "Temporary Stored"};
 

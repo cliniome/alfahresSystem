@@ -57,7 +57,7 @@
                             <p:selectOneMenu value="#{changeFileStatusBean.selectedAppointment}"
                                              rendered="#{changeFileStatusBean.requiresAppointmentDate}">
 
-                                <f:selectItems value="#{changeFileStatusBean.appointments}" var="appointment" itemLabel="#{appointment.appointment_Date}(#{appointment.clinicName},#{appointment.clinicCode} , #{appointment.inpatient == true ? 'OutPatient':'InPatient'})"
+                                <f:selectItems value="#{changeFileStatusBean.appointments}" var="appointment" itemLabel="#{appointment.appointment_Date}(#{appointment.clinicName},#{appointment.clinicCode} , #{appointment.inpatient == true ? 'InPatient':'OutPatient'})"
                                          itemValue="#{appointment.id}"/>
 
 
