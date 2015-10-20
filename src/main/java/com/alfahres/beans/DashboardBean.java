@@ -198,6 +198,22 @@ public class DashboardBean {
     }
 
 
+    public long getFilesForState(String state){
+
+        if(state == null || state.isEmpty())
+            return 0L;
+        else{
+
+
+            FileStates currentState = FileStates.valueOf(state);
+            return systemService.getFilesService().getFilesCountForState(currentState);
+
+
+        }
+
+    }
+
+
     public long getTotalMissingFiles()
     {
         try

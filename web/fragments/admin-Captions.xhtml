@@ -18,11 +18,6 @@
 
     <sec:authorize access="hasRole('ADMIN')">
 
-
-
-
-
-
         <p:tabView dynamic="true" cache="true">
 
             <p:tab title="Overall Dashboard">
@@ -200,9 +195,32 @@
 
         </p:tabView>
 
+    </sec:authorize>
 
 
+    <sec:authorize access="hasAnyRole('ANALYSIS_COORDINATOR','INCOMPLETE_COORDINATOR','CODING_COORDINATOR','PROCESSING_COORDINATOR')">
 
+        <div class="row-fluid">
+            <div class="span3">
+                <h3>Processing Coordinator</h3>
+                <p><a href="PrintFiles.xhtml?type=0&amp;status=PROCESSING_COORDINATOR" class="badge badge-warning">#{dashboardBean.getFilesForState('PROCESSING_COORDINATOR')}
+                </a></p>
+            </div>
+            <div class="span3">
+                <h3>InComplete Coordinator</h3>
+                <p><a href="PrintFiles.xhtml?type=0&amp;status=INCOMPLETE_COORDINATOR" class="badge badge-warning">#{dashboardBean.getFilesForState('INCOMPLETE_COORDINATOR')}
+                </a></p>
+            </div>
+            <div class="span3">
+                <h3>Coding Coordinator</h3>
+                <p><a href="PrintFiles.xhtml?type=0&amp;status=CODING_COORDINATOR" class="badge badge-warning">#{dashboardBean.getFilesForState('CODING_COORDINATOR')}</a></p>
+            </div>
+            <div class="span3">
+                <h3>Analysis Coordinator</h3>
+                <p><a href="PrintFiles.xhtml?type=0&amp;status=ANALYSIS_COORDINATOR" class="badge badge-warning">#{dashboardBean.getFilesForState('ANALYSIS_COORDINATOR')}
+                </a></p>
+            </div>
+        </div>
 
     </sec:authorize>
 

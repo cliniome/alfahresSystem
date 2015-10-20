@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+<ui:composition template="../fragments/masterLayout.xhtml">
+
+
+      <ui:define name="mainContents">
+
+            <c:set target="#{cssBean}" property="currentPageName" value="SearchFiles"/>
+
+            <h:form prependId="false">
+            <h:panelGrid columns="1" style="margin-left: 10px;">
+
+
+                  <p:panel header="Search Files">
+                        <p>You can search Patient Files by File number , Patient number ,
+                              Patient name or Batch number</p>
+
+                        <h:panelGrid columns="2">
+
+                              <h:outputLabel id="searchCriteria" value="Search By"/>
+                              <p:selectOneMenu id="searchCriteriaOptions" value="#{fileManagementBean.choice}">
+                                    <f:selectItem itemLabel="File Number" itemValue="1"/>
+                                    <f:selectItem itemLabel="Patient Number" itemValue="2"/>
+                                    <f:selectItem itemLabel="Patient Name" itemValue="3"/>
+                                    <f:selectItem itemLabel="Batch Number" itemValue="4"/>
+                              </p:selectOneMenu>
+
+
+                              <h:outputLabel id="query" value="Search Query"/>
+
+                              <p:inputText placeholder="Enter your search here"
+                                           value="#{fileManagementBean.query}"
+                                           required="true"
+                                           requiredMessage="Search can't be empty"/>
+                              <br/>
+                              <p:commandButton value="Search" ajax="false" update="searchresults"
+                                               actionListener="#{fileManagementBean.doSearch}" />
+
+
+                        </h:panelGrid>
+                  </p:panel>
+
+
+                  <p:panel id="searchresults"
+                           header="Search Results" rendered="#{!fileManagementBean.emptyFiles()}">
+
+
+                        <p:dataTable var="file" value="#{fileManagementBean.files}"
+                                     rows="20" paginator="true">
+
+                              <f:facet name="header">
+                                    <p>Found Patient Files (<font color="red">#{fileManagementBean.files.size()}</font>)</p>
+                              </f:facet>
+
+
+                              <p:column headerText="File Number">
+                                    <p:outputLabel value="#{file.fileID}"/>
+                              </p:column>
+                              <p:column headerText="Patient Name">
+                                    <p:outputLabel value="#{file.patientName}"/>
+                              </p:column>
+                              <p:column headerText="Patient Number">
+                                    <p:outputLabel value="#{file.patientNumber}"/>
+                              </p:column>
+
+                              <p:column headerText="Latest batch number">
+                                    <p:outputLabel value="#{file.currentStatus.appointment.batchRequestNumber}"/>
+                              </p:column>
+
+                              <p:column headerText="shelf ID">
+                                    <p:outputLabel value="#{file.shelfId}"/>
+                              </p:column>
+
+                              <p:column headerText="More...">
+                                    <a class="btn btn-success" href="EditFile.xhtml?fileNumber=#{file.fileID}">Show File Details</a>
+                              </p:column>
+
+                        </p:dataTable>
+
+
+                  </p:panel>
+
+            </h:panelGrid>
+
+            </h:form>
+
+      </ui:define>
+
+</ui:composition>
+
+</html>
