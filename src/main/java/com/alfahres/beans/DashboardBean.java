@@ -184,6 +184,20 @@ public class DashboardBean {
         }
     }
 
+    public long selectTotalCheckedOutFiles(boolean inpatient)
+    {
+        try
+        {
+
+            return systemService.getFilesService().getTotalCheckedOutByType(inpatient);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return -1L;
+        }
+    }
+
     public long getTotalCheckedOutFiles()
     {
         try
@@ -223,7 +237,76 @@ public class DashboardBean {
         }catch(Exception s)
         {
             s.printStackTrace();
-            return -1;
+            return 0L;
+        }
+    }
+
+
+    public long getTotalTemporaryStored(){
+
+        try
+        {
+
+            return systemService.getFilesService().getFilesCountForState(FileStates.TEMPORARY_STORED);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return 0L;
+        }
+    }
+
+
+    public long getTotalProcessingCoordinator(){
+
+        try
+        {
+            return systemService.getFilesService().getFilesCountForState(FileStates.PROCESSING_COORDINATOR);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public long getTotalCodingCoordinator(){
+
+        try
+        {
+            return systemService.getFilesService().getFilesCountForState(FileStates.CODING_COORDINATOR);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public long getTotalAnalysisCoordinator(){
+
+        try
+        {
+
+            return systemService.getFilesService().getFilesCountForState(FileStates.ANALYSIS_COORDINATOR);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return 0L;
+        }
+    }
+
+    public long getTotalInCompleteCoordinator(){
+
+        try
+        {
+            return systemService.getFilesService().getFilesCountForState(FileStates.INCOMPLETE_COORDINATOR);
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return 0L;
         }
     }
 

@@ -39,6 +39,8 @@ public class ChangeFileStatusBean implements Serializable{
 
     private List<Appointment> appointments;
 
+    private String physicalFile;
+
 
     private boolean requiresAppointmentDate;
 
@@ -75,6 +77,11 @@ public class ChangeFileStatusBean implements Serializable{
 
         }
     }
+
+
+
+
+
 
     public void onStatusChange(){
 
@@ -303,5 +310,30 @@ public class ChangeFileStatusBean implements Serializable{
 
     public void setRequiresAppointmentDate(boolean requiresAppointmentDate) {
         this.requiresAppointmentDate = requiresAppointmentDate;
+    }
+
+    public String getPhysicalFile() {
+        return physicalFile;
+    }
+
+    public void setPhysicalFile(String physicalFile) {
+        this.physicalFile = physicalFile;
+
+        String idValue = physicalFile;
+
+        if(idValue != null) {
+            this.file = systemService.getFilesService().getFileWithNumber(idValue);
+            this.setFileNumber(this.file.getFileID());
+            this.setAssignedEmployee(this.file.getCurrentStatus().getOwner());
+            this.setStatus(this.file.getCurrentStatus().getReadableState());
+            this.setShelfNumber(this.file.getShelfId());
+            this.getViewHelper().setTempFile(this.file);
+            this.setSelectedAppointment(String.valueOf(this.file.getCurrentStatus().getAppointment().getId()));
+
+            if (this.getViewHelper().getTempFile() != null) {
+                this.setAppointments(systemService.getAppointmentManager().getMostRecentAppointmentsFor(this.getViewHelper().getTempFile().getFileID()));
+
+            }
+        }
     }
 }

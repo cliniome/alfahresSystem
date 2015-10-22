@@ -36,9 +36,10 @@ public class InPatientRequestsBean implements Serializable {
     private String doctorCode;
     private SystemService systemService;
 
-
+    private Employee assignedTo;
     private DashboardBean dashboardBean;
 
+    private List<Employee> availableKeepers;
 
     @PostConstruct
     public void onInit()
@@ -46,6 +47,7 @@ public class InPatientRequestsBean implements Serializable {
         try
         {
             this.systemService = SpringSystemBridge.services();
+            this.setAvailableKeepers(systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString(),true));
 
         }catch (Exception s)
         {
@@ -59,13 +61,13 @@ public class InPatientRequestsBean implements Serializable {
 
     public void onSubmit(ActionEvent event)
     {
-            List<Employee> keepers = systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString(),true);
+         //   List<Employee> keepers = systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString(),true);
 
         try
         {
-            if(keepers == null || keepers.size() <=0)
+            if(assignedTo == null)
             {
-                WebUtils.addMessage("Can't Add new Inpatient Requests while there are no Active Keepers in the system");
+                WebUtils.addMessage("Can't Add new Inpatient Request Without Choosing an active Keeper to handle the request ");
                 return;
             }
 
@@ -133,7 +135,8 @@ public class InPatientRequestsBean implements Serializable {
             //this request is inpatient
 
             //try to assign it to a given keeper employee randomly
-            this.randomlyAssignInpatientRequest(inpatient,keepers);
+            //this.randomlyAssignInpatientRequest(inpatient,keepers);
+            inpatient.setAssignedTo(assignedTo);
             //now try to insert the current request
             boolean result = systemService.getAppointmentManager().addEntity(inpatient);
 
@@ -277,5 +280,21 @@ public class InPatientRequestsBean implements Serializable {
 
     public void setAdmissionTime(Date admissionTime) {
         this.admissionTime = admissionTime;
+    }
+
+    public Employee getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(Employee assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public List<Employee> getAvailableKeepers() {
+        return availableKeepers;
+    }
+
+    public void setAvailableKeepers(List<Employee> availableKeepers) {
+        this.availableKeepers = availableKeepers;
     }
 }

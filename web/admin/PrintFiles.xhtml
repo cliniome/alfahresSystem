@@ -116,11 +116,20 @@
                               </f:facet>
 
                               <p:column headerText="File Number">
-                                  <p:outputLabel value="#{file.fileID}"/>
+                                  <p:panelGrid columns="2" rendered="#{file.currentStatus.appointment.inpatient}">
+                                      <h:graphicImage url="../img/in-patient.png" rendered="#{file.currentStatus.appointment.inpatient}"/>
+                                      <p:outputLabel value="#{file.fileID}"/>
+                                  </p:panelGrid>
+
+                                  <p:outputLabel value="#{file.fileID}" rendered="#{!file.currentStatus.appointment.inpatient}"/>
                               </p:column>
 
                               <p:column headerText="Patient Name">
                                   <p:outputLabel  value="#{file.patientName}"/>
+                              </p:column>
+
+                              <p:column headerText="Patient Number">
+                                  <p:outputLabel value="#{file.patientNumber}"/>
                               </p:column>
 
                               <p:column headerText="Appointment Date">

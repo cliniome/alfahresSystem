@@ -553,6 +553,15 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
         return (Long)currentQuery.getSingleResult();
     }
 
+    public long getTotalCheckedOutByType(boolean inpatient)
+    {
+        String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state and f.currentStatus.appointment.inpatient = :inpatient";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state",FileStates.CHECKED_OUT);
+        currentQuery.setParameter("inpatient",inpatient);
+        return (Long)currentQuery.getSingleResult();
+    }
+
     public long getTotalCheckedOutFiles_AppointmentDate(Date date)
     {
         String query = "select count(distinct f.fileID) from PatientFile f where f.currentStatus.state=:state and " +

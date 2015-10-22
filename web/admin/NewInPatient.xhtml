@@ -58,7 +58,7 @@
                                         <div class="control-group">
                                             <label class="control-label" for="admitLocation">Admit. Location</label>
                                             <div class="controls">
-                                                <h:inputText required="true" requiredMessage="Admission Location  is required"
+                                                <h:inputText
                                                              styleClass="input-xlarge" id="admitLocation" value="#{inpatientBean.admissionLocation}"/>
                                             </div>
                                         </div>
@@ -102,7 +102,7 @@
                                         <div class="control-group">
                                             <label class="control-label" for="docName">Doctor Name</label>
                                             <div class="controls">
-                                                <h:inputText required="true" requiredMessage="Doctor Name  is required"
+                                                <h:inputText
                                                              styleClass="input-xlarge" id="docName" value="#{inpatientBean.doctorName}"/>
                                             </div>
                                         </div>
@@ -110,8 +110,21 @@
                                         <div class="control-group">
                                             <label class="control-label" for="docCode">Doctor Code</label>
                                             <div class="controls">
-                                                <h:inputText required="true" requiredMessage="Doctor Code is required"
+                                                <h:inputText
                                                              styleClass="input-xlarge" id="docCode" value="#{inpatientBean.doctorCode}"/>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="control-group">
+                                            <label class="control-label" for="assignedTo">Assigned To</label>
+                                            <div class="controls">
+                                                <p:selectOneMenu id="assignedTo" converter="com.degla.converter.EmployeeConverter" requiredMessage="Assigned Employee is required"
+
+                                                                 value="#{inpatientBean.assignedTo}" required="true" filter="true" filterMatchMode="contains">
+                                                    <f:selectItems value="#{inpatientBean.availableKeepers}" var="employee" itemLabel="#{employee.firstName} , #{employee.lastName}"
+                                                                   itemValue="#{employee}"/>
+                                                </p:selectOneMenu>
                                             </div>
                                         </div>
 

@@ -89,10 +89,14 @@ public class ExcelFileBuilder {
 
 
                 //Cabin number
-
                 Cell cabinCell = currentRow.createCell(5);
                 BarcodeUtils utils = new BarcodeUtils(patientFile.getFileID());
                 cabinCell.setCellValue(utils.getCabinID());
+
+
+                //Patient Number
+                Cell PatientNumber = currentRow.createCell(6);
+                PatientNumber.setCellValue(patientFile.getPatientNumber());
             }
 
 
@@ -148,10 +152,17 @@ public class ExcelFileBuilder {
 
 
                 //Cabin number
-
                 Cell cabinCell = currentRow.createCell(5);
                 BarcodeUtils utils = new BarcodeUtils(patientFile.getFileID());
                 cabinCell.setCellValue(utils.getCabinID());
+
+
+
+                //Patient Number
+                Cell PatientNumber = currentRow.createCell(6);
+                PatientNumber.setCellValue(patientFile.getPatientNumber());
+
+
             }
 
 
@@ -394,6 +405,11 @@ public class ExcelFileBuilder {
 
             Cell cabinCell = headerRow.createCell(5);
             cabinCell.setCellValue("Cabin Number");
+
+
+            Cell patient_No = headerRow.createCell(6);
+
+            patient_No.setCellValue("Patient Number");
 
         }catch (Exception s)
         {

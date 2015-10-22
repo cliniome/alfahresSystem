@@ -37,6 +37,10 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
 
     public List<Appointment> getAppointmentsForDateRange(Date start,Date end)
     {
+        /*
+            not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate " +
+                    " and p.fileID = r.fileNumber)";
+         */
         String queryString = "select r from Appointment r where r.appointment_Date >= :start and r.appointment_Date <= :end and r.active = true";
         Query currentQuery = getManager().createQuery(queryString);
         currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(start));

@@ -40,7 +40,12 @@ public class ClinicsSlipCreator implements Serializable {
                 for(Appointment app : appointments)
                 {
 
+
                     String clinicCode = app.getClinicCode();
+
+                    int clinicsNumber = getNumberOfAppointmentsForClinicCode(clinicCode,appointments);
+
+                    if(clinicsNumber <= 0 ) continue;
 
                     if(writtenClinics.contains(clinicCode)) continue;
                     else
@@ -53,7 +58,7 @@ public class ClinicsSlipCreator implements Serializable {
                     paragraph.setIndentationRight(50);
                     paragraph.setSpacingBefore(50);
                     paragraph.setFont(new Font(getFontFamily(), getFontSize()));
-                    paragraph.add(clinicCode);
+                    paragraph.add(String.format("%s(%s)",clinicCode,String.valueOf(getNumberOfAppointmentsForClinicCode(clinicCode,appointments))));
 
                     //add the paragraph to the current page and create a new page
                     slip.add(paragraph);
@@ -74,6 +79,30 @@ public class ClinicsSlipCreator implements Serializable {
 
             return slip;
         }
+    }
+
+
+    private int getNumberOfAppointmentsForClinicCode(String clinicCode , List<Appointment> appointments)
+    {
+
+        List<String> previouslyRead = new ArrayList<String>();
+
+        int number = 0;
+
+
+        for(Appointment app : appointments)
+        {
+            if(previouslyRead.contains(app.getFileNumber())) continue;
+            previouslyRead.add(app.getFileNumber());
+
+            if(app.getClinicCode().toLowerCase().equals(clinicCode))
+            {
+                number += 1;
+            }
+        }
+
+        return number;
+
     }
 
     public int getFontSize() {
