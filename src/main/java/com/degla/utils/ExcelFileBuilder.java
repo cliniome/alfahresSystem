@@ -1,5 +1,6 @@
 package com.degla.utils;
 
+import com.alfahres.beans.files.FileUploadWizardBean;
 import com.degla.db.models.*;
 import com.degla.system.SystemService;
 import org.apache.commons.lang3.time.DateUtils;
@@ -19,6 +20,8 @@ import java.util.List;
 public class ExcelFileBuilder {
 
 
+
+
     private SystemService systemService;
 
     private boolean watchList;
@@ -33,6 +36,10 @@ public class ExcelFileBuilder {
         this.systemService = service;
         this.watchList = watchList;
     }
+
+
+    //The default Constructor
+    public ExcelFileBuilder(){}
 
 
     private List<Employee> getKeepers()
@@ -98,7 +105,6 @@ public class ExcelFileBuilder {
                 Cell PatientNumber = currentRow.createCell(6);
                 PatientNumber.setCellValue(patientFile.getPatientNumber());
             }
-
 
             return wb;
 
@@ -190,6 +196,81 @@ public class ExcelFileBuilder {
             //build the new available Requests Only
             return buildExcelFile();
         }
+    }
+
+
+    public Workbook createFailedRequests(List<Appointment> appointments) throws Exception
+    {
+        return this.buildFailedRequests(appointments);
+    }
+
+
+    private Workbook buildFailedRequests(List<Appointment> appointments) throws Exception
+    {
+        Workbook wb = new HSSFWorkbook();
+
+        //Create a sheet
+        Sheet failedSheet = wb.createSheet("Failed-Appointments");
+
+        this.addFailedHeaders(failedSheet);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy");
+
+        for(int i = 0 ; i < appointments.size();i++)
+        {
+            Appointment watchRequest = appointments.get(i);
+
+            Row currentRow = failedSheet.createRow(i+1);
+
+            //File Number Cell
+            Cell fileNumberCell = currentRow.createCell(0);
+            fileNumberCell.setCellValue(watchRequest.getFileNumber());
+            //Patient Number Cell
+            Cell patientNumberCell = currentRow.createCell(1);
+            patientNumberCell.setCellValue(watchRequest.getPatientNumber());
+            //Appointment Date
+            Cell dateCell = currentRow.createCell(2);
+            dateCell.setCellValue(formatter.format(watchRequest.getAppointment_Date()));
+
+
+            //Not Entered/No File
+            int noFile = 0;
+            if(watchRequest.getFileCurrentLocation().contains(FileUploadWizardBean.NO_ENTRY_FILE))
+                noFile = 1;
+
+            Cell cabinCell = currentRow.createCell(3);
+            cabinCell.setCellValue(String.valueOf(noFile));
+
+            Cell reasonCell = currentRow.createCell(4);
+            reasonCell.setCellValue(watchRequest.getFailureReason());
+
+        }
+
+        return wb;
+    }
+
+    private void addFailedHeaders(Sheet failedSheet) {
+
+
+        Row headerRow = failedSheet.createRow(0);
+        Cell fileNumber  = headerRow.createCell(0);
+        fileNumber.setCellValue("File Number");
+        Cell patientNumber = headerRow.createCell(1);
+        patientNumber.setCellValue("Patient Number");
+        //Date Object
+        Cell date = headerRow.createCell(2);
+        date.setCellValue("Appointment_Date");
+
+
+        //Not Entered/No File
+
+        Cell notEnteredFile = headerRow.createCell(3);
+        notEnteredFile.setCellValue("NoFile");
+
+        //Failure Reason
+        Cell failedReason = headerRow.createCell(4);
+        failedReason.setCellValue("Reason");
+
     }
 
     private Workbook buildWatchList() {

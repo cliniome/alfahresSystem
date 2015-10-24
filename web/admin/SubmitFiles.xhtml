@@ -46,6 +46,8 @@
                      <p>These Requests failed to be added to the system, Please , Review them carefully</p>
                      <p>You can Click individual Request , Modify the request and then proces it </p>
                      <p:dataTable id="failedrequestsTable" widgetVar="failedrequestsTable"
+                                  paginatorTemplate="{Exporters}    {CurrentPageReport}  {FirstPageLink}
+                         {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                   var="fileRequest" rows="10" value="#{failedRequestsBean.failedRequests}"
                                   paginator="true">
 
@@ -53,6 +55,17 @@
 
                              <b>Failed Requests :<font color="red">(#{failedRequestsBean
                              .failedRequests.size()})</font></b>
+
+                         </f:facet>
+
+
+                         <f:facet name="{Exporters}">
+
+                             <p:commandLink ajax="false">
+                                 <img src="../img/excel.png" alt="img"/>
+                                 <p:fileDownload value="#{failedRequestsBean.excelFile}"
+                                                 contentDisposition="application/vnd.ms-excel"/>
+                             </p:commandLink>
 
                          </f:facet>
 

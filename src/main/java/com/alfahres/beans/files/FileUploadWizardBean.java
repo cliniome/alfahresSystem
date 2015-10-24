@@ -24,6 +24,12 @@ import java.util.regex.Pattern;
  */
 public class FileUploadWizardBean implements Serializable {
 
+
+
+
+
+    public static final String NO_ENTRY_FILE = "Not Entered/No File";
+
     private String patientNumber;
     private String fileNumber;
     private String patientName;
@@ -135,6 +141,14 @@ public class FileUploadWizardBean implements Serializable {
 
                         req.setFileNumber(patientFileNumber);
 
+
+
+                        if(req.getFileCurrentLocation() != null && req.getFileCurrentLocation().trim().toLowerCase().contains(NO_ENTRY_FILE.trim().toLowerCase()))
+                        {
+                            req.setFailureReason(NO_ENTRY_FILE);
+                            getFailedRequests().add(req);
+                            continue;
+                        }
 
                         availableRequests.add(req);
                     }
