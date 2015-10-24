@@ -210,6 +210,9 @@ public class BasicController implements BasicRestfulOperations {
                 //now update the current Patient File with the restful File
                 patientFile.updateWithRestful(file);
 
+                appointment.setActive(false);
+                getSystemService().getAppointmentManager().updateEntity(appointment);
+
                boolean result = this.addHistoryToExistingPatientFile(patientFile,file,emp,appointment);
 
 
