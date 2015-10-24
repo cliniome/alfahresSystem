@@ -16,10 +16,7 @@ import javax.faces.event.ActionEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by snouto on 09/10/15.
@@ -76,11 +73,6 @@ public class ClinicsSlipsBean implements Serializable {
         RequestContext.getCurrentInstance().openDialog("selectSlips",options,null);
     }
 
-
-
-
-
-
     public StreamedContent downloadClinicsSlips()
     {
         try
@@ -92,6 +84,9 @@ public class ClinicsSlipsBean implements Serializable {
 
             if(appointments != null)
             {
+
+                //Sort them in Ascending order
+                Collections.sort(appointments);
                 RequestContext.getCurrentInstance().closeDialog(appointments);
 
                 //begin creating the full path for the document and the outputstream to write the document to
