@@ -35,9 +35,10 @@ public class PrintFilesDAO extends AbstractDAO<PatientFile> {
         try
         {
 
-            String query = " select f from PatientFile f where f.currentStatus.state = :state";
+            String query = " select f from PatientFile f where f.currentStatus.state = :state and f.currentStatus.appointment.inpatient = :inpatient";
             Query currentQuery = getManager().createQuery(query);
             currentQuery.setParameter("state", getSearchSettings().getStatus());
+            currentQuery.setParameter("inpatient",getSearchSettings().isInpatient());
             currentQuery.setFirstResult(first);
             currentQuery.setMaxResults(pageSize);
 
@@ -55,9 +56,10 @@ public class PrintFilesDAO extends AbstractDAO<PatientFile> {
         try
         {
 
-            String query = " select f from PatientFile f where f.currentStatus.state = :state";
+            String query = " select f from PatientFile f where f.currentStatus.state = :state and f.currentStatus.appointment.inpatient = :inpatient";
             Query currentQuery = getManager().createQuery(query);
             currentQuery.setParameter("state", getSearchSettings().getStatus());
+            currentQuery.setParameter("inpatient",getSearchSettings().isInpatient());
             return currentQuery.getResultList();
 
         }catch (Exception s)
@@ -72,13 +74,14 @@ public class PrintFilesDAO extends AbstractDAO<PatientFile> {
     {
         String query = "select f from PatientFile f where f.currentStatus.state=:state " +
                 "and f.currentStatus.appointment.appointment_Date >= :startdate " +
-                "and f.currentStatus.appointment.appointment_Date <= :enddate";
+                "and f.currentStatus.appointment.appointment_Date <= :enddate and f.currentStatus.appointment.inpatient = :inpatient";
         Query currentQuery = getManager().createQuery(query);
         currentQuery.setFirstResult(first);
         currentQuery.setMaxResults(pageSize);
         currentQuery.setParameter("state", getSearchSettings().getStatus());
         currentQuery.setParameter("startdate", AlfahresDateUtils.getStartOfDay(getSearchSettings().getAppointmentDate()));
         currentQuery.setParameter("enddate",AlfahresDateUtils.getEndOfDay(getSearchSettings().getAppointmentDate()));
+        currentQuery.setParameter("inpatient",getSearchSettings().isInpatient());
         return currentQuery.getResultList();
     }
 
@@ -86,11 +89,12 @@ public class PrintFilesDAO extends AbstractDAO<PatientFile> {
     {
         String query = "select f from PatientFile f where f.currentStatus.state=:state " +
                 "and f.currentStatus.appointment.appointment_Date >= :startdate " +
-                "and f.currentStatus.appointment.appointment_Date <= :enddate";
+                "and f.currentStatus.appointment.appointment_Date <= :enddate and f.currentStatus.appointment.inpatient = :inpatient";
         Query currentQuery = getManager().createQuery(query);
         currentQuery.setParameter("state", getSearchSettings().getStatus());
         currentQuery.setParameter("startdate", AlfahresDateUtils.getStartOfDay(getSearchSettings().getAppointmentDate()));
         currentQuery.setParameter("enddate",AlfahresDateUtils.getEndOfDay(getSearchSettings().getAppointmentDate()));
+        currentQuery.setParameter("inpatient",getSearchSettings().isInpatient());
         return currentQuery.getResultList();
     }
 
@@ -99,7 +103,7 @@ public class PrintFilesDAO extends AbstractDAO<PatientFile> {
     {
         String query = "select f from PatientFile f where f.currentStatus.state=:state and " +
                 "f.fileID in  (:fileNumbers) or (f.currentStatus.appointment.appointment_Date >= :start and f.currentStatus.appointment.appointment_Date <= :end" +
-                " and f.currentStatus.state = :state)";
+                " and f.currentStatus.state = :state) and f.currentStatus.appointment.inpatient = :inpatient";
 
         Query currentQuery = getManager().createQuery(query);
         currentQuery.setFirstResult(first);
@@ -108,6 +112,7 @@ public class PrintFilesDAO extends AbstractDAO<PatientFile> {
         currentQuery.setParameter("fileNumbers",getFileNumbers());
         currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(getSearchSettings().getAppointmentDate()));
         currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(getSearchSettings().getAppointmentDate()));
+        currentQuery.setParameter("inpatient",getSearchSettings().isInpatient());
         return currentQuery.getResultList();
     }
 
@@ -115,13 +120,14 @@ public class PrintFilesDAO extends AbstractDAO<PatientFile> {
     {
         String query = "select f from PatientFile f where f.currentStatus.state=:state and " +
                 "f.fileID in  (:fileNumbers) or (f.currentStatus.appointment.appointment_Date >= :start and f.currentStatus.appointment.appointment_Date <= :end" +
-                " and f.currentStatus.state = :state)";
+                " and f.currentStatus.state = :state) and f.currentStatus.appointment.inpatient = :inpatient";
 
         Query currentQuery = getManager().createQuery(query);
         currentQuery.setParameter("state", getSearchSettings().getStatus());
         currentQuery.setParameter("fileNumbers",getFileNumbers());
         currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(getSearchSettings().getAppointmentDate()));
         currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(getSearchSettings().getAppointmentDate()));
+        currentQuery.setParameter("inpatient",getSearchSettings().isInpatient());
         return currentQuery.getResultList();
     }
 

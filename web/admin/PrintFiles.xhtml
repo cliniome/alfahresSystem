@@ -18,6 +18,7 @@
     <f:metadata>
         <f:viewParam name="type" value="#{viewstats.displayType}" converter="javax.faces.Integer"/>
         <f:viewParam name="status" value="#{viewHelper.currentState}" />
+        <f:viewParam name="inpatient" value="#{viewHelper.inpatient}"/>
         <f:viewAction action="#{viewstats.onLoadParameters}"/>
     </f:metadata>
 
@@ -72,6 +73,11 @@
                                   <p:selectBooleanButton onLabel="YES" offLabel="NO" value="#{viewstats.viewHelper.inWatchList}"/>
 
                               </h:panelGrid>
+
+
+                              <p:outputLabel value="InPatient Only"/>
+
+                              <p:selectBooleanButton onLabel="Yes" offLabel="NO" value="#{viewstats.viewHelper.inpatient}"/>
 
 
 

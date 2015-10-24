@@ -130,10 +130,21 @@ public class ViewStatisticsBean implements Serializable {
             String type = parameters.get("type");
             String status = parameters.get("status");
 
+            String inpatient = parameters.get("inpatient");
+
             if(type != null && status != null)
             {
                 this.setDisplayType(Integer.parseInt(type));
                 getViewHelper().setCurrentState(status);
+            }
+
+            if(inpatient == null)
+            {
+                getViewHelper().setInpatient(false);
+            }else
+            {
+                boolean inPatientResult = (Integer.parseInt(inpatient)) == 1 ? true :false;
+                getViewHelper().setInpatient(inPatientResult);
             }
 
         }
@@ -168,6 +179,7 @@ public class ViewStatisticsBean implements Serializable {
             searchSettings.setType(this.getDisplayType());
             searchSettings.setWatchlist(getViewHelper().isInWatchList());
             getViewHelper().setPrintSearchSettings(searchSettings);
+            searchSettings.setInpatient(getViewHelper().isInpatient());
 
 
            /* systemService.getFilesService().setQueryState(FileStates.valueOf(getViewHelper().getCurrentState()));

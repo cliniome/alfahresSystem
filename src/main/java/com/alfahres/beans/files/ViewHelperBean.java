@@ -24,6 +24,8 @@ public class ViewHelperBean implements Serializable {
 
     private boolean inWatchList;
 
+    private boolean inpatient;
+
 
     private SearchSettings printSearchSettings;
 
@@ -84,5 +86,13 @@ public class ViewHelperBean implements Serializable {
 
     public void setSecondState(String secondState) {
         this.secondState = secondState;
+    }
+
+    public boolean isInpatient() {
+        return inpatient;
+    }
+
+    public void setInpatient(boolean inpatient) {
+        this.inpatient = inpatient;
     }
 }

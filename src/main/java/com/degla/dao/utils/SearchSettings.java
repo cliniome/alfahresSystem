@@ -17,7 +17,7 @@ public class SearchSettings {
     private FileStates status = FileStates.MISSING;
     private Date appointmentDate;
     private boolean watchlist;
-
+    private boolean inpatient;
     public int getType() {
         return type;
     }
@@ -48,5 +48,13 @@ public class SearchSettings {
 
     public void setWatchlist(boolean watchlist) {
         this.watchlist = watchlist;
+    }
+
+    public boolean isInpatient() {
+        return inpatient;
+    }
+
+    public void setInpatient(boolean inpatient) {
+        this.inpatient = inpatient;
     }
 }

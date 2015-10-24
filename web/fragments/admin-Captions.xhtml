@@ -55,7 +55,7 @@
                     </div>
                     <div class="span3">
                         <h3>Checked Out(In-Patient)</h3>
-                        <p><a href="PrintFiles.xhtml?type=0&amp;status=CHECKED_OUT" class="badge badge-important" style="color:white">#{dashboardBean.selectTotalCheckedOutFiles(true)}</a></p>
+                        <p><a href="PrintFiles.xhtml?type=0&amp;status=CHECKED_OUT&amp;inpatient=1" class="badge badge-important" style="color:white">#{dashboardBean.selectTotalCheckedOutFiles(true)}</a></p>
                     </div>
                     <div class="span3">
                         <h3>At Coordinator</h3>
@@ -252,6 +252,14 @@
                 <h3>Analysis Coordinator</h3>
                 <p><a href="PrintFiles.xhtml?type=0&amp;status=ANALYSIS_COORDINATOR" class="badge badge-important" style="color:white">#{dashboardBean.getFilesForState('ANALYSIS_COORDINATOR')}
                 </a></p>
+            </div>
+        </div>
+
+
+        <div class="row-fluid">
+            <div class="span3">
+                <h3>Checked Out(In-Patient)</h3>
+                <p><a href="PrintFiles.xhtml?type=0&amp;status=CHECKED_OUT&amp;inpatient=1" class="badge badge-important" style="color:white">#{dashboardBean.selectTotalCheckedOutFiles(true)}</a></p>
             </div>
         </div>
 
