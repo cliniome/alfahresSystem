@@ -58,7 +58,7 @@ public class ClinicsSlipCreator implements Serializable {
                     paragraph.setIndentationRight(50);
                     paragraph.setSpacingBefore(50);
                     paragraph.setFont(new Font(getFontFamily(), getFontSize()));
-                    paragraph.add(String.format("%s(%s)",clinicCode,String.valueOf(getNumberOfAppointmentsForClinicCode(clinicCode,appointments))));
+                    paragraph.add(String.format("%s(%s)",clinicCode,String.valueOf(clinicsNumber)));
 
                     //add the paragraph to the current page and create a new page
                     slip.add(paragraph);

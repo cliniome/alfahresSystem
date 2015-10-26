@@ -73,6 +73,8 @@ public class FailedRequestsBean implements Serializable {
             FileOutputStream outputStream = new FileOutputStream(fullPath);
             wb.write(outputStream);
             outputStream.flush();
+            WebUtils.addMessage("Failed Requests have been deleted Successfully");
+
             outputStream.close();
             //now read that file
             FileInputStream inputStream = new FileInputStream(fullPath);
@@ -94,8 +96,6 @@ public class FailedRequestsBean implements Serializable {
 
             this.setFailedRequests(new ArrayList<Appointment>());
 
-            WebUtils.addMessage("Failed Requests have been deleted Successfully");
-
         }catch (Exception s)
         {
             s.printStackTrace();
@@ -111,10 +111,13 @@ public class FailedRequestsBean implements Serializable {
 
 
     public List<Appointment> getFailedRequests() {
+
+        if(this.failedRequests == null) this.failedRequests = new ArrayList<Appointment>();
+
         return failedRequests;
     }
 
-    public void setFailedRequests(List<Appointment> failedRequests) {
-        this.failedRequests = failedRequests;
+    public void setFailedRequests(List<Appointment> failedRequests){
+       this.failedRequests = failedRequests;
     }
 }

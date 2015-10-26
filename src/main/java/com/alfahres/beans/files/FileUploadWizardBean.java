@@ -44,8 +44,6 @@ public class FileUploadWizardBean implements Serializable {
     private Wizard wizard;
     private String uploadedFile;
     private List<Appointment> failedRequests;
-
-
     private FailedRequestsBean failedRequestsBean;
 
 
@@ -106,13 +104,13 @@ public class FileUploadWizardBean implements Serializable {
 
                         if(req.getFileNumber() == null || req.getFileNumber().length() <= 0)
                         {
-                            getFailedRequests().add(req);
+                            getFailedRequestsBean().getFailedRequests().add(req);
                             continue;
                         }
 
                         if(req.getPatientNumber() == null || req.getPatientNumber().length() <=0)
                         {
-                            getFailedRequests().add(req);
+                            getFailedRequestsBean().getFailedRequests().add(req);
                             continue;
                         }
                         String regex = "[0-9]+";
@@ -120,7 +118,7 @@ public class FileUploadWizardBean implements Serializable {
                         if(!pattern.matcher(req.getFileNumber()).matches())
                         {
                             //add the current request to the failed requests
-                            getFailedRequests().add(req);
+                            getFailedRequestsBean().getFailedRequests().add(req);
                             continue;
                         }
 
@@ -132,7 +130,7 @@ public class FileUploadWizardBean implements Serializable {
                         if(!barcodeUtils.validateLength())
                         {
                             //that means the current request is not a valid request
-                            getFailedRequests().add(req);
+                            getFailedRequestsBean().getFailedRequests().add(req);
                             continue;
                         }
 
@@ -146,21 +144,25 @@ public class FileUploadWizardBean implements Serializable {
                         if(req.getFileCurrentLocation() != null && req.getFileCurrentLocation().trim().toLowerCase().contains(NO_ENTRY_FILE.trim().toLowerCase()))
                         {
                             req.setFailureReason(NO_ENTRY_FILE);
-                            getFailedRequests().add(req);
+                            failedRequestsBean.getFailedRequests().add(req);
                             continue;
                         }
 
                         availableRequests.add(req);
                     }
-
                     //set the failed Requests
-                    failedRequestsBean.setFailedRequests(getFailedRequests());
+                    //failedRequestsBean.setFailedRequests(getFailedRequests());
 
 
 
                 }
 
+
+
             }
+
+
+
 
             //Before routing the Requests
             //Sort the requests based on appointment time in ascending order
@@ -179,7 +181,7 @@ public class FileUploadWizardBean implements Serializable {
                 if (appointmentExists)
                 {
                     current.setFailureReason("Duplicate Entry - Appointment has been added before");
-                    getFailedRequests().add(current);
+                    getFailedRequestsBean().getFailedRequests().add(current);
                     continue;
                 }
                 /*
@@ -196,7 +198,7 @@ public class FileUploadWizardBean implements Serializable {
                 if(todayDate.compareTo(current.getAppointment_Date()) > 1)
                 {
                     current.setFailureReason("The request contains an old appointment date");
-                    getFailedRequests().add(current);
+                    getFailedRequestsBean().getFailedRequests().add(current);
                     continue;
                 }
 
@@ -289,6 +291,7 @@ public class FileUploadWizardBean implements Serializable {
 
     public void onFileUploadListener(FileUploadEvent event)
     {
+
         List<Employee> activeKeepers = systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString()
                 ,true);
 
@@ -323,9 +326,9 @@ public class FileUploadWizardBean implements Serializable {
             }
 
             //move to the next step in the wizard
-          // getWizard().setStep("mapping");
+            // getWizard().setStep("mapping");
 
-           onConfirmAndSubmit();
+            onConfirmAndSubmit();
 
 
 
