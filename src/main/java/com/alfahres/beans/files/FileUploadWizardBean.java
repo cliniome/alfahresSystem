@@ -156,25 +156,37 @@ public class FileUploadWizardBean implements Serializable {
 
 
                 }
-
-
-
             }
-
-
-
-
             //Before routing the Requests
             //Sort the requests based on appointment time in ascending order
             Collections.sort(availableRequests);
-
-
-            List<Appointment> temporaryList = new ArrayList<Appointment>();
+            boolean result = true;
+            //now route them to different employees
+            systemService.getFileRouter().routeFiles(availableRequests);
 
             for(Appointment current:availableRequests)
             {
-                //check for the current request , did we see it before in any file history or not .
+                try
+                {
+                    String clinicCode = current.getClinicCode();
+                    if(clinicCode != null)
+                        clinicCode = clinicCode.trim();
 
+                    boolean exists = systemService.getClinicManager().clinicExists(clinicCode);
+
+                    if(!exists)
+                    {
+                        //create a new clinic for it
+                        Clinic newClinic = new Clinic(current.getClinicName(),clinicCode);
+                        //add the clinic tomessage the data base
+                        systemService.getClinicManager().addEntity(newClinic);
+                    }
+                }catch (Exception s)
+                {
+                    System.out.println("During Saving the Clinic " + current.getFileNumber());
+                    s.printStackTrace();
+                }
+                //check for the current request , did we see it before in any file history or not.
                 //Boolean existsInHistory = systemService.getFileHistoryDAO().appointmentExistsInHistory(current);
                 boolean appointmentExists = systemService.getAppointmentManager().appointmentExistsBefore(current);
 
@@ -183,100 +195,29 @@ public class FileUploadWizardBean implements Serializable {
                     current.setFailureReason("Duplicate Entry - Appointment has been added before");
                     getFailedRequestsBean().getFailedRequests().add(current);
                     continue;
-                }
-                /*
-                  1. Check for the exactness of the current request , if it is an exact match , don't add it at all to the collection and just continue
-                  2. if it is not exact match , that means it is partial matching , so it might be a transfer
-                  3. check for the exactness of the transfer , if it is not an exact transfer so add it to the transfer collection if it does not exist otherwise,continue
-
-                 */
-
-                Date todayDate = new Date();
-
-                todayDate = AlfahresDateUtils.getEndOfDay(todayDate);
-
-                if(todayDate.compareTo(current.getAppointment_Date()) > 1)
-                {
-                    current.setFailureReason("The request contains an old appointment date");
-                    getFailedRequestsBean().getFailedRequests().add(current);
-                    continue;
-                }
-
-
-                //add the current curated appointment into the array list
-                temporaryList.add(current);
-
-            }
-
-
-            //now route them to different employees
-            systemService.getFileRouter().routeFiles(temporaryList);
-
-            if(temporaryList != null && temporaryList.size() > 0)
-            {
-                boolean result = true;
-                //insert all requests one by one
-                for(Appointment currentRequest : temporaryList)
+                }else
                 {
                     try
                     {
-                        //Take the clinic and try to add it if it is not exist
-                        try
-                        {
-                            String clinicCode = currentRequest.getClinicCode();
-                            if(clinicCode != null)
-                                clinicCode = clinicCode.trim();
-
-                            boolean exists = systemService.getClinicManager().clinicExists(clinicCode);
-
-                            if(!exists)
-                            {
-                                //create a new clinic for it
-                                Clinic newClinic = new Clinic(currentRequest.getClinicName(),clinicCode);
-
-                                //add the clinic tomessage the data base
-                                systemService.getClinicManager().addEntity(newClinic);
-
-                            }
-
-                        }catch (Exception s)
-                        {
-                            System.out.println("During Saving the Clinic " + currentRequest.getFileNumber());
-                            s.printStackTrace();
-                        }
-
-                       try
-                       {
-                           boolean stepResult = systemService.getAppointmentManager().addEntity(currentRequest);
-                           result = result && stepResult;
-
-                       }catch (Exception s)
-                       {
-                           System.out.print("During saving the Request " + currentRequest.getFileNumber());
-                           s.printStackTrace();
-                       }
+                        boolean stepResult = systemService.getAppointmentManager().addEntity(current);
+                        result = result && stepResult;
 
                     }catch (Exception s)
                     {
-                        System.out.println("Problem Saving Request " + currentRequest.getFileNumber());
+                        System.out.print("During saving the Request " + current.getFileNumber());
                         s.printStackTrace();
-                        continue;
                     }
+
                 }
-                if(result)
-                {
-                    message = "Requests have been submitted Successfully";
-                }
+            }
 
 
-            }else
+            if(result)
             {
-                //WebUtils.addMessage("There are no New Requests or transfers in the Database");
+                message = "Requests have been submitted Successfully";
             }
 
             WebUtils.addMessage(message);
-
-
 
         }catch(Exception s)
         {
