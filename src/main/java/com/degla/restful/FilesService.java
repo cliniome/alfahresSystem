@@ -700,6 +700,66 @@ public class FilesService extends BasicRestful {
         }
     }
 
+    /**
+     * This function will be called by coordinator to collect files in his expandable ListView
+     * @return
+     */
+    @Path("/collectScreen")
+    @GET
+    @Produces("application/json")
+    public Response newCollectFiles(@QueryParam("serverTimeStamp") long serverTimeStamp)
+    {
+        try
+        {
+            Employee emp = getAccount();
+
+            if(emp == null ||
+                    !emp.getRole().getName()
+                            .equalsIgnoreCase(RoleTypes.COORDINATOR.toString()))
+                return Response.status(UNAUTHORIZED).build();
+
+
+            if(systemService == null)
+                systemService = SpringSystemBridge.services();
+
+
+
+            List<PatientFile> availableFiles = new ArrayList<PatientFile>();
+
+            if(serverTimeStamp == -1)
+            {
+
+                availableFiles = systemService.getFilesService().collectFiles(emp);
+
+            }else
+            {
+                availableFiles = systemService.getFilesService().collectFiles(emp,new Date(serverTimeStamp));
+            }
+
+            List<RestfulFile> jsonFiles = new ArrayList<RestfulFile>();
+
+            for(PatientFile file : availableFiles)
+            {
+                boolean hasMultipleClinics = systemService.getAppointmentManager().hasTransfer(file.getFileID(),
+                        file.getCurrentStatus().getAppointment().getAppointment_Date());
+                RestfulFile restFile = file.toRestfulFile();
+                restFile.setMultipleClinics(hasMultipleClinics);
+                jsonFiles.add(restFile);
+            }
+            //Create a sync Batch with the restful Files
+            SyncBatch batch = new SyncBatch(jsonFiles);
+            batch.setCreatedAt(new Date().getTime());
+            batch.setState(true);
+            return Response.ok(batch).build();
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return Response.status(UNAUTHORIZED).build();
+
+        }
+    }
+
 
     /**
      * This function will be called by coordinator to collect files in his expandable ListView
