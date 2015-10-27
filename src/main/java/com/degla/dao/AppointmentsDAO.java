@@ -35,6 +35,18 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
         return currentQuery.getResultList();
     }
 
+
+    public List<Object[]> getAppointmentsMetaData(Date start,Date end)
+    {
+        String queryString = "select distinct r.clinicCode ,count(distinct r.fileNumber) from Appointment r where r.appointment_Date >= :start and r.appointment_Date <= :end and r.active = true " +
+                " group by r.clinicCode";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(start));
+        currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(end));
+
+        return currentQuery.getResultList();
+    }
+
     public List<Appointment> getAppointmentsForDateRange(Date start,Date end)
     {
         /*

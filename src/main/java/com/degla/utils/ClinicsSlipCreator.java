@@ -15,10 +15,79 @@ import java.util.List;
 public class ClinicsSlipCreator implements Serializable {
 
 
-    private int fontSize = 100;
+    private int fontSize = 70;
     private Font.FontFamily fontFamily = Font.FontFamily.HELVETICA;
 
     private List<String> writtenClinics = new ArrayList<String>();
+
+
+    public Document getClinicsSlipFromMetaData(List<Object[]> metadata,OutputStream outputStream)
+    {
+        Document slip = new Document(new Rectangle(792,612));
+        slip.setMargins(36, 72, 350, 180);
+        slip.setPageSize(PageSize.A4);
+
+        try
+        {
+            PdfWriter writer = PdfWriter.getInstance(slip,outputStream);
+
+
+
+            if(metadata != null && metadata.size() > 0)
+            {
+                slip.open();
+
+                for(Object[] row : metadata)
+                {
+                    String clinicCode = String.valueOf(row[0]);
+                    int clinicsNumber  = 0;
+                    String clinics_Number_String = String.valueOf(row[1]);
+
+                    if(clinics_Number_String != null && !clinics_Number_String.isEmpty())
+                    {
+                        clinicsNumber = Integer.parseInt(clinics_Number_String);
+                    }
+
+                    if(clinicsNumber <= 0 ) continue;
+
+                    if(writtenClinics.contains(clinicCode)) continue;
+                    else writtenClinics.add(clinicCode);
+
+                    Paragraph paragraph = new Paragraph();
+                    paragraph.setAlignment(Element.ALIGN_CENTER);
+                    paragraph.setPaddingTop(50);
+                    paragraph.setIndentationLeft(50);
+                    paragraph.setIndentationRight(50);
+                    paragraph.setSpacingBefore(50);
+                    paragraph.setFont(new Font(getFontFamily(), getFontSize()));
+                    paragraph.add(String.format("%s(%s)",clinicCode,String.valueOf(clinicsNumber)));
+
+                    //add the paragraph to the current page and create a new page
+                    slip.add(paragraph);
+                    slip.newPage();
+
+
+                }
+
+            }else throw new Exception("Clinic Slips Meta-Data can't be null");
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+
+        finally {
+
+            //close the document
+
+            if(slip.isOpen())
+                slip.close();
+
+
+            return slip;
+        }
+    }
 
     public Document getClinicsSlip(List<Appointment> appointments,OutputStream outputStream)
     {

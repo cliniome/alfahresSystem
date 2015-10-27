@@ -80,13 +80,13 @@ public class ClinicsSlipsBean implements Serializable {
             if(systemService == null) systemService = SpringSystemBridge.services();
 
 
-            List<Appointment> appointments = systemService.getAppointmentManager().getAppointmentsForDateRange(getFromDate(),getToDate());
+            List<Object[]> appointments = systemService.getAppointmentManager().getAppointmentsMetaData(getFromDate(),getToDate());
 
             if(appointments != null)
             {
 
                 //Sort them in Ascending order
-                Collections.sort(appointments);
+                //Collections.sort(appointments);
                 RequestContext.getCurrentInstance().closeDialog(appointments);
 
                 //begin creating the full path for the document and the outputstream to write the document to
@@ -96,7 +96,7 @@ public class ClinicsSlipsBean implements Serializable {
 
                 //Get the document
                 ClinicsSlipCreator slipCreator = new ClinicsSlipCreator();
-                Document pdfSlips = slipCreator.getClinicsSlip(appointments, outputStream);
+                Document pdfSlips = slipCreator.getClinicsSlipFromMetaData(appointments, outputStream);
 
                 //now access the file for download
                 StreamedContent streamedContent = new DefaultStreamedContent(new FileInputStream(fullPath));
