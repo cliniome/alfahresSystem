@@ -51,6 +51,16 @@ public class PrintFilesDAO extends AbstractDAO<PatientFile> {
         }
     }
 
+    private long getPaginatedAllFilesCount(){
+
+        String query = " select count(f) from PatientFile f where f.currentStatus.state = :state and f.currentStatus.appointment.inpatient = :inpatient";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state", getSearchSettings().getStatus());
+        currentQuery.setParameter("inpatient",getSearchSettings().isInpatient());
+
+        return (Long)currentQuery.getSingleResult();
+    }
+
     private List<PatientFile> getPaginatedAllFilesWithoutPagination()
     {
         try
@@ -69,6 +79,17 @@ public class PrintFilesDAO extends AbstractDAO<PatientFile> {
         }
     }
 
+    private long getPaginatedAllFilesWithoutPaginationCount(){
+
+        String query = " select count(f) from PatientFile f where f.currentStatus.state = :state and f.currentStatus.appointment.inpatient = :inpatient";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state", getSearchSettings().getStatus());
+        currentQuery.setParameter("inpatient",getSearchSettings().isInpatient());
+
+        return (Long)currentQuery.getSingleResult();
+
+    }
+
 
     private List<PatientFile> getPaginatedFilesByAppointmentDate(int first , int pageSize)
     {
@@ -83,6 +104,20 @@ public class PrintFilesDAO extends AbstractDAO<PatientFile> {
         currentQuery.setParameter("enddate",AlfahresDateUtils.getEndOfDay(getSearchSettings().getAppointmentDate()));
         currentQuery.setParameter("inpatient",getSearchSettings().isInpatient());
         return currentQuery.getResultList();
+    }
+
+    private long getPaginatedFilesByAppointmentDateCount(){
+
+        String query = "select count(f) from PatientFile f where f.currentStatus.state=:state " +
+                "and f.currentStatus.appointment.appointment_Date >= :startdate " +
+                "and f.currentStatus.appointment.appointment_Date <= :enddate and f.currentStatus.appointment.inpatient = :inpatient";
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state", getSearchSettings().getStatus());
+        currentQuery.setParameter("startdate", AlfahresDateUtils.getStartOfDay(getSearchSettings().getAppointmentDate()));
+        currentQuery.setParameter("enddate",AlfahresDateUtils.getEndOfDay(getSearchSettings().getAppointmentDate()));
+        currentQuery.setParameter("inpatient",getSearchSettings().isInpatient());
+
+        return (Long)currentQuery.getSingleResult();
     }
 
     private List<PatientFile> getPaginatedFilesByAppointmentDateWithoutPagination()
@@ -114,6 +149,22 @@ public class PrintFilesDAO extends AbstractDAO<PatientFile> {
         currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(getSearchSettings().getAppointmentDate()));
         currentQuery.setParameter("inpatient",getSearchSettings().isInpatient());
         return currentQuery.getResultList();
+    }
+
+    private long getPaginatedFilesByAppointmentDateAndWatchListCount(){
+
+        String query = "select count(f) from PatientFile f where f.currentStatus.state=:state and " +
+                "f.fileID in  (:fileNumbers) or (f.currentStatus.appointment.appointment_Date >= :start and f.currentStatus.appointment.appointment_Date <= :end" +
+                " and f.currentStatus.state = :state) and f.currentStatus.appointment.inpatient = :inpatient";
+
+        Query currentQuery = getManager().createQuery(query);
+        currentQuery.setParameter("state", getSearchSettings().getStatus());
+        currentQuery.setParameter("fileNumbers",getFileNumbers());
+        currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(getSearchSettings().getAppointmentDate()));
+        currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(getSearchSettings().getAppointmentDate()));
+        currentQuery.setParameter("inpatient",getSearchSettings().isInpatient());
+
+        return (Long)currentQuery.getSingleResult();
     }
 
     private List<PatientFile> getPaginatedFilesByAppointmentDateAndWatchListWithoutPagination()
@@ -179,6 +230,43 @@ public class PrintFilesDAO extends AbstractDAO<PatientFile> {
 
     }
 
+
+    @Override
+    public long getMaxResults() {
+
+        try
+        {
+            if(getSearchSettings() == null) throw new Exception("Search Settings can't be null");
+
+            switch (getSearchSettings().getType())
+            {
+                case DISPLAY_ALL:
+                {
+                    return this.getPaginatedAllFilesCount();
+                }
+                case DISPLAY_BY_APPOINTMENT:
+                {
+                    if(getSearchSettings().isWatchlist())
+                    {
+                        return this.getPaginatedFilesByAppointmentDateAndWatchListCount();
+                    }else
+                    {
+                        return this.getPaginatedFilesByAppointmentDateCount();
+                    }
+                }
+
+                default:
+                    return 0L;
+
+            }
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            return 0L;
+        }
+
+    }
 
     public List<PatientFile> getPaginatedWrappedData()
     {

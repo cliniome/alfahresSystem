@@ -320,7 +320,29 @@ public class Appointment implements Serializable , AnnotatingModel , Comparable<
 
     }
 
+    @Override
+    public String toString() {
 
+        return this.getFileNumber();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return this.getFileNumber().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if(obj != null && obj instanceof Appointment)
+        {
+
+            return ((Appointment)obj).getFileNumber().equals(this.getFileNumber());
+        }
+
+        return false;
+    }
 
     public RestfulRequest toRestfulRequest()
     {

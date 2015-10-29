@@ -49,6 +49,7 @@ public class LoginService {
 
 
 
+
             if(currentAuthentication.isAuthenticated())
             {
                 DashboardBean dashboard = (DashboardBean)JSFUtils.getAnyBeanByName("dashboardBean", DashboardBean.class);

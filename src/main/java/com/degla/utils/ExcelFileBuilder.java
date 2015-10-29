@@ -9,10 +9,7 @@ import org.apache.poi.ss.usermodel.*;
 import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by snouto on 13/07/15.
@@ -280,7 +277,7 @@ public class ExcelFileBuilder {
             Workbook wb = new HSSFWorkbook();
 
             Sheet workSheet = wb.createSheet("WatchList");
-            this.addHeaders(workSheet);
+            this.addWatchListHeaders(workSheet);
 
             List<Appointment> watchListRequests = systemService.getAppointmentManager().getAllWatchListRequests();
 
@@ -309,8 +306,14 @@ public class ExcelFileBuilder {
 
             SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy");
 
+            List<Appointment> tempAppointments = new ArrayList<Appointment>();
+
             for(int i = 0 ; i < watchListRequests.size();i++)
             {
+
+                if(tempAppointments.contains(watchListRequests.get(i)))continue;
+                else tempAppointments.add(watchListRequests.get(i));
+
                 Appointment watchRequest = watchListRequests.get(i);
 
                 Row currentRow = workSheet.createRow(i+1);
@@ -331,6 +334,18 @@ public class ExcelFileBuilder {
 
                 Cell cabinCell = currentRow.createCell(3);
                 cabinCell.setCellValue(barcodeUtils.getCabinID());
+
+                PatientFile currentPatientFiles = systemService.getFilesService().getFileWithNumber(watchRequest.getFileNumber());
+
+                String state = "N/A";
+
+                if(currentPatientFiles != null)
+                    state = currentPatientFiles.getCurrentStatus().getState().getReadableState();
+
+
+                Cell stateCell = currentRow.createCell(4);
+                stateCell.setCellValue(state);
+
 
 
 
@@ -397,8 +412,16 @@ public class ExcelFileBuilder {
 
                 SimpleDateFormat formatter = new SimpleDateFormat("d-MMM-yy");
 
+                List<Appointment> tempAppointments = new ArrayList<Appointment>();
+
                 for(int i =0 ; i < assignedRequests.size();i++)
                 {
+
+                    if(tempAppointments.contains(assignedRequests.get(i)))
+                        continue;
+                    else tempAppointments.add(assignedRequests.get(i));
+
+
                     Appointment req = assignedRequests.get(i);
 
                     //Check to see if that request exists in the patient Files , if yes , that means it was built before
@@ -425,6 +448,8 @@ public class ExcelFileBuilder {
 
                     Cell cabinCell = currentRow.createCell(3);
                     cabinCell.setCellValue(barcodeUtils.getCabinID());
+
+
 
                 }
 
@@ -458,6 +483,33 @@ public class ExcelFileBuilder {
 
             Cell cabin = headerRow.createCell(3);
             cabin.setCellValue("Cabin");
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+    }
+
+
+    private void addWatchListHeaders(Sheet currentSheet)
+    {
+        try
+        {
+            Row headerRow = currentSheet.createRow(0);
+            Cell fileNumber  =headerRow.createCell(0);
+            fileNumber.setCellValue("File Number");
+            Cell patientNumber = headerRow.createCell(1);
+            patientNumber.setCellValue("Patient Number");
+
+            //Date Object
+            Cell date = headerRow.createCell(2);
+            date.setCellValue("Appointment_Date");
+
+            Cell cabin = headerRow.createCell(3);
+            cabin.setCellValue("Cabin");
+
+            Cell state = headerRow.createCell(4);
+            state.setCellValue("State");
 
         }catch (Exception s)
         {

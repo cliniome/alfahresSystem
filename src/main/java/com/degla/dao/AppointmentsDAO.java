@@ -109,17 +109,17 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
     }
 
 
-    public List<Appointment> getTransfersFor(String fileNumber)
+    public List<Appointment> getTransfersFor(String fileNumber,Date appointmentDate)
     {
         try
         {
             String queryString = "select app from Appointment app where app.fileNumber = :number and app.appointment_Date >= :startdate and " +
-                    "app.appointment_Date <=:enddate and app.active = true";
+                    "app.appointment_Date <= :enddate and app.active = true";
 
             Query currentQuery = getManager().createQuery(queryString);
 
-            Date startOfDay = AlfahresDateUtils.getStartOfDay(new Date());
-            Date endofDay = AlfahresDateUtils.getEndOfDay(new Date());
+            Date startOfDay = AlfahresDateUtils.getStartOfDay(appointmentDate);
+            Date endofDay = AlfahresDateUtils.getEndOfDay(appointmentDate);
 
             currentQuery.setParameter("number",fileNumber);
             currentQuery.setParameter("startdate",startOfDay);
@@ -139,7 +139,7 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
         try
         {
 
-            String queryString = "select r from Appointment r where r.active=true and r.assignedTo.userName=:username and " +
+            String queryString = "select distinct(r) from Appointment r where r.active=true and r.assignedTo.userName=:username and " +
                     "r.assignedTo.active=:state and r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state != :filestate)";
 
             Query currentQuery = getManager().createQuery(queryString);
@@ -186,8 +186,8 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
         try
         {
             String queryString = "select r from Appointment r where r.active = true and " +
-                    " r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate " +
-                    " and p.fileID = r.fileNumber)";
+                    " r.fileNumber  not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate and " +
+                    "p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber)";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
             return currentQuery.getResultList();

@@ -65,10 +65,19 @@ public class FilesService extends BasicRestful {
 
 
             //List<Transfer> transfers = systemService.getTransferManager().getTransfers(fileNumber);
-            List<Appointment> transfers = systemService.getAppointmentManager().getTransfersFor(fileNumber);
+            PatientFile file = systemService.getFilesService().getFileWithNumber(fileNumber);
+
+            if(file == null)
+                return Response.ok(NOT_FOUND).build();
+
+            List<Appointment> transfers = systemService.getAppointmentManager().getTransfersFor(fileNumber,file.getCurrentStatus()
+                    .getAppointment().getAppointment_Date());
+
 
             if(transfers == null || transfers.size() <= 0 )
-                return Response.status(NOT_FOUND).build();
+            {
+                return Response.ok(NOT_FOUND).build();
+            }
 
             //sort them according to the appointment time
             Collections.sort(transfers);

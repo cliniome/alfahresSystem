@@ -97,6 +97,9 @@ public class ViewStatisticsBean implements Serializable {
             getViewHelper().setAppointmentDate(null);
             getViewHelper().setInWatchList(false);
             getViewHelper().setCurrentState(null);
+            getViewHelper().setPrintSearchSettings(null);
+            systemService.getPrintFilesDAO().setSearchSettings(null);
+            files = new GenericLazyDataModel<PatientFile>(systemService.getPrintFilesDAO());
         }
 
 
@@ -150,7 +153,7 @@ public class ViewStatisticsBean implements Serializable {
         }
 
         //Do the search again
-        onSearch(null);
+        onLoadParams(null);
         return "";
     }
 
@@ -158,6 +161,53 @@ public class ViewStatisticsBean implements Serializable {
 
         getViewHelper().setAppointmentDate(null);
         getViewHelper().setInWatchList(false);
+    }
+
+
+    public void onLoadParams(ActionEvent event)
+    {
+
+        try
+        {
+            if(systemService == null)
+                systemService = SpringSystemBridge.services();
+
+            SearchSettings searchSettings = new SearchSettings();
+            searchSettings.setAppointmentDate(getViewHelper().getAppointmentDate());
+
+            if(getDisplayType() == DISPLAY_ALL)
+                searchSettings.setStatus(FileStates.valueOf(getViewHelper().getCurrentState()));
+            else
+                searchSettings.setStatus(FileStates.valueOf(getViewHelper().getSecondState()));
+
+            searchSettings.setType(this.getDisplayType());
+            searchSettings.setWatchlist(getViewHelper().isInWatchList());
+            getViewHelper().setPrintSearchSettings(searchSettings);
+            searchSettings.setInpatient(getViewHelper().isInpatient());
+
+
+           /* systemService.getFilesService().setQueryState(FileStates.valueOf(getViewHelper().getCurrentState()));
+            systemService.getFilesService().setAppointmentDate(getViewHelper().getAppointmentDate());
+            systemService.getFilesService().setInWatchList(getViewHelper().isInWatchList());
+            systemService.getFilesService().setAvailableAppointments(systemService.getAppointmentManager().getAppointmentsForDate(getViewHelper().getAppointmentDate()));*/
+
+            systemService.getPrintFilesDAO().setSearchSettings(searchSettings);
+
+            if(searchSettings.isWatchlist())
+                systemService.getPrintFilesDAO().setAvailableAppointments(systemService.getAppointmentManager().getAppointmentsForDate(getViewHelper().getAppointmentDate()));
+
+
+
+            GenericLazyDataModel<PatientFile> filterableModel = new GenericLazyDataModel<PatientFile>(systemService.getPrintFilesDAO());
+            this.setFiles(filterableModel);
+
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+        }
+
     }
 
 
@@ -195,7 +245,7 @@ public class ViewStatisticsBean implements Serializable {
 
 
             GenericLazyDataModel<PatientFile> filterableModel = new GenericLazyDataModel<PatientFile>(systemService.getPrintFilesDAO());
-            filterableModel.setFilterable(true);
+
             this.setFiles(filterableModel);
 
 

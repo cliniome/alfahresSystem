@@ -11,6 +11,7 @@ import org.apache.commons.lang3.time.DateUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -108,11 +109,18 @@ public class BasicController implements BasicRestfulOperations {
 
             List<Appointment> appointments = getSystemService().getAppointmentManager().selectAppointmentsByDate(username, chosenDate);
 
+            Collections.sort(appointments);
+
+            List<Appointment> tempAppointments = new ArrayList<Appointment>();
+
             if (appointments != null) {
 
 
                 for (Appointment current : appointments) {
 
+                    if(tempAppointments.contains(current))
+                        continue;
+                    else tempAppointments.add(current);
 
                     RestfulRequest request = current.toRestfulRequest();
 
@@ -272,7 +280,8 @@ public class BasicController implements BasicRestfulOperations {
                 this.addNewHistory(file,patientFile,emp,appointment);
 
                 //check if that file has multiple appointments today
-                List<Appointment> todayAppointments = getSystemService().getAppointmentManager().getTodayAppointments(patientFile.getFileID());
+                List<Appointment> todayAppointments = getSystemService().getAppointmentManager().getTransfersFor(patientFile.getFileID(),patientFile.getCurrentStatus().getAppointment()
+                .getAppointment_Date());
 
                 if(todayAppointments != null && todayAppointments.size() > 0)
                 {

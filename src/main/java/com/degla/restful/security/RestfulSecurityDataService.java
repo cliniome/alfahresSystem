@@ -24,7 +24,9 @@ public class RestfulSecurityDataService implements UserDetailsService , Applicat
 
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
 
+
         Employee emp = alfahresService.getEmployeeService().getEmployeeByUserName(s);
+
 
         return emp;
 
