@@ -122,7 +122,13 @@ public class BasicController implements BasicRestfulOperations {
                         continue;
                     else tempAppointments.add(current);
 
+
+                    PatientFile foundFile = getSystemService().getFilesService().getFileWithNumber(current.getFileNumber());
+
                     RestfulRequest request = current.toRestfulRequest();
+
+                    if(foundFile != null)
+                        request.setShelfId(foundFile.getShelfId());
 
                     availableRequests.add(request);
 
