@@ -48,7 +48,7 @@ public class LoginService {
             Authentication currentAuthentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
 
-
+            if(currentAuthentication == null) return false;
 
             if(currentAuthentication.isAuthenticated())
             {

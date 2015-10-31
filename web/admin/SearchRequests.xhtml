@@ -67,6 +67,11 @@
                           <a class="btn btn-success" href="EditSavedRequest.xhtml?id=#{filerequest.id}&amp;route=0">Edit Request</a>
                         </p:column>
 
+                        <p:column headerText="App. Type">
+                            <h:graphicImage url="../img/in-patient.png" rendered="#{filerequest.inpatient}"/>
+                            <h:graphicImage url="../img/clinic.png" rendered="#{!filerequest.inpatient}"/>
+                        </p:column>
+
                         <p:column headerText="Request Number">
                             <p:outputLabel value="#{filerequest.fileNumber}"/>
                         </p:column>

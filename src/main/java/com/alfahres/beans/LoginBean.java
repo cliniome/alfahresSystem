@@ -30,12 +30,10 @@ public class LoginBean {
 
     private String username;
     private String password;
-
-
-
-    private String routePath;
-
+    private String routePath = "/login.xhtml";
     protected SystemService systemService;
+
+
 
 
     //TODO : Important , Remove this later.
@@ -89,6 +87,7 @@ public class LoginBean {
 
             if(systemService.getLoginService().dologin(this.getUsername(), this.getPassword()))
             {
+
                 setAccessDecision();
                 return SUCCESS;
 
@@ -146,4 +145,6 @@ public class LoginBean {
     public void setRoutePath(String routePath) {
         this.routePath = routePath;
     }
+
+
 }
