@@ -141,13 +141,12 @@ public class FileUploadWizardBean implements Serializable {
 
 
 
-                      /*  if(req.getFileCurrentLocation() != null && req.getFileCurrentLocation().trim().toLowerCase().contains(NO_ENTRY_FILE.trim().toLowerCase()))
+                        if(req.getFileCurrentLocation() != null && req.getFileCurrentLocation().trim().toLowerCase().contains(NO_ENTRY_FILE.trim().toLowerCase()))
                         {
                             req.setFailureReason(NO_ENTRY_FILE);
                             failedRequestsBean.getFailedRequests().add(req);
                             continue;
-                        }*/
-
+                        }
                         availableRequests.add(req);
                     }
                     //set the failed Requestssynchronized

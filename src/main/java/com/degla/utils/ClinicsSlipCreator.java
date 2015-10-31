@@ -23,9 +23,9 @@ public class ClinicsSlipCreator implements Serializable {
 
     public Document getClinicsSlipFromMetaData(List<Object[]> metadata,OutputStream outputStream)
     {
-        Document slip = new Document(new Rectangle(792,612));
-        slip.setMargins(36, 72, 350, 180);
-        slip.setPageSize(PageSize.A4);
+        Document slip = new Document(PageSize.A4_LANDSCAPE,0,0,0,0);
+        slip.setMargins(36, 72, 120, 180);
+       // slip.setPageSize(PageSize.A4_LANDSCAPE);
 
         try
         {
@@ -43,6 +43,8 @@ public class ClinicsSlipCreator implements Serializable {
                     int clinicsNumber  = 0;
                     String clinics_Number_String = String.valueOf(row[1]);
 
+                    String clinicName = row[2].toString();
+
                     if(clinics_Number_String != null && !clinics_Number_String.isEmpty())
                     {
                         clinicsNumber = Integer.parseInt(clinics_Number_String);
@@ -53,17 +55,48 @@ public class ClinicsSlipCreator implements Serializable {
                     if(writtenClinics.contains(clinicCode)) continue;
                     else writtenClinics.add(clinicCode);
 
-                    Paragraph paragraph = new Paragraph();
+                    Paragraph paragraph = new Paragraph(50);
                     paragraph.setAlignment(Element.ALIGN_CENTER);
                     paragraph.setPaddingTop(50);
                     paragraph.setIndentationLeft(50);
                     paragraph.setIndentationRight(50);
                     paragraph.setSpacingBefore(50);
                     paragraph.setFont(new Font(getFontFamily(), getFontSize()));
-                    paragraph.add(String.format("%s(%s)",clinicCode,String.valueOf(clinicsNumber)));
+                    String text = String.format("(%s)",clinicCode);
+
+                    paragraph.add(text);
+
+                    slip.add(paragraph);
+
+                    paragraph = new Paragraph(50);
+                    paragraph.setAlignment(Element.ALIGN_CENTER);
+                    paragraph.setPaddingTop(50);
+                    paragraph.setIndentationLeft(50);
+                    paragraph.setIndentationRight(50);
+                    paragraph.setSpacingBefore(50);
+                    paragraph.setFont(new Font(getFontFamily(), 35));
+                    text = String.format("%s",clinicName);
+                    paragraph.add(text);
 
                     //add the paragraph to the current page and create a new page
                     slip.add(paragraph);
+
+
+
+                    paragraph = new Paragraph(50);
+                    paragraph.setAlignment(Element.ALIGN_CENTER);
+                    paragraph.setPaddingTop(50);
+                    paragraph.setIndentationLeft(50);
+                    paragraph.setIndentationRight(50);
+                    paragraph.setSpacingBefore(50);
+                    paragraph.setFont(new Font(getFontFamily(), 45));
+                    text = String.format("Appt:[   ]/(%s)",clinicsNumber);
+
+                    paragraph.add(text);
+
+
+                    slip.add(paragraph);
+
                     slip.newPage();
 
 

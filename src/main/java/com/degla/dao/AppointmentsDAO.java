@@ -15,7 +15,7 @@ import java.util.List;
  * Created by snouto on 20/09/15.
  */
 @Component("appointmentsDAO")
-@Scope("prototype")
+@Scope("singleton")
 public class AppointmentsDAO extends AbstractDAO<Appointment> {
     @Override
     public String getEntityName() {
@@ -38,8 +38,8 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
 
     public List<Object[]> getAppointmentsMetaData(Date start,Date end)
     {
-        String queryString = "select distinct r.clinicCode ,count(distinct r.fileNumber) from Appointment r where r.appointment_Date >= :start and r.appointment_Date <= :end and r.active = true " +
-                " group by r.clinicCode";
+        String queryString = "select distinct r.clinicCode ,count(distinct r.fileNumber),r.clinicName from Appointment r where r.appointment_Date >= :start and r.appointment_Date <= :end and r.active = true " +
+                " group by r.clinicCode , r.clinicName";
         Query currentQuery = getManager().createQuery(queryString);
         currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(start));
         currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(end));
