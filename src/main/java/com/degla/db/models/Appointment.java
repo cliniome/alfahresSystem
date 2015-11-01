@@ -63,6 +63,7 @@ public class Appointment implements Serializable , AnnotatingModel , Comparable<
 
     @Column(name="appointment_Date")
     @Temporal(TemporalType.TIMESTAMP)
+    @Index(name="appointmentD_Idx")
     private Date appointment_Date;
 
     @Column(name="t_upd_user",nullable = true)
@@ -94,6 +95,7 @@ public class Appointment implements Serializable , AnnotatingModel , Comparable<
 
     @ManyToOne(cascade = {MERGE,REFRESH,DETACH})
     @JoinColumn(name="assigned_To",nullable = true)
+    @Index(name="assignedto_Idx")
     private Employee assignedTo;
 
     @Column(name = "Batch_Request_Number",nullable = true)
@@ -106,6 +108,7 @@ public class Appointment implements Serializable , AnnotatingModel , Comparable<
     private boolean inpatient = false;
 
     @Column(name="active",nullable = false)
+    @Index(name="active_Idx")
     private boolean active = true;
 
     private transient boolean selected;
@@ -113,6 +116,10 @@ public class Appointment implements Serializable , AnnotatingModel , Comparable<
     private transient String failureReason;
 
     private transient String appointmentDateG;
+
+    @Column(name="watchList",nullable = true)
+    @Index(name="WatchList_Idx")
+    private boolean watchList;
 
     public Date getAppointment_Date() {
         return appointment_Date;
@@ -444,5 +451,13 @@ public class Appointment implements Serializable , AnnotatingModel , Comparable<
 
             }
         }
+    }
+
+    public boolean isWatchList() {
+        return watchList;
+    }
+
+    public void setWatchList(boolean watchList) {
+        this.watchList = watchList;
     }
 }

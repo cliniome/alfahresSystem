@@ -36,7 +36,7 @@ public abstract class AbstractDAO<T>{
 
 
     @Transactional
-    public synchronized boolean addEntity(T t)
+    public  boolean addEntity(T t)
     {
         try
         {

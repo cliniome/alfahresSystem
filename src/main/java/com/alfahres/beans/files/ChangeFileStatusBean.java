@@ -141,6 +141,9 @@ public class ChangeFileStatusBean implements Serializable{
                 this.file = systemService.getFilesService().getFileWithNumber(this.getFileNumber());
             }
 
+
+            this.updateWatchList(chosenState,file);
+
             FileHistory currentStatus = this.file.getCurrentStatus();
             FileHistory newStatus = new FileHistory();
 
@@ -189,7 +192,26 @@ public class ChangeFileStatusBean implements Serializable{
         }
     }
 
+    private void updateWatchList(FileStates chosenState, PatientFile file) {
 
+        if(chosenState == FileStates.CHECKED_IN || chosenState == FileStates.OUT_OF_CABIN)
+        {
+            boolean watchlist = ((chosenState == FileStates.CHECKED_IN) ? true : false);
+
+            List<Appointment> watchListAppointments = systemService.getAppointmentManager().searchWatchListAppointments(file.getFileID(),
+                    watchlist);
+
+            if(watchListAppointments != null && watchListAppointments.size() >0)
+            {
+                for(Appointment app : watchListAppointments)
+                {
+                    boolean status = ((chosenState == FileStates.CHECKED_IN) ? false : true);
+                    app.setWatchList(status);
+                    systemService.getAppointmentManager().updateEntity(app);
+                }
+            }
+        }
+    }
 
 
     public List<SelectItem> getItems()

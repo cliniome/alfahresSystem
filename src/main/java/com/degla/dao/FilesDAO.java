@@ -710,7 +710,7 @@ public class FilesDAO extends AbstractDAO<PatientFile> {
                 query = "select f from PatientFile f where f.currentStatus.state=:missing and f.currentStatus.appointment.inpatient = true" +
                         " ORDER BY f.currentStatus.createdAt DESC";
             else
-             query = "select f from PatientFile f where f.currentStatus.state=:missing ORDER BY f.currentStatus.createdAt DESC";
+             query = "select f from PatientFile f where f.currentStatus.state=:missing  ORDER BY f.currentStatus.createdAt DESC";
 
             Query currentQuery = getManager().createQuery(query);
             currentQuery.setParameter("missing", FileStates.MISSING);

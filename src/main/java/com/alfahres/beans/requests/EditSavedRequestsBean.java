@@ -62,8 +62,8 @@ public class EditSavedRequestsBean implements Serializable {
 
                 this.chosenRequest = systemService.getAppointmentManager().getEntity(Integer.parseInt(this.getAppointmentId()));
             }
-
-            boolean done = systemService.getAppointmentManager().removeEntity(this.chosenRequest);
+            this.chosenRequest.setActive(false);
+            boolean done = systemService.getAppointmentManager().updateEntity(this.chosenRequest);
 
             if(done)
             {

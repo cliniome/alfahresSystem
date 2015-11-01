@@ -140,6 +140,15 @@ public class FileUploadWizardBean implements Serializable {
                         req.setFileNumber(patientFileNumber);
 
 
+                        PatientFile currentPatientFile = systemService.getFilesService().getFileWithNumber(req.getFileNumber());
+
+                        if(currentPatientFile != null)
+                        {
+                            if(currentPatientFile.getCurrentStatus().getState() != FileStates.CHECKED_IN)
+                                req.setWatchList(true);
+                        }
+
+
 
                         if(req.getFileCurrentLocation() != null && req.getFileCurrentLocation().trim().toLowerCase().contains(NO_ENTRY_FILE.trim().toLowerCase()))
                         {

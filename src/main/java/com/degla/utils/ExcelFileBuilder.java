@@ -414,6 +414,8 @@ public class ExcelFileBuilder {
 
                 List<Appointment> tempAppointments = new ArrayList<Appointment>();
 
+                int innerCounter = 0;
+
                 for(int i =0 ; i < assignedRequests.size();i++)
                 {
 
@@ -430,7 +432,9 @@ public class ExcelFileBuilder {
                     if(file != null)
                         continue;
 
-                    Row currentRow = workSheet.createRow(i+1);
+                    Row currentRow = workSheet.createRow(innerCounter+1);
+
+                    ++innerCounter;
 
                     //File Number Cell
                     Cell fileNumberCell = currentRow.createCell(0);

@@ -15,7 +15,7 @@ import java.util.List;
  * Created by snouto on 20/09/15.
  */
 @Component("appointmentsDAO")
-@Scope("singleton")
+@Scope("prototype")
 public class AppointmentsDAO extends AbstractDAO<Appointment> {
     @Override
     public String getEntityName() {
@@ -38,7 +38,7 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
 
     public List<Object[]> getAppointmentsMetaData(Date start,Date end)
     {
-        String queryString = "select distinct r.clinicCode ,count(distinct r.fileNumber),r.clinicName from Appointment r where r.appointment_Date >= :start and r.appointment_Date <= :end and r.active = true " +
+        String queryString = "select distinct (r.clinicCode) ,count(distinct r.fileNumber),distinct (r.clinicName) from Appointment r where r.appointment_Date >= :start and r.appointment_Date <= :end and r.active = true " +
                 " group by r.clinicCode , r.clinicName";
         Query currentQuery = getManager().createQuery(queryString);
         currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(start));
@@ -60,6 +60,21 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
 
         return currentQuery.getResultList();
     }
+
+
+    public List<Appointment> searchWatchListAppointments(String query,boolean watchlist)
+    {
+        String queryString = "select r from Appointment r where r.fileNumber=:query and r.active=true" +
+                " and r.watchList= :watchlist";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("query",query);
+        currentQuery.setParameter("watchlist",watchlist);
+
+
+        return currentQuery.getResultList();
+    }
+
+
 
 
     public List<Appointment> searchAppointments(String query)
@@ -140,14 +155,11 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
         {
 
             String queryString = "select distinct(r) from Appointment r where r.active=true and r.assignedTo.userName=:username and " +
-                    "r.assignedTo.active=:state and r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state != :filestate)";
+                    "r.assignedTo.active=:state and r.watchList=false";
 
             Query currentQuery = getManager().createQuery(queryString);
-
             currentQuery.setParameter("username",username);
             currentQuery.setParameter("state",true);
-            currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
-
             return currentQuery.getResultList();
 
 
@@ -185,11 +197,8 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
     {
         try
         {
-            String queryString = "select r from Appointment r where r.active = true and " +
-                    " r.fileNumber  not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate and " +
-                    "p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber)";
+            String queryString = "select r from Appointment r where r.active=true and r.watchList=true";
             Query currentQuery = getManager().createQuery(queryString);
-            currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
             return currentQuery.getResultList();
 
         }catch (Exception s)
@@ -225,11 +234,8 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
 
     public long getTotalNewAppointments()
     {
-        String queryString = "select count(r) from Appointment r where r.active = true and " +
-                " r.fileNumber in (select p.fileID from PatientFile p where p.currentStatus.state =:filestate) or " +
-                " r.fileNumber not in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber)";
+        String queryString = "select count(r) from Appointment r where r.active=true and r.watchList=false";
         Query currentQuery = getManager().createQuery(queryString);
-        currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
         return (Long)currentQuery.getSingleResult();
     }
 
@@ -264,7 +270,8 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
         try {
             Date endofDay = AlfahresDateUtils.getEndOfDay(chosenDate);
             Date startOfDay = AlfahresDateUtils.getStartOfDay(chosenDate);
-            String queryString = "select count(t) from Appointment t where t.active = true and t.appointment_Date >= :date and t.appointment_Date <= :endofDay";
+            String queryString = "select count(t) from Appointment t where t.active = true and t.watchList=false" +
+                    " and t.appointment_Date >= :date and t.appointment_Date <= :endofDay";
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("date",startOfDay);
             currentQuery.setParameter("endofDay",endofDay);
@@ -284,10 +291,9 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
 
         try
         {
-            String queryString = "select r from Appointment r where r.active = true and " +
-                    " r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state != :filestate)";
+
+            String queryString = "select r from Appointment r where r.active=true and r.watchList=false";
             Query currentQuery = getManager().createQuery(queryString);
-            currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
             currentQuery.setFirstResult(first);
             currentQuery.setMaxResults(pageSize);
             return currentQuery.getResultList();
@@ -302,40 +308,31 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
     @Override
     public long getMaxResults() {
 
-        String queryString = "select count(r) from Appointment r where r.active = true and " +
-                " r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state !=:filestate)";
+        String queryString =  "select count(r) from Appointment r where r.active=true and r.watchList=false";
         Query currentQuery = getManager().createQuery(queryString);
-        currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
         return Long.parseLong(currentQuery.getSingleResult().toString());
     }
 
     public long getCountOfWatchListRequests()
     {
-        String queryString = "select count(r) from Appointment r where r.active=true and r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate and " +
-                "p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber)";
+        String queryString = "select count(r) from Appointment r where r.active=true and r.watchList=true";
         Query currentQuery = getManager().createQuery(queryString);
-        currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
-
         return Long.parseLong(currentQuery.getSingleResult().toString());
     }
 
     public long getCountOfWatchListRequests_ByClinicCode(String code)
     {
-        String queryString = "select count(r) from Appointment r where r.active=true and r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate and " +
-                "p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber) and r.clinicCode = :code";
+        String queryString = "select count(r) from Appointment r where r.active=true and r.watchList = true and r.clinicCode = :code";
         Query currentQuery = getManager().createQuery(queryString);
-        currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
         currentQuery.setParameter("code",code);
         return Long.parseLong(currentQuery.getSingleResult().toString());
     }
 
     public long getCountOfWatchListRequests_AppointmentDate(Date date)
     {
-        String queryString = "select count(r) from Appointment r where r.active=true and r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate and " +
-                "p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber) and " +
+        String queryString ="select count(r) from Appointment r where r.active=true and r.watchList=true and " +
                 "r.appointment_Date >= :start and r.appointment_Date <= :end";
         Query currentQuery = getManager().createQuery(queryString);
-        currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
         currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(date));
         currentQuery.setParameter("end",AlfahresDateUtils.getEndOfDay(date));
 
@@ -346,11 +343,8 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
     {
         try
         {
-            String queryString = "select r from Appointment r where r.active = true and " +
-                    "r.fileNumber not in (select p.fileID from PatientFile p where p.currentStatus.state = :filestate " +
-                    "and p.fileID = r.fileNumber) and r.fileNumber in (select pf.fileID from PatientFile pf where pf.fileID = r.fileNumber)";
+            String queryString = "select r from Appointment r where r.active=true and r.watchList=true";
             Query currentQuery = getManager().createQuery(queryString);
-            currentQuery.setParameter("filestate",FileStates.CHECKED_IN);
             currentQuery.setFirstResult(first);
             currentQuery.setMaxResults(pageSize);
             return currentQuery.getResultList();
@@ -392,9 +386,8 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
     {
         try
         {
-            String queryString = "select r from Appointment r where r.active = true and r.assignedTo.userName=:username and " +
-                    "r.assignedTo.active=:state and r.appointment_Date >= :date and r.appointment_Date <= :endofDay and r.fileNumber not in " +
-                    " (select p.fileID from PatientFile p where p.currentStatus.state != :filestate) ";
+            String queryString = "select r from Appointment r where r.active = true and r.watchList=false and r.assignedTo.userName=:username and " +
+                    "r.assignedTo.active=:state and r.appointment_Date >= :date and r.appointment_Date <= :endofDay";
 
             Date startDate = AlfahresDateUtils.getStartOfDay(date);
             Date endDate = AlfahresDateUtils.getEndOfDay(date);
@@ -404,8 +397,6 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
             currentQuery.setParameter("state",true);
             currentQuery.setParameter("date",startDate);
             currentQuery.setParameter("endofDay",endDate);
-            currentQuery.setParameter("filestate", FileStates.CHECKED_IN);
-
             return currentQuery.getResultList();
 
 

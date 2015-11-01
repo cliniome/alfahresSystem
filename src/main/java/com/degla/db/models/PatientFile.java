@@ -44,6 +44,7 @@ public class PatientFile extends EntityEO {
     @JoinColumn(name="currentStatus_ID")*/
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="currentStatus_ID")
+    @Index(name="history_Idx")
 	private FileHistory currentStatus;
 
    /* @OneToMany(cascade = {REFRESH,MERGE,DETACH,PERSIST},orphanRemoval = true,fetch = FetchType.EAGER,mappedBy = "patientFile")

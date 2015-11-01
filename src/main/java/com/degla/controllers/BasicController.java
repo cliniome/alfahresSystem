@@ -219,7 +219,7 @@ public class BasicController implements BasicRestfulOperations {
 
 
                 if(file.getOperationDate() != null &&
-                        serverTimeStamp != file.getOperationDate()) return true;
+                        serverTimeStamp > file.getOperationDate()) return true;
 
                 //now update the current Patient File with the restful File
                 patientFile.updateWithRestful(file);
@@ -313,6 +313,49 @@ public class BasicController implements BasicRestfulOperations {
 
             }
             break;
+
+            case CHECKED_IN:
+            {
+                //add the normal history to that file
+                this.addNewHistory(file,patientFile,emp,appointment);
+
+                //then check if there are some appointments remove them from the watch list
+
+                List<Appointment> appointments = systemService.getAppointmentManager().searchWatchListAppointments(file.getFileNumber(),true);
+
+                if(appointments != null && appointments.size() > 0)
+                {
+                    for(Appointment app : appointments)
+                    {
+                        app.setWatchList(false);
+
+                        systemService.getAppointmentManager().updateEntity(app);
+                    }
+                }
+
+
+            }
+            break;
+
+            case OUT_OF_CABIN:
+            {
+                this.addNewHistory(file,patientFile,emp,appointment);
+
+                //then check if there are some appointments remove them from the watch list
+
+                List<Appointment> appointments = systemService.getAppointmentManager().searchWatchListAppointments(file.getFileNumber(),false);
+
+                if(appointments != null && appointments.size() > 0)
+                {
+                    for(Appointment app : appointments)
+                    {
+                        app.setWatchList(true);
+
+                        systemService.getAppointmentManager().updateEntity(app);
+                    }
+                }
+
+            }
 
             default:
             {
