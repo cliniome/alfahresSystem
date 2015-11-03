@@ -321,7 +321,7 @@ public class BasicController implements BasicRestfulOperations {
 
                 //then check if there are some appointments remove them from the watch list
 
-                List<Appointment> appointments = systemService.getAppointmentManager().searchWatchListAppointments(file.getFileNumber(),true);
+                List<Appointment> appointments = systemService.getAppointmentManager().searchWatchListAppointments(file.getFileNumber(),true,appointment);
 
                 if(appointments != null && appointments.size() > 0)
                 {
@@ -343,7 +343,7 @@ public class BasicController implements BasicRestfulOperations {
 
                 //then check if there are some appointments remove them from the watch list
 
-                List<Appointment> appointments = systemService.getAppointmentManager().searchWatchListAppointments(file.getFileNumber(),false);
+                List<Appointment> appointments = systemService.getAppointmentManager().searchWatchListAppointments(file.getFileNumber(),false,appointment);
 
                 if(appointments != null && appointments.size() > 0)
                 {

@@ -15,6 +15,7 @@ import org.primefaces.event.FileUploadEvent;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.model.SelectItem;
+import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -207,6 +208,11 @@ public class FileUploadWizardBean implements Serializable {
                 {
                     try
                     {
+                        //check for transfers
+                        if(this.checkTransfers(current)){
+                            current.setWatchList(true);
+                        }
+
                         boolean stepResult = systemService.getAppointmentManager().addEntity(current);
                         result = result && stepResult;
 
@@ -236,6 +242,16 @@ public class FileUploadWizardBean implements Serializable {
             }else
                 WebUtils.addMessage(s.getMessage());
         }
+    }
+
+    private boolean checkTransfers(Appointment current) throws Exception {
+
+        //check to see if you have an appointment today for the current file
+
+        if(systemService == null)
+            systemService = SpringSystemBridge.services();
+
+        return systemService.getAppointmentManager().hasTransfer(current.getFileNumber(),current.getAppointment_Date());
     }
 
     public void onFileUploadListener(FileUploadEvent event)

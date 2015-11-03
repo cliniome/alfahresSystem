@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+<f:view>
+
+
+    <ui:composition template="../fragments/masterLayout.xhtml">
+
+    <ui:define name="mainContents">
+    <c:set target="#{cssBean}" property="currentPageName" value="ShuffleAppointments"/>
+
+        <h:form prependId="false">
+
+        <h:panelGrid columns="1" id="containerPane">
+        <p:messages id="growl" showSummary="true" showIcon="true" closable="true"/>
+
+            <p:panel header="Shuffle Requests">
+
+                <div class="alert alert-block alert-info">
+                    <p>You can shuffle assigned requests among keepers.</p>
+                    <p>Note: The system only allows shuffling of requests to active keepers in the system</p>
+                </div>
+
+                <p:panelGrid columns="2">
+
+                    <h:outputText value="Appointment Date"/>
+                    <p:calendar showOn="button" value="#{redistributeRequestsBean.appointmentDate}" required="true" requiredMessage="Please Choose Appointment Date to Shuffle"/>
+
+                    <h:outputText value="Keepers"/>
+                    <p:pickList id="shufflepicker" var="emp"
+                                converter="com.degla.converter.EmployeeConverter"
+                                value="#{redistributeRequestsBean.shufflingEmployees}"
+                                itemValue="#{emp}" itemLabel="#{emp}"/>
+
+                </p:panelGrid>
+
+                <h:panelGrid columns="2">
+
+                    <h:commandButton styleClass="btn btn-large btn-primary"
+                                     value="Shuffle Appointments"
+                                     actionListener="#{redistributeRequestsBean.shuffleAppointments}"
+                            />
+                    <h:commandButton styleClass="btn btn-large btn-warning" value="Cancel" immediate="true" action="HOMESCREEN"/>
+
+                </h:panelGrid>
+
+
+
+            </p:panel>
+
+        </h:panelGrid>
+
+
+
+        </h:form>
+
+    </ui:define>
+
+
+    </ui:composition>
+
+
+</f:view>
+
+</html>

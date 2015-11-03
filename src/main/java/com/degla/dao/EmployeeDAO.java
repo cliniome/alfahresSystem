@@ -44,6 +44,8 @@ public class EmployeeDAO extends AbstractDAO<Employee> {
         return query.getResultList();
     }
 
+
+
     public boolean employeeIDExists(String empID)
     {
         try

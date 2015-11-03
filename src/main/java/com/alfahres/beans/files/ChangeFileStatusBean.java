@@ -199,7 +199,7 @@ public class ChangeFileStatusBean implements Serializable{
             boolean watchlist = ((chosenState == FileStates.CHECKED_IN) ? true : false);
 
             List<Appointment> watchListAppointments = systemService.getAppointmentManager().searchWatchListAppointments(file.getFileID(),
-                    watchlist);
+                    watchlist,file.getCurrentStatus().getAppointment());
 
             if(watchListAppointments != null && watchListAppointments.size() >0)
             {

@@ -15,6 +15,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,8 +27,12 @@ public class RedistributeRequestsBean implements Serializable {
     private SystemService systemService;
     private Employee fromKeeper;
     private DualListModel<Employee> toKeepersList;
+    private DualListModel<Employee> shufflingEmployees;
     private List<Employee> picker_toEmployees;
     private List<Employee> picker_fromEmployees;
+    private List<Employee> shuffler_toEmployees;
+    private List<Employee> shuffler_fromEmployees;
+    private Date appointmentDate;
 
     private boolean distributionEnabled = true;
 
@@ -38,8 +43,11 @@ public class RedistributeRequestsBean implements Serializable {
         {
             systemService = SpringSystemBridge.services();
             this.setPicker_fromEmployees(systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString()));
+            this.setShuffler_fromEmployees(systemService.getEmployeeService().getEmployeesByRole(RoleTypes.KEEPER.toString(), true));
             this.setPicker_toEmployees(new ArrayList<Employee>());
+            this.setShuffler_toEmployees(new ArrayList<Employee>());
             this.setToKeepersList(new DualListModel<Employee>(getPicker_fromEmployees(), getPicker_toEmployees()));
+            this.setShufflingEmployees(new DualListModel<Employee>(getShuffler_fromEmployees(),getShuffler_toEmployees()));
 
         }catch (Exception s)
         {
@@ -70,6 +78,74 @@ public class RedistributeRequestsBean implements Serializable {
     {
         this.setPicker_toEmployees(new ArrayList<Employee>());
         this.setToKeepersList(new DualListModel<Employee>(getPicker_fromEmployees(), getPicker_toEmployees()));
+    }
+
+
+    public void shuffleAppointments(ActionEvent event){
+
+        try
+        {
+            if(this.getShufflingEmployees().getTarget() == null || this.getShufflingEmployees().getTarget().size() <= 0)
+            {
+                WebUtils.addMessage("Please choose Keepers to shuffle Appointments among Them");
+                return;
+            }
+
+            if(this.getShufflingEmployees().getTarget().size() <= 1)
+            {
+                WebUtils.addMessage("Please Choose two or more Employees to shuffle appointments among them");
+                return;
+            }
+
+            if(systemService == null)
+                systemService = SpringSystemBridge.services();
+
+            //get the selected keepers
+            List<Employee> selectedKeepers = this.getShufflingEmployees().getTarget();
+            List<String> userNames= new ArrayList<String>();
+
+            for(Employee emp : selectedKeepers)
+            {
+                userNames.add(emp.getUsername());
+            }
+
+            //getAppointments of those Employees
+            List<Appointment> selectedAppointments = systemService.getAppointmentManager().getAppointmentsForUsers(userNames,this.getAppointmentDate());
+
+            if(selectedAppointments == null || selectedAppointments.size() <= 0 )
+            {
+                WebUtils.addMessage("There are no available Appointments to Shuffle for selected Employees");
+                return;
+            }
+
+            //now route those appointments
+            systemService.getFileRouter().routeFiles(selectedAppointments,selectedKeepers);
+
+            //now save them back again
+            boolean result = true;
+
+            for(Appointment assignedAppointment : selectedAppointments)
+            {
+                //now update that
+
+                result &= systemService.getAppointmentManager().updateEntity(assignedAppointment);
+            }
+
+
+            if(result)
+            {
+                WebUtils.addMessage("Selected Employees' Appointments have been successfully shuffled");
+
+            }
+
+
+        }catch (Exception s)
+        {
+            s.printStackTrace();
+            WebUtils.addMessage("There was a problem shuffling appointments among selected keepers , please contact your system administrator.");
+
+        }
+
     }
 
     public void redistributeRequests(ActionEvent event)
@@ -213,5 +289,37 @@ public class RedistributeRequestsBean implements Serializable {
 
     public void setDistributionEnabled(boolean distributionEnabled) {
         this.distributionEnabled = distributionEnabled;
+    }
+
+    public DualListModel<Employee> getShufflingEmployees() {
+        return shufflingEmployees;
+    }
+
+    public void setShufflingEmployees(DualListModel<Employee> shufflingEmployees) {
+        this.shufflingEmployees = shufflingEmployees;
+    }
+
+    public List<Employee> getShuffler_toEmployees() {
+        return shuffler_toEmployees;
+    }
+
+    public void setShuffler_toEmployees(List<Employee> shuffler_toEmployees) {
+        this.shuffler_toEmployees = shuffler_toEmployees;
+    }
+
+    public List<Employee> getShuffler_fromEmployees() {
+        return shuffler_fromEmployees;
+    }
+
+    public void setShuffler_fromEmployees(List<Employee> shuffler_fromEmployees) {
+        this.shuffler_fromEmployees = shuffler_fromEmployees;
+    }
+
+    public Date getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    public void setAppointmentDate(Date appointmentDate) {
+        this.appointmentDate = appointmentDate;
     }
 }

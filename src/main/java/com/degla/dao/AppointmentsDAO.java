@@ -38,7 +38,7 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
 
     public List<Object[]> getAppointmentsMetaData(Date start,Date end)
     {
-        String queryString = "select distinct (r.clinicCode) ,count(distinct r.fileNumber),distinct (r.clinicName) from Appointment r where r.appointment_Date >= :start and r.appointment_Date <= :end and r.active = true " +
+        String queryString = "select distinct (r.clinicCode) ,count(distinct r.fileNumber),r.clinicName from Appointment r where r.appointment_Date >= :start and r.appointment_Date <= :end and r.active = true " +
                 " group by r.clinicCode , r.clinicName";
         Query currentQuery = getManager().createQuery(queryString);
         currentQuery.setParameter("start",AlfahresDateUtils.getStartOfDay(start));
@@ -62,15 +62,17 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
     }
 
 
-    public List<Appointment> searchWatchListAppointments(String query,boolean watchlist)
+    public List<Appointment> searchWatchListAppointments(String query,boolean watchlist,Appointment appointment)
     {
+        Date startDate = AlfahresDateUtils.getStartOfDay(appointment.getAppointment_Date());
+        Date endDate = AlfahresDateUtils.getEndOfDay(appointment.getAppointment_Date());
         String queryString = "select r from Appointment r where r.fileNumber=:query and r.active=true" +
-                " and r.watchList= :watchlist";
+                " and r.watchList= :watchlist and r.appointment_Date >= :start and r.appointment_Date <= :enddate";
         Query currentQuery = getManager().createQuery(queryString);
         currentQuery.setParameter("query",query);
         currentQuery.setParameter("watchlist",watchlist);
-
-
+        currentQuery.setParameter("start",startDate);
+        currentQuery.setParameter("enddate",endDate);
         return currentQuery.getResultList();
     }
 
@@ -84,6 +86,21 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
         currentQuery.setParameter("query",query);
         currentQuery.setMaxResults(300);
 
+        return currentQuery.getResultList();
+    }
+
+    public List<Appointment> getAppointmentsForUsers(List<String> userNames , Date appointmentDate)
+    {
+        Date startDate = AlfahresDateUtils.getStartOfDay(appointmentDate);
+        Date endDate = AlfahresDateUtils.getEndOfDay(appointmentDate);
+
+        String queryString = "select r from Appointment r where r.assignedTo.userName in (:users) and r.active = true " +
+                "and r.appointment_Date >= :startdate and r.appointment_Date <= :enddate " +
+                " order by r.appointment_Date ASC";
+        Query currentQuery = getManager().createQuery(queryString);
+        currentQuery.setParameter("users",userNames);
+        currentQuery.setParameter("startdate",startDate);
+        currentQuery.setParameter("enddate",endDate);
         return currentQuery.getResultList();
     }
 
@@ -155,7 +172,7 @@ public class AppointmentsDAO extends AbstractDAO<Appointment> {
         {
 
             String queryString = "select distinct(r) from Appointment r where r.active=true and r.assignedTo.userName=:username and " +
-                    "r.assignedTo.active=:state and r.watchList=false";
+                    "r.assignedTo.active=:state";
 
             Query currentQuery = getManager().createQuery(queryString);
             currentQuery.setParameter("username",username);
